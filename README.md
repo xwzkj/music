@@ -7,3 +7,4 @@
 >项目基于neteaseCloudMusicApi
 
 项目预览：https://xwzkj.github.io
+项目未完工
