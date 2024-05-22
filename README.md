@@ -5,3 +5,5 @@
 >api修改位置：src/modules/api.js
 
 >项目基于neteaseCloudMusicApi
+
+项目预览：https://xwzkj.github.io
