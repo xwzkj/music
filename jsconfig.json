@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "esnext",
+      "checkJs": false,  // 禁用 TypeScript 类型检查
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["src/*"]  // 配置路径别名
+      }
+    },
+    "exclude": [
+      "node_modules",
+      "**/node_modules/*"
+    ]
+  }
+  
