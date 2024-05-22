@@ -1,7 +1,7 @@
 import colorThief from '/node_modules/colorthief/dist/color-thief.mjs'
 import axios from 'axios'
 
-export let apiurl = '/api'
+export let apiurl = 'https://api.xwzkj.top'
 axios.defaults.withCredentials = true;
 let musicApi = axios.create({
     baseURL: apiurl,
