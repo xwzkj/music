@@ -1,7 +1,7 @@
 import colorThief from '/node_modules/colorthief/dist/color-thief.mjs'
 import axios from 'axios'
 
-export let apiurl = 'https://api.xwzkj.top'
+export let apiurl = '/api'
 axios.defaults.withCredentials = true;
 let musicApi = axios.create({
     baseURL: apiurl,
@@ -15,11 +15,11 @@ let musicApi = axios.create({
  */
 export function request(params) {
     params.url += '?timestamp=' + Date.now();
-    if(params.method == 'post'){
-        params.data = {...params.data,cookie: localStorage.getItem('cookie')}
-    }else if(params.method == 'get'){
-        params.params = {...params.data,cookie: localStorage.getItem('cookie')}
-    }
+    // if(params.method == 'post'){
+    //     params.data = {...params.data,cookie: localStorage.getItem('cookie')}
+    // }else if(params.method == 'get'){
+    //     params.params = {...params.data,cookie: localStorage.getItem('cookie')}
+    // }
     return musicApi.request(params);
 }
 
