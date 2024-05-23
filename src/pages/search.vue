@@ -34,8 +34,11 @@ async function search() {
     // console.log('搜索/cloudsearch', res.data);
     result.value = res.data.result.songs;
 }
-function play(id) {
-    router.push({ name: 'player', query: { id: id } })
+async function play(id) {
+    let list = playStore.playlistIds
+    list = list.splice(playStore.playlistIndex,0,id)
+    await playStore.playlistInit(list)
+    router.push({ name: 'player'})
 }
 </script>
 <style scoped>

@@ -26,8 +26,8 @@
                     <span class="result-name result">
                         <span @click="props.nameOnClick(item.id)">{{ item.name
                             }}</span>
-                        <n-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</n-tag>
-                        <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
+                        <el-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</el-tag>
+                        <el-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</el-tag>
 
                     </span>
                     <span class="result-ar result">

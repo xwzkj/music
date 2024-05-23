@@ -1,5 +1,5 @@
 <template>
-    <div v-loading="!result.tracks">
+    <div v-loading.fullscreen="!result.tracks|loading">
         <div id="playlistDetail">
             <img id="playlistImg" :src="result.coverImgUrl" v-if="result.coverImgUrl">
             <div id="playlistInfo">
@@ -8,13 +8,13 @@
                     <img id="playlistAuthorAvatar" :src="result.creator.avatarUrl">
                     <div id="playlistAuthorName">{{ result.creator.nickname }}</div>
                     <span id="playlistTagContainer">
-                        <n-tag v-for="item in result.tags" type="success" size="small" class="playlistTag">{{ item
-                            }}</n-tag>
+                        <el-tag v-for="item in result.tags" type="success" size="small" class="playlistTag">{{ item
+                            }}</el-tag>
                     </span>
                 </div>
                 <div id="playlistDesc">{{ result.description }}</div>
                 <div id="playlistControler">
-                    <el-button>播放全部</el-button>
+                    <el-button @click="playAll">播放全部</el-button>
                 </div>
             </div>
         </div>
@@ -27,10 +27,12 @@
 <script setup name="playlist">
 import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { NTag } from 'naive-ui';
 import * as api from '@/modules/api';
 import musicList from '@/components/musicList.vue';
+import { usePlayStore } from '@/stores/play';
+const playStore = usePlayStore();
 const router = useRouter();
+let loading = ref(false);//点击播放后 解析播放列表的loading
 let result = ref([]);
 let props = defineProps(['id', 'isDailySongs']);
 watch(props, () => {
@@ -60,8 +62,20 @@ async function parsePlayList() {
         result.value = res.data.playlist;
     }
 }
-function play(id) {
-    router.push({ name: 'player', query: { id: id } })
+
+async function playAll(){
+    loading.value = true;
+    await playStore.playlistInit(result.value.tracks.map(item => item.id))
+    loading.value = false;
+    router.push({ name: 'player'})
+}
+async function play(id) {
+    loading.value = true;
+    let list = playStore.playlistIds
+    list = list.splice(playStore.playlistIndex,0,id)
+    await playStore.playlistInit(list)
+    loading.value = false;
+    router.push({ name: 'player'})
 }
 </script>
 
