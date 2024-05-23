@@ -5,7 +5,8 @@ export let apiurl = 'https://api.xwzkj.top'
 axios.defaults.withCredentials = true;
 let musicApi = axios.create({
     baseURL: apiurl,
-    timeout: 20000
+    timeout: 20000,
+    withCredentials: true,
 })
 /**
  * 网络请求函数
@@ -14,6 +15,11 @@ let musicApi = axios.create({
  */
 export function request(params) {
     params.url += '?timestamp=' + Date.now();
+    if(params.method == 'post'){
+        params.data = {...params.data,cookie: localStorage.getItem('cookie')}
+    }else if(params.method == 'get'){
+        params.params = {...params.data,cookie: localStorage.getItem('cookie')}
+    }
     return musicApi.request(params);
 }
 
@@ -21,33 +27,33 @@ export function request(params) {
 export function loginStatus() {
     return request({
         url: '/login/status',
-        method: 'get'
+        method: 'post'
     })
 }
 export function userPlaylist(uid) {
     return request({
         url: '/user/playlist',
-        method: 'get',
+        method: 'post',
         params: { uid }
     })
 }
 export function likelist(uid) {
     return request({
         url: '/likelist',
-        method: 'get',
+        method: 'post',
         params: { uid }
     })
 }
 export function vipInfo() {
     return request({
         url: '/vip/info',
-        method: 'get'
+        method: 'post'
     })
 }
 export function loginQrKey() {
     return request({
         url: '/login/qr/key',
-        method: 'get'
+        method: 'post'
     })
 }
 export function loginQrCreate(key) {
@@ -68,34 +74,34 @@ export function loginQrCheck(key) {
 export function songDetail(ids) {
     return request({
         url: '/song/detail',
-        method: 'get',
+        method: 'post',
         params: { ids }
     })
 }
 export function songUrlV1(id, level) {
     return request({
         url: '/song/url/v1',
-        method: 'get',
+        method: 'post',
         params: { id, level }
     })
 }
 export function lyricNew(id) {
     return request({
         url: '/lyric/new',
-        method: 'get',
+        method: 'post',
         params: { id }
     })
 }
 export function recommendSongs() {
     return request({
         url: '/recommend/songs',
-        method: 'get'
+        method: 'post'
     })
 }
 export function playlistDetail(id) {
     return request({
         url: '/playlist/detail',
-        method: 'get',
+        method: 'post',
         params: { id }
     })
 }

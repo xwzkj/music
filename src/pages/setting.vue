@@ -2,7 +2,9 @@
     <div>
         <el-button @click="logout">退出登录</el-button>
         <el-button @click="loginByCookie">输入cookie登录</el-button>
-        <el-button @click="tishi">弹出一个message</el-button>       
+        <el-button @click="tishi">弹出一个message</el-button>
+        <el-button @click="update">马上更新用户信息</el-button>
+
     </div>
 </template>
 
@@ -31,7 +33,16 @@ function tishi(){
     ElMessage({
         message: '好了哦',
         type: 'success',
-    })}
+    })
+}
+function update(){
+    userStore.updateByCookie();
+    ElMessage({
+        message: '好了哦',
+        type: 'success',
+    })
+}
+
 </script>
 
 <style scoped></style>
