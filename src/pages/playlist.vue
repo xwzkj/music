@@ -72,8 +72,11 @@ async function playAll(){
 async function play(id) {
     loading.value = true;
     let list = playStore.playlistIds
-    list = list.splice(playStore.playlistIndex,0,id)
+    let index = playStore.playlistIndex
+    list.splice(index,0,id)
+    console.log('单独插入播放',list,id,index);
     await playStore.playlistInit(list)
+    playStore.playlistIndex = index
     loading.value = false;
     router.push({ name: 'player'})
 }

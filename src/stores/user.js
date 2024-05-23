@@ -20,13 +20,13 @@ export const useUserStore = defineStore('user', {
     actions: {
         async updateByCookie(cookie) {
             let match = document.cookie.match(`MUSIC_U=[^;]+`)
-            if (cookie == undefined && match[0] != null) {
+            if (cookie == undefined && match != null) {
                 cookie = document.cookie
             }else{
                 console.log('没有cookie更新个毛的用户信息啊');
                 return;
             }
-            localStorage.setItem('cookie', cookie.match(`MUSIC_U=[^;]+`))
+            localStorage.setItem('cookie', cookie.match(`MUSIC_U=[^;]+`)[0])
             this.cookie = cookie
             this.isLogin = true
 
