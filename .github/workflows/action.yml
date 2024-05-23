@@ -34,7 +34,7 @@ jobs:
       - name: deploy file to server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:  
-          username: 'xwzkj'   #ssh user name
+          username: 'root'   #ssh user name
           server: '${{ secrets.SERVER_IP }}' #引用之前创建好的secret
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} #引用之前创建好的secret
           local_path: './dist/*'  # 对应我们项目build的文件夹路径
