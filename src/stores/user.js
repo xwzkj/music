@@ -22,7 +22,7 @@ export const useUserStore = defineStore('user', {
             let match = document.cookie.match(`MUSIC_U=[^;]+`)
             if (cookie == undefined && match != null) {
                 cookie = document.cookie
-            }else{
+            }else if(cookie == undefined){
                 console.log('没有cookie更新个毛的用户信息啊');
                 return;
             }
