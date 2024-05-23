@@ -67,7 +67,7 @@ export function loginQrCreate(key) {
 export function loginQrCheck(key) {
     return request({
         url: '/login/qr/check',
-        method: 'get',
+        method: 'post',
         params: { key }
     })
 }
