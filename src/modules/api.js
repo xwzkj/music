@@ -1,6 +1,11 @@
 import colorThief from '/node_modules/colorthief/dist/color-thief.mjs'
 import axios from 'axios'
 
+/*
+*-----------------------------------------------
+*以下是NeteaseCloudMusicApi接口的调用方法
+*-----------------------------------------------
+*/
 export let apiurl = '/api'
 axios.defaults.withCredentials = true;
 let musicApi = axios.create({
@@ -15,10 +20,10 @@ let musicApi = axios.create({
  */
 export function request(params) {
     params.url += '?timestamp=' + Date.now();
-    if(params.method == 'post'){
-        params.data = {...params.data,cookie: localStorage.getItem('cookie')}
-    }else if(params.method == 'get'){
-        params.params = {...params.data,cookie: localStorage.getItem('cookie')}
+    if (params.method == 'post') {
+        params.data = { ...params.data, cookie: localStorage.getItem('cookie') }
+    } else if (params.method == 'get') {
+        params.params = { ...params.data, cookie: localStorage.getItem('cookie') }
     }
     return musicApi.request(params);
 }
@@ -112,6 +117,12 @@ export function cloudsearch(keywords) {
         data: { keywords }
     })
 }
+
+/*
+*-----------------------------------------------
+*以下是colorthief包装的方法
+*-----------------------------------------------
+*/
 export function getColorsFromImg(imgElement, colorNum, needRaw = false) {
     let ColorThief = new colorThief();
     let rawColor = ColorThief.getPalette(imgElement, colorNum);
@@ -155,6 +166,27 @@ export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter 
         return [r, g, b];
     }
     return `rgb(${r},${g},${b})`
+}
+
+/*
+*-----------------------------------------------
+*以下是一些工具函数
+*-----------------------------------------------
+*/
+/**
+ * @param {string} message 
+ */
+export function error(message) {
+    console.log('[error]', message);
+    message = message.replace(/\n/g, '<br/>');
+    message = `<div>${message}</div>`
+    ElMessage({
+        dangerouslyUseHTMLString: true,
+        message,
+        type: 'error',
+        showClose: true,
+        duration: 0
+    })
 }
 export function msToText(ms) {
     let m = Math.floor(ms / 60000);

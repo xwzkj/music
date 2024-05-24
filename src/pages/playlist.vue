@@ -75,7 +75,6 @@ async function play(id) {
     let list = playStore.playlistIds
     let index = playStore.playlistIndex
     list.splice(index,0,id)
-    console.log('单独插入播放',list,id,index);
     await playStore.playlistInit(list)
     playStore.start();
     playStore.playlistIndex = index

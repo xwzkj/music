@@ -21,6 +21,11 @@ let background = ref('');
 let id_clock1 = NaN;
 //挂载
 onMounted(async () => {
+  //监听歌词滚动
+  watch(lyricActive, (value) => {
+    document.getElementById('container-lyric').scrollTo({ top: document.getElementById('lrc-' + value).offsetTop - 200, behavior: 'smooth' });
+  })
+
   id_clock1 = setInterval(() => {
     try {
       //进度条
@@ -28,27 +33,26 @@ onMounted(async () => {
         music.value.audio.duration = 100;
       } else {
         music.value.audio.duration = audio.duration;
-      }
-      music.value.audio.paused = audio.paused;
-      progress.value = audio.currentTime;
-      //歌词滚动
-      for (let i = 0; i < playStore.lyric.length; i++) {
-        let next = false;
-        if (i == playStore.lyric.length - 1) {
-          next = true;
-        } else if (playStore.lyric[i + 1].time > audio.currentTime * 1000) {
-          next = true;
+
+        music.value.audio.paused = audio.paused;
+        progress.value = audio.currentTime;
+        //歌词滚动
+        for (let i = 0; i < playStore.lyric.length; i++) {
+          let next = false;
+          if (i == playStore.lyric.length - 1) {
+            next = true;
+          } else if (playStore.lyric[i + 1].time > audio.currentTime * 1000) {
+            next = true;
+          }
+          if (playStore.lyric[i].time <= audio.currentTime * 1000 && next == true) {
+            lyricActive.value = i;
+            break;
+          }
         }
-        if (playStore.lyric[i].time <= audio.currentTime * 1000 && next == true) {
-          lyricActive.value = i;
-          break;
-        }
+
       }
     } catch (e) {
-      ElMessage({
-        message: `进度条或歌词滚动出错\n${e}`,
-        type: 'error'
-      })
+      api.error(`出错了！\n位置:player.vue onMounted setInterval\n错误信息:${e}`)
     }
   }, 50)
 })
@@ -57,10 +61,7 @@ onBeforeUnmount(() => {
   clearInterval(id_clock1);
 })
 
-//监听歌词滚动
-watch(lyricActive, (value) => {
-  document.getElementById('container-lyric').scrollTo({ top: document.getElementById('lrc-' + value).offsetTop - 200, behavior: 'smooth' });
-})
+
 
 
 
