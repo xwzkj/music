@@ -20,7 +20,7 @@ onMounted(() => {
   audio.value.addEventListener('pause', () => { playStore.paused = true })
   audio.value.addEventListener('ended', () => { playStore.paused = true })
   setInterval(() => {
-    if ("mediaSession" in navigator && !isNaN(audio.value.currentTime)) {
+    if ("mediaSession" in navigator && !isNaN(audio.value.currentTime) && !isNaN(audio.value.duration)) {
       navigator.mediaSession.setPositionState({
         duration: audio.value.duration,
         position: audio.value.currentTime
