@@ -18,14 +18,19 @@ let musicApi = axios.create({
  * @param {Object} params url: 请求地址,method: 请求方式,data: 请求参数
  * @returns 
  */
-export function request(params) {
-    params.url += '?timestamp=' + Date.now();
-    if (params.method == 'post') {
-        params.data = { ...params.data, cookie: localStorage.getItem('cookie') }
-    } else if (params.method == 'get') {
-        params.params = { ...params.data, cookie: localStorage.getItem('cookie') }
+export async function request(params) {
+    try {
+        params.url += '?timestamp=' + Date.now();
+        if (params.method == 'post') {
+            params.data = { ...params.data, cookie: localStorage.getItem('cookie') }
+        } else if (params.method == 'get') {
+            params.params = { ...params.data, cookie: localStorage.getItem('cookie') }
+        }
+        let req = await musicApi.request(params);
+        return req;
+    } catch (e) {
+        error(`api请求错误！\napiURL：${apiurl} \n参数：${JSON.stringify(params)} \n${e}`)
     }
-    return musicApi.request(params);
 }
 
 
@@ -179,7 +184,7 @@ export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter 
 export function error(message) {
     console.log('[error]', message);
     message = message.replace(/\n/g, '<br/>');
-    message = `<div>${message}</div>`
+    message = `<div style="max-width:90vw;max-height:90vh;">${message}</div>`
     ElMessage({
         dangerouslyUseHTMLString: true,
         message,

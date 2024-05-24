@@ -20,17 +20,21 @@ onMounted(() => {
   audio.value.addEventListener('play', () => { playStore.paused = false })
   audio.value.addEventListener('pause', () => { playStore.paused = true })
   audio.value.addEventListener('ended', () => { playStore.paused = true })
-  setInterval(() => {
-    try{
-    if ("mediaSession" in navigator && !isNaN(audio.value.currentTime) && !isNaN(audio.value.duration)) {
-      navigator.mediaSession.setPositionState({
-        duration: audio.value.duration,
-        position: audio.value.currentTime
-      });
-    }}catch(e){
-      api.error(`出错了！ \n位置：app.vue onMounted mediaSession \n${e}`)
-    }
-  }, 1000)
+  try {
+    audio.value.addEventListener('timeupdate', () => {
+      if ("mediaSession" in navigator && !isNaN(audio.value.currentTime) && !isNaN(audio.value.duration)) {
+        navigator.mediaSession.setPositionState({
+          duration: audio.value.duration,
+          position: audio.value.currentTime
+        });
+      }
+
+
+    })
+  } catch (e) {
+    api.error(`出错了！ \n位置：app.vue onMounted mediaSession \n${e}`)
+  }
+
   if (localStorage.getItem('playlist') != null) {
     playStore.playlistInit()
   }
