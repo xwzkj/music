@@ -20,11 +20,12 @@ onMounted(() => {
   audio.value.addEventListener('pause', () => { playStore.paused = true })
   audio.value.addEventListener('ended', () => { playStore.paused = true })
   setInterval(() => {
-    navigator.mediaSession.setPositionState({
-      duration: audio.value.duration,
-      playbackRate: audio.value.playbackRate,
-      position: audio.value.currentTime,
-    });
+    if ("mediaSession" in navigator && !isNaN(audio.value.currentTime)) {
+      navigator.mediaSession.setPositionState({
+        duration: audio.value.duration,
+        position: audio.value.currentTime
+      });
+    }
   }, 1000)
   if (localStorage.getItem('playlist') != null) {
     playStore.playlistInit()

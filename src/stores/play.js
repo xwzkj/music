@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import * as api from '@/modules/api'
-import { ref,computed } from 'vue'
+import { ref, computed } from 'vue'
 
 export const usePlayStore = defineStore('play', () => {
     // 播放器 类型为 HTMLAudioElement
@@ -14,9 +14,10 @@ export const usePlayStore = defineStore('play', () => {
     let playlist = ref([{}])
     // 播放列表索引
     let playlistIndex = ref(0)
-
-    navigator.mediaSession.setActionHandler("previoustrack", prev);
-    navigator.mediaSession.setActionHandler("nexttrack", next);
+    if ("mediaSession" in navigator) {
+        navigator.mediaSession.setActionHandler("previoustrack", prev);
+        navigator.mediaSession.setActionHandler("nexttrack", next);
+    }
     async function parseLyric(id) {
         let apiResult = await api.lyricNew(id)
         apiResult = apiResult.data;
@@ -128,17 +129,19 @@ export const usePlayStore = defineStore('play', () => {
     }
     function play() {
         player.value.play();
-        navigator.mediaSession.metadata = new MediaMetadata({
-            title: currentMusic.value.name,
-            artist: currentMusic.value.artist,
-            artwork: [{src: currentMusic.value.picurl}]
-        })
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: currentMusic.value.name,
+                artist: currentMusic.value.artist,
+                artwork: [{ src: currentMusic.value.picurl }]
+            })
+        }
     }
     function playWhenItCan(yes) {
-        console.log(`[playStore]playWhenItCan`,yes);
+        console.log(`[playStore]playWhenItCan`, yes);
         if (yes === true) {
             // 添加事件监听器，等待音频可以播放
-            player.value.addEventListener('canplaythrough', play); 
+            player.value.addEventListener('canplaythrough', play);
         } else {
             player.value.removeEventListener('canplaythrough', play);
         }
