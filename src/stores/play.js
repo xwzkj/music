@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import * as api from '@/modules/api'
-import { watch, ref } from 'vue'
+import { ref,computed } from 'vue'
 
 export const usePlayStore = defineStore('play', () => {
     // 播放器 类型为 HTMLAudioElement
@@ -15,8 +15,8 @@ export const usePlayStore = defineStore('play', () => {
     // 播放列表索引
     let playlistIndex = ref(0)
 
-
-
+    navigator.mediaSession.setActionHandler("previoustrack", prev);
+    navigator.mediaSession.setActionHandler("nexttrack", next);
     async function parseLyric(id) {
         let apiResult = await api.lyricNew(id)
         apiResult = apiResult.data;
@@ -58,6 +58,9 @@ export const usePlayStore = defineStore('play', () => {
 
     }
     async function playlistInit(ids) {
+        playlistIndex.value = 0;
+        pause()
+        playWhenItCan(false)
         let storage = { current: playlistIndex.value, ids: ids }
         if (ids != undefined) {
             localStorage.setItem('playlist', JSON.stringify(storage))
@@ -69,7 +72,6 @@ export const usePlayStore = defineStore('play', () => {
             console.error('播放列表初始化未提供参数');
             return;
         }
-        playlistIndex.value = 0;
 
         playlistIds.value = ids;
         playlist.value = [{}];
@@ -94,7 +96,7 @@ export const usePlayStore = defineStore('play', () => {
 
         }
 
-        player.value.src = playlist.value[0].url;
+        player.value.src = playlist.value[playlistIndex.value].url;
         //获取detail
         res = await api.songDetail(ids.join(','));
         res = res.data.songs;
@@ -109,18 +111,42 @@ export const usePlayStore = defineStore('play', () => {
 
         }
 
-        //解析第一个音频的歌词
-        await parseLyric(playlistIds.value[0])
+        //解析当前音频的歌词
+        await parseLyric(playlistIds.value[playlistIndex.value])
 
+    }
+    function start() {
+        play()
+        playWhenItCan(true)
+    }
+    function stop() {
+        pause()
+        playWhenItCan(false)
     }
     function pause() {
         player.value.pause();
     }
     function play() {
         player.value.play();
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: currentMusic.value.name,
+            artist: currentMusic.value.artist,
+            artwork: [{src: currentMusic.value.picurl}]
+        })
+    }
+    function playWhenItCan(yes) {
+        console.log(`[playStore]playWhenItCan`,yes);
+        if (yes === true) {
+            // 添加事件监听器，等待音频可以播放
+            player.value.addEventListener('canplaythrough', play); 
+        } else {
+            player.value.removeEventListener('canplaythrough', play);
+        }
     }
     function next() {
+        pause()
         console.log(`[playStore]next`);
+        playWhenItCan(true)
         if (playlistIndex.value < playlistIds.value.length - 1) {
             playlistIndex.value++;
         } else {
@@ -128,11 +154,13 @@ export const usePlayStore = defineStore('play', () => {
         }
     }
     function prev() {
+        pause()
         console.log(`[playStore]prev`);
+        playWhenItCan(true)
         if (playlistIndex.value > 0) {
             playlistIndex.value--;
         } else {
-            playlistIndex.value = playlistIds.length.value - 1;
+            playlistIndex.value = playlistIds.value.length - 1;
         }
     }
 
@@ -176,6 +204,9 @@ export const usePlayStore = defineStore('play', () => {
         paused,
         parseLyric,
         playlistInit,
+        start,
+        stop,
+        playWhenItCan,
         play,
         pause,
         next,

@@ -15,11 +15,11 @@ let musicApi = axios.create({
  */
 export function request(params) {
     params.url += '?timestamp=' + Date.now();
-    // if(params.method == 'post'){
-    //     params.data = {...params.data,cookie: localStorage.getItem('cookie')}
-    // }else if(params.method == 'get'){
-    //     params.params = {...params.data,cookie: localStorage.getItem('cookie')}
-    // }
+    if(params.method == 'post'){
+        params.data = {...params.data,cookie: localStorage.getItem('cookie')}
+    }else if(params.method == 'get'){
+        params.params = {...params.data,cookie: localStorage.getItem('cookie')}
+    }
     return musicApi.request(params);
 }
 
@@ -75,14 +75,14 @@ export function songDetail(ids) {
     return request({
         url: '/song/detail',
         method: 'post',
-        params: { ids }
+        data: { ids }
     })
 }
 export function songUrlV1(id, level) {
     return request({
         url: '/song/url/v1',
         method: 'post',
-        params: { id, level }
+        data: { id, level }
     })
 }
 export function lyricNew(id) {

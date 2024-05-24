@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia'
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
 let playStore = usePlayStore();
-let {playlist,playlistIndex,lyric,currentMusic}= storeToRefs(playStore);
+let { playlist, playlistIndex, lyric, currentMusic } = storeToRefs(playStore);
 
 let audio = playStore.player;
 let music = ref({
@@ -20,36 +20,36 @@ let progress = ref(0);
 let background = ref('');
 let id_clock1 = NaN;
 //挂载
-onMounted(async() => {
+onMounted(async () => {
   id_clock1 = setInterval(() => {
-    try{
-    //进度条
-    if (isNaN(audio.duration) == true) {
-      music.value.audio.duration = 100;
-    } else {
-      music.value.audio.duration = audio.duration;
-    }
-    music.value.audio.paused = audio.paused;
-    progress.value = audio.currentTime;
-    //歌词滚动
-    for (let i = 0; i < playStore.lyric.length; i++) {
-      let next = false;
-      if (i == playStore.lyric.length - 1) {
-        next = true;
-      } else if (playStore.lyric[i + 1].time > audio.currentTime * 1000) {
-        next = true;
+    try {
+      //进度条
+      if (isNaN(audio.duration) == true) {
+        music.value.audio.duration = 100;
+      } else {
+        music.value.audio.duration = audio.duration;
       }
-      if (playStore.lyric[i].time <= audio.currentTime * 1000 && next == true) {
-        lyricActive.value = i;
-        break;
+      music.value.audio.paused = audio.paused;
+      progress.value = audio.currentTime;
+      //歌词滚动
+      for (let i = 0; i < playStore.lyric.length; i++) {
+        let next = false;
+        if (i == playStore.lyric.length - 1) {
+          next = true;
+        } else if (playStore.lyric[i + 1].time > audio.currentTime * 1000) {
+          next = true;
+        }
+        if (playStore.lyric[i].time <= audio.currentTime * 1000 && next == true) {
+          lyricActive.value = i;
+          break;
+        }
       }
+    } catch (e) {
+      ElMessage({
+        message: `进度条或歌词滚动出错\n${e}`,
+        type: 'error'
+      })
     }
-  }catch(e){
-    ElMessage({
-      message: `进度条或歌词滚动出错\n${e}`,
-      type: 'error'
-    })
-  }
   }, 50)
 })
 //卸载前
@@ -224,6 +224,7 @@ function callBack_pause(value) {
 }
 
 #column-lyric {
+  position: relative;
   display: flex;
   flex: 60%;
   height: 100vh;

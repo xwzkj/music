@@ -66,6 +66,7 @@ async function parsePlayList() {
 async function playAll(){
     loading.value = true;
     await playStore.playlistInit(result.value.tracks.map(item => item.id))
+    playStore.start();
     loading.value = false;
     router.push({ name: 'player'})
 }
@@ -76,6 +77,7 @@ async function play(id) {
     list.splice(index,0,id)
     console.log('单独插入播放',list,id,index);
     await playStore.playlistInit(list)
+    playStore.start();
     playStore.playlistIndex = index
     loading.value = false;
     router.push({ name: 'player'})

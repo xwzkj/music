@@ -18,6 +18,14 @@ onMounted(() => {
   playStore.player = audio.value
   audio.value.addEventListener('play', () => { playStore.paused = false })
   audio.value.addEventListener('pause', () => { playStore.paused = true })
+  audio.value.addEventListener('ended', () => { playStore.paused = true })
+  setInterval(() => {
+    navigator.mediaSession.setPositionState({
+      duration: audio.value.duration,
+      playbackRate: audio.value.playbackRate,
+      position: audio.value.currentTime,
+    });
+  }, 1000)
   if (localStorage.getItem('playlist') != null) {
     playStore.playlistInit()
   }
@@ -39,7 +47,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <audio ref="audio" autoplay></audio>
+    <audio ref="audio"></audio>
     <router-view v-slot="{ Component }">
       <keep-alive v-if="$route.meta.keepAlive">
         <component :is="Component" :key="$route.name" v-if="$route.meta.keepAlive" />
