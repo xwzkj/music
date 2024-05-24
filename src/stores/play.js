@@ -4,7 +4,7 @@ import { ref, computed } from 'vue'
 
 export const usePlayStore = defineStore('play', () => {
     // 播放器 类型为 HTMLAudioElement
-    let player = ref(null)
+    let player = ref(new Audio());
     // 当前播放歌曲信息 lrc
     let lyric = ref([{}])
     let paused = ref(true)
@@ -17,6 +17,37 @@ export const usePlayStore = defineStore('play', () => {
     if ("mediaSession" in navigator) {
         navigator.mediaSession.setActionHandler("previoustrack", prev);
         navigator.mediaSession.setActionHandler("nexttrack", next);
+        navigator.mediaSession.setActionHandler("seekto", (detail) => {
+            updateMedaiSession();
+            player.value.fastSeek(detail.seekTime);
+            updateMedaiSession();
+        });
+        player.value.addEventListener('timeupdate',updateMedaiSession);
+    }
+
+    player.value.addEventListener('play', () => { paused.value = false })
+    player.value.addEventListener('pause', () => { paused.value = true })
+    player.value.addEventListener('ended', () => { paused.value = true })
+    function updateMedaiSession() {
+        // 同步媒体会话的播放位置
+        let conf = {
+            duration: player.value.duration,
+            playbackRate: player.value.playbackRate,
+            position: player.value.currentTime
+        }
+        console.log(conf);
+        navigator.mediaSession.setPositionState(conf);
+    }
+    function musicChanged() {
+        let value = currentMusic.value
+        player.value.src = value.url//将audio元素的源地址设置为这首歌
+        parseLyric(value.id)//解析这首歌的歌词
+
+        //保存当前播放的音乐索引
+        let storage = JSON.parse(localStorage.getItem('playlist'))
+        storage.current = playlistIndex.value
+        localStorage.setItem('playlist', JSON.stringify(storage))
+
     }
     async function parseLyric(id) {
         let apiResult = await api.lyricNew(id)
@@ -61,7 +92,7 @@ export const usePlayStore = defineStore('play', () => {
     async function playlistInit(ids) {
         playlistIndex.value = 0;
         pause()
-        playWhenItCan(false)
+
         let storage = { current: playlistIndex.value, ids: ids }
         if (ids != undefined) {
             localStorage.setItem('playlist', JSON.stringify(storage))
@@ -116,56 +147,56 @@ export const usePlayStore = defineStore('play', () => {
         await parseLyric(playlistIds.value[playlistIndex.value])
 
     }
-    function start() {
-        play()
-        playWhenItCan(true)
-    }
     function stop() {
+        player.value.src = ''
         pause()
-        playWhenItCan(false)
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.playbackState = 'none';
+        }
     }
     function pause() {
         player.value.pause();
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.playbackState = 'paused';
+        }
     }
-    function play() {
+    function play(isNew = false) {
         player.value.play();
+        if (isNew) {
+            player.value.currentTime = 0;
+        }
         if ("mediaSession" in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: currentMusic.value.name,
                 artist: currentMusic.value.artist,
                 artwork: [{ src: currentMusic.value.picurl }]
             })
-        }
-    }
-    function playWhenItCan(yes) {
-        console.log(`[playStore]playWhenItCan`, yes);
-        if (yes === true) {
-            // 添加事件监听器，等待音频可以播放
-            player.value.addEventListener('canplaythrough', play);
-        } else {
-            player.value.removeEventListener('canplaythrough', play);
+            navigator.mediaSession.playbackState = 'playing';
         }
     }
     function next() {
         pause()
         console.log(`[playStore]next`);
-        playWhenItCan(true)
         if (playlistIndex.value < playlistIds.value.length - 1) {
             playlistIndex.value++;
         } else {
             playlistIndex.value = 0;
         }
+        musicChanged();
+        play(true);
     }
     function prev() {
         pause()
         console.log(`[playStore]prev`);
-        playWhenItCan(true)
         if (playlistIndex.value > 0) {
             playlistIndex.value--;
         } else {
             playlistIndex.value = playlistIds.value.length - 1;
         }
+        musicChanged();
+        play(true);
     }
+
 
 
     /**
@@ -207,13 +238,12 @@ export const usePlayStore = defineStore('play', () => {
         paused,
         parseLyric,
         playlistInit,
-        start,
         stop,
-        playWhenItCan,
         play,
         pause,
         next,
         prev,
+        musicChanged,
     }
 
 })
