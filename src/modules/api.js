@@ -21,10 +21,12 @@ let musicApi = axios.create({
 export async function request(params) {
     try {
         params.url += '?timestamp=' + Date.now();
-        if (params.method == 'post') {
-            params.data = { ...params.data, cookie: localStorage.getItem('cookie') }
-        } else if (params.method == 'get') {
-            params.params = { ...params.data, cookie: localStorage.getItem('cookie') }
+        if (localStorage.getItem('cookie') != null) {
+            if (params.method == 'post') {
+                params.data = { ...params.data, cookie: localStorage.getItem('cookie') }
+            } else if (params.method == 'get') {
+                params.params = { ...params.data, cookie: localStorage.getItem('cookie') }
+            }
         }
         let req = await musicApi.request(params);
         return req;
