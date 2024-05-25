@@ -61,11 +61,11 @@ export const usePlayStore = defineStore('play', () => {
                 } else {
                     navigator.mediaSession.playbackState = "paused";
                 }
-                ElMessage({
-                    message: JSON.stringify(conf) + navigator.mediaSession.playbackState,
-                    type: "success",
-                    duration: 10000,
-                })
+                // ElMessage({
+                //     message: JSON.stringify(conf) + navigator.mediaSession.playbackState,
+                //     type: "success",
+                //     duration: 10000,
+                // })
             }
 
             music.value.paused = player.value.paused
