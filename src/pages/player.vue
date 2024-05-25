@@ -1,22 +1,12 @@
 <script setup lang="js" name="player">
-// import HugeiconsAtom02 from '~icons/hugeicons/atom-02';
-import { onMounted, onBeforeUnmount, ref, watch, computed } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
 let playStore = usePlayStore();
-let { playlist, playlistIndex, lyric, currentMusic } = storeToRefs(playStore);
-
-let audio = playStore.player;
-let music = ref({
-  audio: {
-    duration: 0,
-    paused: true
-  }
-})
+let {lyric, currentMusic} = storeToRefs(playStore);//这样要.value
 
 let lyricActive = ref();
-let progress = ref(0);
 let background = ref('');
 let id_clock1 = NaN;
 //挂载
@@ -25,31 +15,23 @@ onMounted(async () => {
   watch(lyricActive, (value) => {
     document.getElementById('container-lyric').scrollTo({ top: document.getElementById('lrc-' + value).offsetTop - 200, behavior: 'smooth' });
   })
-
+  //更新当前歌词
   id_clock1 = setInterval(() => {
     try {
-      //进度条
-      if (isNaN(audio.duration) == true) {
-        music.value.audio.duration = 100;
-      } else {
-        music.value.audio.duration = audio.duration;
-
-        music.value.audio.paused = audio.paused;
-        progress.value = audio.currentTime;
+      if (playStore.music.paused == false) {
         //歌词滚动
         for (let i = 0; i < playStore.lyric.length; i++) {
           let next = false;
           if (i == playStore.lyric.length - 1) {
             next = true;
-          } else if (playStore.lyric[i + 1].time > audio.currentTime * 1000) {
+          } else if (playStore.lyric[i + 1].time > playStore.music.currentTime * 1000) {
             next = true;
           }
-          if (playStore.lyric[i].time <= audio.currentTime * 1000 && next == true) {
+          if (playStore.lyric[i].time <= playStore.music.currentTime * 1000 && next == true) {
             lyricActive.value = i;
             break;
           }
         }
-
       }
     } catch (e) {
       api.error(`出错了！\n位置:player.vue onMounted setInterval\n错误信息:${e}`)
@@ -62,26 +44,10 @@ onBeforeUnmount(() => {
 })
 
 
-
-
-
-
-//设置audio元素的播放进度
-function setAudioProgress(value) {
-  audio.currentTime = value;
-  audio.play();
-}
 //获取图片主色
 function getImgMainColor() {
   let color = api.getColorsFromImg(document.getElementById('music-img'), 2);
   background.value = `linear-gradient(${color[0]}, ${color[1]})`;
-}
-function callBack_pause(value) {
-  if (value == true) {
-    playStore.play();
-  } else {
-    playStore.pause();
-  }
 }
 </script>
 
@@ -99,7 +65,8 @@ function callBack_pause(value) {
           <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img" @load="getImgMainColor"
             crossorigin="anonymous">
           <div id="music-progress">
-            <el-slider v-model="progress" :max="music.audio.duration" :show-tooltip="false" @input="setAudioProgress" />
+            <el-slider v-model="playStore.music.currentTime" :max="playStore.music.duration" :show-tooltip="false"
+              @input="(value) => playStore.seek(value)" />
           </div>
           <div id="btn-control">
             <div id="btn-like">
@@ -110,10 +77,9 @@ function callBack_pause(value) {
                 <el-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></el-icon>
               </div>
               <div id="btn-pause">
-                <el-icon size="3.5rem" class="icon" v-if="playStore.paused"
-                  @click="callBack_pause(true)"><i-hugeicons-play /></el-icon>
-                <el-icon size="3.5rem" class="icon" v-if="!playStore.paused"
-                  @click="callBack_pause(false)"><i-hugeicons-pause /></el-icon>
+                <el-icon size="3.5rem" class="icon" v-if="playStore.music.paused" @click="()=>playStore.play()"><i-hugeicons-play /></el-icon>
+                <el-icon size="3.5rem" class="icon" v-if="!playStore.music.paused"
+                  @click="()=>playStore.pause()"><i-hugeicons-pause /></el-icon>
               </div>
               <div id="btn-next">
                 <el-icon size="3.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></el-icon>

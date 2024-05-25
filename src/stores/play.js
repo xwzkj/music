@@ -3,46 +3,94 @@ import * as api from '@/modules/api'
 import { ref, computed } from 'vue'
 
 export const usePlayStore = defineStore('play', () => {
-    // 播放器 类型为 HTMLAudioElement
+    /**
+     * @typedef {Object} AudioElementWithValue
+     * @property {HTMLAudioElement} value - 包含的HTMLAudioElement实例
+     */
+
+    /**
+     * @type {AudioElementWithValue}
+     */
     let player = ref(new Audio());
     // 当前播放歌曲信息 lrc
     let lyric = ref([{}])
-    let paused = ref(true)
     let currentMusic = computed(() => { return playlist.value[playlistIndex.value] })
+    let music = ref({ duration: 0, currentTime: 0, paused: true })
     // 播放列表
     let playlistIds = ref([])
     let playlist = ref([{}])
     // 播放列表索引
     let playlistIndex = ref(0)
+
+
+    //设置媒体会话的动作
     if ("mediaSession" in navigator) {
-        navigator.mediaSession.setActionHandler("previoustrack", prev);
-        navigator.mediaSession.setActionHandler("nexttrack", next);
-        navigator.mediaSession.setActionHandler("seekto", (detail) => {
-            updateMedaiSession();
-            player.value.fastSeek(detail.seekTime);
-            updateMedaiSession();
+        navigator.mediaSession.setActionHandler("previoustrack", () => prev());
+        navigator.mediaSession.setActionHandler("nexttrack", () => next());
+        navigator.mediaSession.setActionHandler("play", () => play());
+        navigator.mediaSession.setActionHandler("pause", () => pause());
+        navigator.mediaSession.setActionHandler("seekto", (conf) => {
+            seek(conf.seekTime)
         });
-        player.value.addEventListener('timeupdate',updateMedaiSession);
+    }
+    //添加监听事件 用来更新播放进度状态
+    player.value.addEventListener('timeupdate', () => { updateProgress() })
+    //添加监听事件 用来更新播放进度状态
+    let eventsNeedUpdate = ['play', 'pause', 'ended', 'playing', 'waiting', 'ratechange', 'durationchange']
+    for (let i = 0; i < eventsNeedUpdate.length; i++) {
+        player.value.addEventListener(eventsNeedUpdate[i], () => { updateProgress(ture) })
     }
 
-    player.value.addEventListener('play', () => { paused.value = false })
-    player.value.addEventListener('pause', () => { paused.value = true })
-    player.value.addEventListener('ended', () => { paused.value = true })
-    function updateMedaiSession() {
-        // 同步媒体会话的播放位置
-        let conf = {
-            duration: player.value.duration,
-            playbackRate: player.value.playbackRate,
-            position: player.value.currentTime
+    //播放结束后自动下一曲
+    player.value.addEventListener('ended', () => { next() })
+    /**  同步播放进度状态
+     * @param {boolean} updateSession - 是否更新媒体会话
+     * @param {Object} conf - 仅参数一为true生效 媒体会话的配置对象
+    */
+    function updateProgress(updateSession = false, conf = { duration: null, playbackRate: null, position: null }) {
+        try {
+            if ("mediaSession" in navigator && updateSession) {
+                conf.duration = Math.ceil(conf.duration || player.value.duration || 100)
+                conf.playbackRate = conf.playbackRate || player.value.playbackRate || 1
+                conf.position = Math.ceil(conf.position || player.value.currentTime || 0)
+                if (!(isNaN(conf.duration) || isNaN(conf.position) || isNaN(conf.playbackRate))) {
+                    navigator.mediaSession.setPositionState(conf);
+                }
+                if (player.value.paused === true || player.value.paused === false) {
+                    navigator.mediaSession.playbackState = player.value.paused ? "paused" : "playing";
+                } else {
+                    navigator.mediaSession.playbackState = "paused";
+                }
+                ElMessage({
+                    message: JSON.stringify(conf) + navigator.mediaSession.playbackState,
+                    type: "success",
+                    duration: 10000,
+                })
+            }
+
+            music.value.paused = player.value.paused
+            music.value.duration = player.value.duration
+            music.value.currentTime = player.value.currentTime
+        } catch (e) {
+            api.error('playstore出错 updateProgress' + JSON.stringify(e))
         }
-        console.log(conf);
-        navigator.mediaSession.setPositionState(conf);
+
     }
+
+    //切歌后操作
     function musicChanged() {
         let value = currentMusic.value
         player.value.src = value.url//将audio元素的源地址设置为这首歌
         parseLyric(value.id)//解析这首歌的歌词
-
+        if ("mediaSession" in navigator) {//更新session信息
+            navigator.mediaSession.metadata = null
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: currentMusic.value.name,
+                artist: currentMusic.value.artist,
+                artwork: [{ src: currentMusic.value.picurl }]
+            })
+        }
+        updateProgress(true, { position: 0, duration: player.value.duration });
         //保存当前播放的音乐索引
         let storage = JSON.parse(localStorage.getItem('playlist'))
         storage.current = playlistIndex.value
@@ -142,7 +190,7 @@ export const usePlayStore = defineStore('play', () => {
             }
 
         }
-
+        musicChanged();//向session更新元数据    
         //解析当前音频的歌词
         await parseLyric(playlistIds.value[playlistIndex.value])
 
@@ -150,29 +198,18 @@ export const usePlayStore = defineStore('play', () => {
     function stop() {
         player.value.src = ''
         pause()
-        if ("mediaSession" in navigator) {
-            navigator.mediaSession.playbackState = 'none';
-        }
     }
     function pause() {
         player.value.pause();
-        if ("mediaSession" in navigator) {
-            navigator.mediaSession.playbackState = 'paused';
-        }
+        updateProgress(true);
     }
     function play(isNew = false) {
-        player.value.play();
         if (isNew) {
             player.value.currentTime = 0;
+            musicChanged();
         }
-        if ("mediaSession" in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: currentMusic.value.name,
-                artist: currentMusic.value.artist,
-                artwork: [{ src: currentMusic.value.picurl }]
-            })
-            navigator.mediaSession.playbackState = 'playing';
-        }
+        player.value.play();
+        updateProgress(true);
     }
     function next() {
         pause()
@@ -182,7 +219,6 @@ export const usePlayStore = defineStore('play', () => {
         } else {
             playlistIndex.value = 0;
         }
-        musicChanged();
         play(true);
     }
     function prev() {
@@ -193,8 +229,11 @@ export const usePlayStore = defineStore('play', () => {
         } else {
             playlistIndex.value = playlistIds.value.length - 1;
         }
-        musicChanged();
         play(true);
+    }
+    function seek(time) {
+        player.value.currentTime = time;
+        updateProgress(true, { position: time, duration: player.value.duration });
     }
 
 
@@ -235,7 +274,7 @@ export const usePlayStore = defineStore('play', () => {
         playlist,
         playlistIds,
         playlistIndex,
-        paused,
+        music,
         parseLyric,
         playlistInit,
         stop,
@@ -243,6 +282,7 @@ export const usePlayStore = defineStore('play', () => {
         pause,
         next,
         prev,
+        seek,
         musicChanged,
     }
 

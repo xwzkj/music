@@ -8,7 +8,6 @@ let userStore = useUserStore();
 let playStore = usePlayStore();
 let { currentMusic } = storeToRefs(playStore)
 userStore.updateByStorage();
-let audio = ref(null);
 
 //更新用户信息
 if (userStore.isLogin === true && Date.now() - userStore.updateTime > 1000 * 60 * 3) {//三分钟
