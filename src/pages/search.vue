@@ -1,9 +1,6 @@
 <template>
-    <div>
+    <div v-loading="!result">
         <musicList v-if="result" :value="result" :nameOnClick="play" />
-        <div v-if="!result" class='loading-center'>
-            <n-spin size="large" />
-        </div>
     </div>
 
 
@@ -12,7 +9,6 @@
 import * as api from '@/modules/api.js'
 import { useRouter } from 'vue-router'
 import { ref, onMounted, watch } from 'vue'
-import { NSpin } from 'naive-ui'
 import musicList from '@/components/musicList.vue'
 let router = useRouter();
 let props = defineProps(['keyword']);

@@ -53,7 +53,7 @@
 <script setup name="musicList">
 import { ref, computed } from 'vue';
 import * as api from '@/modules/api';
-import { NList, NListItem, NTag, NDivider } from 'naive-ui'
+import { NList, NListItem, NDivider } from 'naive-ui'
 let props = defineProps(['value','nameOnClick']);
 
 let windowWidth = ref(window.innerWidth);
