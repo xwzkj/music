@@ -1,5 +1,8 @@
 import colorThief from '/node_modules/colorthief/dist/color-thief.mjs'
 import axios from 'axios'
+//pinia在request内部初始化 因为userstore和这个模块相互调用
+import pinia from '@/stores/index';
+import { useUserStore } from '@/stores/user';
 
 /*
 *-----------------------------------------------
@@ -7,7 +10,6 @@ import axios from 'axios'
 *-----------------------------------------------
 */
 export let apiurl = '/api'
-axios.defaults.withCredentials = true;
 let musicApi = axios.create({
     baseURL: apiurl,
     timeout: 20000,
@@ -20,14 +22,15 @@ let musicApi = axios.create({
  */
 export async function request(params) {
     try {
+        const userStore = useUserStore(pinia);
         //加时间戳避免缓存
-        params.url += `?timestamp=${Date.now()}&realIP=${JSON.parse(localStorage.getItem('user')).ip}`;
+        params.url += `?timestamp=${Date.now()}&realIP=${userStore.ip}`;
         //判断如果跨域就尝试手动传递cookie
         if (localStorage.getItem('cookie') != null && apiurl.slice(0, 4) == 'http') {
             if (params.method == 'post') {
-                params.data = { ...params.data, cookie: localStorage.getItem('cookie') }
+                params.data = { ...params.data, cookie: userStore.cookie }
             } else if (params.method == 'get') {
-                params.params = { ...params.data, cookie: localStorage.getItem('cookie') }
+                params.params = { ...params.data, cookie: userStore.cookie }
             }
         }
         let req = await musicApi.request(params);
@@ -191,7 +194,7 @@ export async function getMyIp() {
             console.log(`获取ip成功：${ip}`);
             return ip;
         } catch (e) {
-            console.log(`获取ip时网络错误`,i,e);
+            console.log(`获取ip时网络错误`, i, e);
         }
     }
 }

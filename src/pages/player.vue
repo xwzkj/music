@@ -175,21 +175,23 @@ function getImgMainColor() {
   justify-content: center;
   min-width: 300px;
 
-  #music-name {
-    font-size: 2rem;
-  }
 
-  #btn-control {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
+}
 
-    #btn-play-control {
-      display: flex;
-    }
-  }
+#music-name {
+  font-size: 2rem;
+}
+
+#btn-control {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#btn-play-control {
+  display: flex;
 }
 
 #column-lyric {
