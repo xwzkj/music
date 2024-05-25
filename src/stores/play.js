@@ -49,23 +49,34 @@ export const usePlayStore = defineStore('play', () => {
     */
     function updateProgress(updateSession = false, conf = { duration: null, playbackRate: null, position: null }) {
         try {
-            if ("mediaSession" in navigator && updateSession) {
-                conf.duration = Math.ceil(conf.duration || player.value.duration || 100)
+            if ("mediaSession" in navigator) {
+                conf.duration = conf.duration || player.value.duration || 114.5141919
                 conf.playbackRate = conf.playbackRate || player.value.playbackRate || 1
-                conf.position = Math.ceil(conf.position || player.value.currentTime || 0)
-                if (!(isNaN(conf.duration) || isNaN(conf.position) || isNaN(conf.playbackRate))) {
-                    navigator.mediaSession.setPositionState(conf);
+                conf.position = conf.position || player.value.currentTime || 0
+
+                if (updateSession) {
+                    if (conf.duration == 114.5141919){//这么臭的数 想必正常情况不会出现吧（智将
+                        setTimeout(() => {//如果为114.5141919，则说明没有获取到duration，则延迟2秒再获取一次
+                            updateProgress(true);
+                        }, 2000);
+                    }
+                    //设置播放位置信息
+                    if (!(isNaN(conf.duration) || isNaN(conf.position) || isNaN(conf.playbackRate))) {
+                        navigator.mediaSession.setPositionState(conf);
+                    }
+                    //设置播放状态
+                    if (player.value.paused === true || player.value.paused === false) {
+                        navigator.mediaSession.playbackState = player.value.paused ? "paused" : "playing";
+                    } else {
+                        navigator.mediaSession.playbackState = "paused";
+                    }
+                    // ElMessage({
+                    //     message: JSON.stringify(conf) + navigator.mediaSession.playbackState,
+                    //     type: "success",
+                    //     duration: 10000,
+                    // })
                 }
-                if (player.value.paused === true || player.value.paused === false) {
-                    navigator.mediaSession.playbackState = player.value.paused ? "paused" : "playing";
-                } else {
-                    navigator.mediaSession.playbackState = "paused";
-                }
-                // ElMessage({
-                //     message: JSON.stringify(conf) + navigator.mediaSession.playbackState,
-                //     type: "success",
-                //     duration: 10000,
-                // })
+
             }
 
             music.value.paused = player.value.paused
