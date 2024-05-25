@@ -20,8 +20,10 @@ let musicApi = axios.create({
  */
 export async function request(params) {
     try {
-        params.url += '?timestamp=' + Date.now();
-        if (localStorage.getItem('cookie') != null) {
+        //加时间戳避免缓存
+        params.url += `?timestamp=${Date.now()}&realIP=${JSON.parse(localStorage.getItem('user')).ip}`;
+        //判断如果跨域就尝试手动传递cookie
+        if (localStorage.getItem('cookie') != null && apiurl.slice(0, 4) == 'http') {
             if (params.method == 'post') {
                 params.data = { ...params.data, cookie: localStorage.getItem('cookie') }
             } else if (params.method == 'get') {
@@ -180,6 +182,40 @@ export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter 
 *以下是一些工具函数
 *-----------------------------------------------
 */
+
+export async function getMyIp() {
+    console.log('[api]获取我的ip');
+    for (let i = 0; i < 4; i++) {
+        try {
+            let ip = await getIp(i);
+            console.log(`获取ip成功：${ip}`);
+            return ip;
+        } catch (e) {
+            console.log(`获取ip时网络错误`,i,e);
+        }
+    }
+}
+async function getIp(apiIndex) {
+    if (apiIndex == 0) {
+        let ip = await axios.get(`${apiurl}/api`)//下面那仨全踏马跨域 自己搭了一个
+        return ip.data;
+    }
+    // if (apiIndex == 0) {
+    //     let ip = await axios.get('https://whois.pconline.com.cn/ipJson.jsp?json=true')
+    //     return ip.data.ip;
+    // }
+    // if (apiIndex == 1) {
+    //     let ip = await axios.get('https://webapi-pc.meitu.com/common/ip_location')
+    //     return Object.keys(ip.data.data)[0]
+    // }
+    // if (apiIndex == 2) {
+    //     let ip = await axios.get('https://api.ipify.org')
+    //     return ip.data;
+    // }
+    if (apiIndex >= 1) {
+        return `114.114.${random(0, 255)}.${random(0, 255)}`
+    }
+}
 /**
  * @param {string} message 
  */
@@ -209,6 +245,9 @@ export function msToText(ms) {
 export function parseArtist(arObj) {
     let ar = arObj.map(item => item.name);
     return ar.join('、');
+}
+export function random(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 export const areaData = {
     "province": {

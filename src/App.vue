@@ -6,7 +6,6 @@ import { usePlayStore } from '@/stores/play'
 import * as api from '@/modules/api'
 let userStore = useUserStore();
 let playStore = usePlayStore();
-let { currentMusic } = storeToRefs(playStore)
 userStore.updateByStorage();
 
 //更新用户信息

@@ -38,7 +38,7 @@ export const usePlayStore = defineStore('play', () => {
     //添加监听事件 用来更新播放进度状态
     let eventsNeedUpdate = ['play', 'pause', 'ended', 'playing', 'waiting', 'ratechange', 'durationchange']
     for (let i = 0; i < eventsNeedUpdate.length; i++) {
-        player.value.addEventListener(eventsNeedUpdate[i], () => { updateProgress(ture) })
+        player.value.addEventListener(eventsNeedUpdate[i], () => { updateProgress(true) })
     }
 
     //播放结束后自动下一曲
@@ -93,7 +93,7 @@ export const usePlayStore = defineStore('play', () => {
         let value = currentMusic.value
         player.value.src = value.url//将audio元素的源地址设置为这首歌
         parseLyric(value.id)//解析这首歌的歌词
-        if ("mediaSession" in navigator) {//更新session信息
+        if ("mediaSession" in navigator) {//更新session元数据信息
             navigator.mediaSession.metadata = null
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: currentMusic.value.name,
@@ -102,9 +102,8 @@ export const usePlayStore = defineStore('play', () => {
             })
         }
         updateProgress(true, { position: 0, duration: player.value.duration });
-        //保存当前播放的音乐索引
-        let storage = JSON.parse(localStorage.getItem('playlist'))
-        storage.current = playlistIndex.value
+        //保存当前播放列表
+        let storage = {current: playlistIndex.value,ids: playlistIds.value}
         localStorage.setItem('playlist', JSON.stringify(storage))
 
     }

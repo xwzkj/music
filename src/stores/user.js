@@ -13,6 +13,7 @@ export const useUserStore = defineStore('user', {
         city: '',
         cookie: '',
         uid: '',
+        ip: '',
         playlists: [],
         likedSongs: [],
         updateTime: '',
@@ -22,7 +23,7 @@ export const useUserStore = defineStore('user', {
             let match = document.cookie.match(`MUSIC_U=[^;]+`)
             if (cookie == undefined && match != null) {
                 cookie = document.cookie.match(`MUSIC_U=[^;]+`)[0]
-            }else if(cookie == undefined){
+            } else if (cookie == undefined) {
                 console.log('没有cookie更新个毛的用户信息啊');
                 return;
             }
@@ -60,9 +61,12 @@ export const useUserStore = defineStore('user', {
             })
             console.log('pinia updatedByCookie');
         },
-        updateByStorage() {
+        async updateByStorage() {
             let user = JSON.parse(localStorage.getItem('user'))
             this.updateByObj(user)
+            if (this.ip == ''){
+                this.ip = await api.getMyIp()
+            }
             console.log('pinia updatedByStorage');
         },
         updateByObj(obj) {

@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
 let playStore = usePlayStore();
-let {lyric, currentMusic} = storeToRefs(playStore);//这样要.value
+let { lyric, currentMusic } = storeToRefs(playStore);//这样要.value
 
 let lyricActive = ref();
 let background = ref('');
@@ -77,9 +77,10 @@ function getImgMainColor() {
                 <el-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></el-icon>
               </div>
               <div id="btn-pause">
-                <el-icon size="3.5rem" class="icon" v-if="playStore.music.paused" @click="()=>playStore.play()"><i-hugeicons-play /></el-icon>
+                <el-icon size="3.5rem" class="icon" v-if="playStore.music.paused"
+                  @click="() => playStore.play()"><i-hugeicons-play /></el-icon>
                 <el-icon size="3.5rem" class="icon" v-if="!playStore.music.paused"
-                  @click="()=>playStore.pause()"><i-hugeicons-pause /></el-icon>
+                  @click="() => playStore.pause()"><i-hugeicons-pause /></el-icon>
               </div>
               <div id="btn-next">
                 <el-icon size="3.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></el-icon>
@@ -181,6 +182,7 @@ function getImgMainColor() {
   #btn-control {
     width: 100%;
     display: flex;
+    flex-direction: row;
     justify-content: space-around;
     align-items: center;
 
