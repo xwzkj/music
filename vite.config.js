@@ -4,6 +4,7 @@ import path from 'path'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 const INVALID_CHAR_REGEX = /[\u0000-\u001F"#$&*+,:;<=>?[\]^`{|}\u007F]/g
@@ -14,7 +15,16 @@ export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      imports: ['vue'],
+      imports: ['vue',
+        {
+          'naive-ui': [
+            'useDialog',
+            'useMessage',
+            'useNotification',
+            'useLoadingBar'
+          ]
+        }
+      ],
       resolvers: [
         ElementPlusResolver(),
       ],
@@ -26,6 +36,7 @@ export default defineConfig({
           enabledCollections: ['ep', 'hugeicons'],
         }),
         ElementPlusResolver(),
+        NaiveUiResolver(),
       ],
     }),
 

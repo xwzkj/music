@@ -249,6 +249,16 @@ export function parseArtist(arObj) {
     let ar = arObj.map(item => item.name);
     return ar.join('、');
 }
+/**把简单数组用、连起来 会判断是否为数组 不是的话会返回空文本
+ * @param {Array} array
+ */
+export function parseArray(array) {
+    if(Array.isArray(array)==true){
+        return array.join('、');
+    }else{
+        return '';
+    }
+}
 export function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }

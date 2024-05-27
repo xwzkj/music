@@ -43,7 +43,7 @@ export const usePlayStore = defineStore('play', () => {
 
     //播放结束后自动下一曲
     player.value.addEventListener('ended', () => { next() })
-    /**  同步播放进度状态
+    /**  同步播放进度状态 是回调函数
      * @param {boolean} updateSession - 是否更新媒体会话
      * @param {Object} conf - 仅参数一为true生效 媒体会话的配置对象
     */
@@ -88,7 +88,7 @@ export const usePlayStore = defineStore('play', () => {
 
     }
 
-    //切歌后操作
+    //切歌后操作 需要手动调用
     function musicChanged() {
         let value = currentMusic.value
         player.value.src = value.url//将audio元素的源地址设置为这首歌
@@ -107,6 +107,7 @@ export const usePlayStore = defineStore('play', () => {
         localStorage.setItem('playlist', JSON.stringify(storage))
 
     }
+    //解析某一个音乐的歌词
     async function parseLyric(id) {
         let apiResult = await api.lyricNew(id)
         apiResult = apiResult.data;
@@ -147,6 +148,7 @@ export const usePlayStore = defineStore('play', () => {
         }
 
     }
+    //播放列表初始化
     async function playlistInit(ids) {
         playlistIndex.value = 0;
         pause()
@@ -196,6 +198,8 @@ export const usePlayStore = defineStore('play', () => {
                     playlist.value[j].name = res[i].name
                     playlist.value[j].artist = res[i].ar.map(item => item.name).join('、')
                     playlist.value[j].picurl = res[i].al.picUrl
+                    playlist.value[j].tns = api.parseArray(res[i].tns)
+                    playlist.value[j].fee = res[i].fee
                 }
             }
 
@@ -213,6 +217,7 @@ export const usePlayStore = defineStore('play', () => {
         player.value.pause();
         updateProgress(true);
     }
+    //开始/继续播放 从头播放需要传入true 调用前需要设置好audio的src
     function play(isNew = false) {
         if (isNew) {
             player.value.currentTime = 0;

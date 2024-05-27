@@ -22,13 +22,15 @@
 
             <n-list-item v-for="item in props.value" :key="item.id">
                 <div class="result-li">
-                    <img class="result-img result" :src="item.al.picUrl + '?param=80y80'" :alt="item.al.name" />
-                    <span class="result-name result">
-                        <span @click="props.nameOnClick(item.id)">{{ item.name
-                            }}</span>
+                    <img class="result-img result" :src="item.al.picUrl + '?param=40y40'" :alt="item.al.name" />
+                    <span class="result-name result" @click="props.nameOnClick(item.id)">
+                        <span>{{ item.name }}</span>
                         <el-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</el-tag>
                         <el-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</el-tag>
 
+                        <div>
+                            <span style="color: #b3b3b3;">{{ api.parseArray(item.tns) }}</span>
+                        </div>
                     </span>
                     <span class="result-ar result">
                         <n-divider vertical class="divider-vertical" />
@@ -54,7 +56,7 @@
 import { ref, computed } from 'vue';
 import * as api from '@/modules/api';
 import { NList, NListItem, NDivider } from 'naive-ui'
-let props = defineProps(['value','nameOnClick']);
+let props = defineProps(['value', 'nameOnClick']);
 
 let windowWidth = ref(window.innerWidth);
 window.addEventListener('resize', () => {
@@ -87,7 +89,8 @@ let screenIsWide = computed(() => {
 .result-img {
     width: 2rem;
     border-radius: 0.5rem;
-    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.2);
+    margin-right: 1rem;
 }
 
 .result-al {
@@ -98,12 +101,12 @@ let screenIsWide = computed(() => {
     flex: 10%;
 }
 
-.result {
+/* .result {
     margin: 0.2rem;
     display: flex;
     font-size: 1rem;
 
-}
+} */
 
 .divider-vertical {
     height: 1.5rem;

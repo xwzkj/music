@@ -3,12 +3,14 @@ import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
+import playinglist from '@/components/playinglist.vue'
+
 let playStore = usePlayStore();
 let { lyric, currentMusic } = storeToRefs(playStore);//这样要.value
-
-let lyricActive = ref();
-let background = ref('');
-let id_clock1 = NaN;
+let showPlayingList = ref(false);//是否展示播放列表
+let lyricActive = ref();//当前的歌词序号
+let background = ref('');//背景渐变色数据
+let id_clock1 = NaN;//定时器id
 //挂载
 onMounted(async () => {
   //监听歌词滚动
@@ -62,37 +64,55 @@ function getImgMainColor() {
         <div id="music-name">{{ currentMusic.name }}</div>
         <div id="music-artist">{{ currentMusic.artist }}</div>
         <div id="player-centerblock">
-          <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img" @load="getImgMainColor"
-            crossorigin="anonymous">
+          <div id="music-img-container">
+            <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img" @load="getImgMainColor"
+              crossorigin="anonymous">
+          </div>
+          <!-- 进度条 -->
           <div id="music-progress">
             <el-slider v-model="playStore.music.currentTime" :max="playStore.music.duration" :show-tooltip="false"
               @input="(value) => playStore.seek(value)" />
           </div>
+          <!-- 播放控制按钮 -->
           <div id="btn-control">
-            <div id="btn-like">
+            <div id="btn-like" class="button">
               <el-icon size="3.5rem" class="icon"><i-hugeicons-favourite-square /></el-icon>
             </div>
             <div id="btn-play-control">
-              <div id="btn-prev">
+              <div id="btn-prev" class="button">
                 <el-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></el-icon>
               </div>
-              <div id="btn-pause">
+              <div id="btn-pause" class="button">
                 <el-icon size="3.5rem" class="icon" v-if="playStore.music.paused"
                   @click="() => playStore.play()"><i-hugeicons-play /></el-icon>
                 <el-icon size="3.5rem" class="icon" v-if="!playStore.music.paused"
                   @click="() => playStore.pause()"><i-hugeicons-pause /></el-icon>
               </div>
-              <div id="btn-next">
+              <div id="btn-next" class="button">
                 <el-icon size="3.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></el-icon>
               </div>
             </div>
-            <div id="btn-list">
-              <el-icon size="3.5rem" class="icon"><i-hugeicons-playlist-02 /></el-icon>
+            <div id="btn-list" class="button">
+              <el-icon size="3.5rem" class="icon"
+                @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-02 /></el-icon>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- <el-drawer v-model="showPlayingList" direction="btt" size="70%" :modal="false">
+          <playinglist />
+        </el-drawer> -->
+      <div class="drawer">
+        <n-drawer v-model:show="showPlayingList" placement="bottom" to="#column-player" height="70%"
+          show-mask="transparent">
+          <n-drawer-content :closable="true" :native-scrollbar="false" title="播放列表">
+            <playinglist />
+          </n-drawer-content>
+        </n-drawer>
+      </div>
     </div>
+
     <div class="column" id="column-lyric">
       <div id="container-lyric">
         <ul>
@@ -174,12 +194,15 @@ function getImgMainColor() {
   align-items: center;
   justify-content: center;
   min-width: 300px;
-
-
+  position: relative;
 }
 
 #music-name {
   font-size: 2rem;
+}
+
+.button {
+  cursor: pointer;
 }
 
 #btn-control {
@@ -205,10 +228,16 @@ function getImgMainColor() {
   width: 100%;
   height: 100%;
   overflow-y: scroll;
-  padding: 20%;
+  padding: 10%;
+}
+
+ul {
+  padding: 0;
 }
 
 #container-player {
+  margin-left: 10%;
+  margin-right: 10%;
   width: 80%;
 }
 
@@ -218,11 +247,26 @@ function getImgMainColor() {
   align-items: center;
 }
 
-#music-img {
+#music-img-container {
   margin-top: 1rem;
   margin-bottom: 1rem;
-  width: 80%;
+  position: relative;
   border-radius: 1rem;
+  width: 80%;
+  /* 宽度等于父元素宽度 */
+  height: 0;
+  /* 初始高度为0 */
+  padding-bottom: 80%;
+  /* 高度被撑开为宽度的100% */
+  overflow: hidden;
+  /* 隐藏溢出部分 */
+}
+
+#music-img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 #music-progress {
