@@ -249,15 +249,26 @@ export function parseArtist(arObj) {
     let ar = arObj.map(item => item.name);
     return ar.join('、');
 }
-/**把简单数组用、连起来 会判断是否为数组 不是的话会返回空文本
+/**把简单数组用'、'连起来 会判断是否为数组 不是的话会返回空文本
  * @param {Array} array
  */
 export function parseArray(array) {
-    if(Array.isArray(array)==true){
+    if (Array.isArray(array) == true) {
         return array.join('、');
-    }else{
+    } else {
         return '';
     }
+}
+/**
+ * 把两个包含id属性对象数组合并 按照id对应合并
+ * @param {Array} arr1 
+ * @param {Array} arr2 
+ */
+export function mergeMusicObjArrs(arr1, arr2) {
+    return arr1.map(item => {
+        let obj = arr2.find(item1 => item1.id == item.id)
+        return obj ? { ...item, ...obj } : item
+    })
 }
 export function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);

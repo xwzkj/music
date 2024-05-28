@@ -6,7 +6,7 @@ import { usePlayStore } from '@/stores/play'
 import playinglist from '@/components/playinglist.vue'
 
 let playStore = usePlayStore();
-let { lyric, currentMusic } = storeToRefs(playStore);//这样要.value
+let { currentMusic } = storeToRefs(playStore);//这样要.value
 let showPlayingList = ref(false);//是否展示播放列表
 let lyricActive = ref();//当前的歌词序号
 let background = ref('');//背景渐变色数据
@@ -20,16 +20,16 @@ onMounted(async () => {
   //更新当前歌词
   id_clock1 = setInterval(() => {
     try {
-      if (playStore.music.paused == false) {
+      if (playStore.musicStatus.paused == false && 'lyric' in playStore.currentMusic) {
         //歌词滚动
-        for (let i = 0; i < playStore.lyric.length; i++) {
+        for (let i = 0; i < playStore.currentMusic.lyric.length; i++) {
           let next = false;
-          if (i == playStore.lyric.length - 1) {
+          if (i == playStore.currentMusic.lyric.length - 1) {
             next = true;
-          } else if (playStore.lyric[i + 1].time > playStore.music.currentTime * 1000) {
+          } else if (playStore.currentMusic.lyric[i + 1].time > playStore.musicStatus.currentTime * 1000) {
             next = true;
           }
-          if (playStore.lyric[i].time <= playStore.music.currentTime * 1000 && next == true) {
+          if (playStore.currentMusic.lyric[i].time <= playStore.musicStatus.currentTime * 1000 && next == true) {
             lyricActive.value = i;
             break;
           }
@@ -70,7 +70,7 @@ function getImgMainColor() {
           </div>
           <!-- 进度条 -->
           <div id="music-progress">
-            <el-slider v-model="playStore.music.currentTime" :max="playStore.music.duration" :show-tooltip="false"
+            <el-slider v-model="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration" :show-tooltip="false"
               @input="(value) => playStore.seek(value)" />
           </div>
           <!-- 播放控制按钮 -->
@@ -83,9 +83,9 @@ function getImgMainColor() {
                 <el-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></el-icon>
               </div>
               <div id="btn-pause" class="button">
-                <el-icon size="3.5rem" class="icon" v-if="playStore.music.paused"
+                <el-icon size="3.5rem" class="icon" v-if="playStore.musicStatus.paused"
                   @click="() => playStore.play()"><i-hugeicons-play /></el-icon>
-                <el-icon size="3.5rem" class="icon" v-if="!playStore.music.paused"
+                <el-icon size="3.5rem" class="icon" v-if="!playStore.musicStatus.paused"
                   @click="() => playStore.pause()"><i-hugeicons-pause /></el-icon>
               </div>
               <div id="btn-next" class="button">
@@ -116,7 +116,7 @@ function getImgMainColor() {
     <div class="column" id="column-lyric">
       <div id="container-lyric">
         <ul>
-          <div v-for="(item, index) in lyric" :key="index" :class="{ 'lyric-active': lyricActive == index }">
+          <div v-for="(item, index) in currentMusic.lyric" :key="index" :class="{ 'lyric-active': lyricActive == index }">
             <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
             <li class="lyric-roma">{{ item.roma }}</li>
             <li class="lyric-tran">{{ item.tran }}</li>
