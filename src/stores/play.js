@@ -206,7 +206,6 @@ export const usePlayStore = defineStore('play', () => {
         list = api.mergeMusicObjArrs(list, res);
         //将结果放到播放列表中
         playlist.value.splice(position, 0, ...list)
-        console.log(playlistIds);
         playlistIds.value.splice(position, 0, ...ids)
         if (letIndexIsNew == true) {
             playlistIndex.value = position;
