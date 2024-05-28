@@ -17,7 +17,7 @@ export const usePlayStore = defineStore('play', () => {
     // 播放列表
     let playlistIds = ref([])
     //{id,name,artist,tns,url,picurl,?lyric}
-    let playlist = ref([{}])
+    let playlist = ref([])
     // 播放列表索引
     let playlistIndex = ref(0)
 
@@ -47,42 +47,42 @@ export const usePlayStore = defineStore('play', () => {
      * @param {Object} conf - 仅参数一为true生效 媒体会话的配置对象
     */
     function updateProgress(updateSession = false, conf = { duration: NaN, playbackRate: NaN, position: NaN }) {
-            if ("mediaSession" in navigator) {
-                //conf是媒体会话的配置对象 这里只是配置 下面才会应用
-                conf.duration = conf.duration || player.value.duration
-                if(!conf.duration){
-                    conf.duration = 114.5141919
+        if ("mediaSession" in navigator) {
+            //conf是媒体会话的配置对象 这里只是配置 下面才会应用
+            conf.duration = conf.duration || player.value.duration
+            if (!conf.duration) {
+                conf.duration = 114.5141919
+            }
+            conf.playbackRate = conf.playbackRate || player.value.playbackRate || 1
+            conf.position = conf.position || player.value.currentTime || 0
+            if (updateSession) {
+                if (conf.duration == 114.5141919) {//这么臭的数 想必正常情况不会出现吧（智将
+                    setTimeout(() => {//如果为114.5141919，则说明没有获取到duration，则延迟2秒再获取一次
+                        updateProgress(true);
+                    }, 2000);
                 }
-                conf.playbackRate = conf.playbackRate || player.value.playbackRate || 1
-                conf.position = conf.position || player.value.currentTime || 0
-                if (updateSession) {
-                    if (conf.duration == 114.5141919) {//这么臭的数 想必正常情况不会出现吧（智将
-                        setTimeout(() => {//如果为114.5141919，则说明没有获取到duration，则延迟2秒再获取一次
-                            updateProgress(true);
-                        }, 2000);
-                    }
-                    //把配置对象传给媒体会话
-                    if (!(isNaN(conf.duration) || isNaN(conf.position) || isNaN(conf.playbackRate))) {
-                        navigator.mediaSession.setPositionState(conf);
-                    }
-                    //设置播放状态 是否暂停
-                    if (player.value.paused === true || player.value.paused === false) {
-                        navigator.mediaSession.playbackState = player.value.paused ? "paused" : "playing";
-                    } else {
-                        navigator.mediaSession.playbackState = "paused";
-                    }
-                    // ElMessage({
-                    //     message: JSON.stringify(conf) + navigator.mediaSession.playbackState,
-                    //     type: "success",
-                    //     duration: 10000,
-                    // })
+                //把配置对象传给媒体会话
+                if (!(isNaN(conf.duration) || isNaN(conf.position) || isNaN(conf.playbackRate))) {
+                    navigator.mediaSession.setPositionState(conf);
                 }
-
+                //设置播放状态 是否暂停
+                if (player.value.paused === true || player.value.paused === false) {
+                    navigator.mediaSession.playbackState = player.value.paused ? "paused" : "playing";
+                } else {
+                    navigator.mediaSession.playbackState = "paused";
+                }
+                // ElMessage({
+                //     message: JSON.stringify(conf) + navigator.mediaSession.playbackState,
+                //     type: "success",
+                //     duration: 10000,
+                // })
             }
 
-            musicStatus.value.paused = player.value.paused
-            musicStatus.value.duration = player.value.duration
-            musicStatus.value.currentTime = player.value.currentTime
+        }
+
+        musicStatus.value.paused = player.value.paused
+        musicStatus.value.duration = player.value.duration
+        musicStatus.value.currentTime = player.value.currentTime
 
     }
     //切歌后操作 需要手动调用
@@ -100,13 +100,12 @@ export const usePlayStore = defineStore('play', () => {
         }
         updateProgress(true, { position: 0, duration: player.value.duration });
         //保存当前播放列表
-        let storage = { current: playlistIndex.value, ids: playlistIds.value }
-        localStorage.setItem('playlist', JSON.stringify(storage))
+        save();
 
     }
     //解析歌词
     async function parseLyric() {
-        if(!('lyric' in currentMusic.value)){//如果没有保存的数据才去请求
+        if (!('lyric' in currentMusic.value)) {//如果没有保存的数据才去请求
             let apiResult = await api.lyricNew(currentMusic.value.id)
             apiResult = apiResult.data;
             let lyric = [];
@@ -146,44 +145,49 @@ export const usePlayStore = defineStore('play', () => {
             playlist.value[playlistIndex.value].lyric = lyric;//最终赋值
         }
     }
-    //播放列表初始化，单纯只是初始化
+    //清除列表 使用新的列表替换
     async function playlistInit(ids) {
-        playlistIndex.value = 0;
         stop()
-
-        let storage = {version:1, current: playlistIndex.value, ids: ids }
-        let storageNow = JSON.parse(localStorage.getItem('playlist')||'{}')
-        if (ids != undefined) {//如果有传递参数
-            localStorage.setItem('playlist', JSON.stringify(storage))
-        } else if ('version' in storageNow && storageNow.version == 1) {//如果没传参数
-            storage = JSON.parse(localStorage.getItem('playlist'))
-            ids = storage.ids;
-            playlistIndex.value = storage.current;
-        } else {//没传参数，本地也没存，那我干鸡毛啊
+        let storageNow = JSON.parse(localStorage.getItem('playlist') || '{}')
+        if (ids == undefined && 'version' in storageNow && storageNow.version == 1) {//如果没传参数 使用本地数据
+            ids = storageNow.ids;
+            playlistIndex.value = storageNow.current;
+            playlist.value = storageNow.playlist;
+            playlistIds.value = storageNow.ids;
+            return;
+        } else if (ids == undefined) {//没传参数，本地也没存，那我干鸡毛啊
             console.error('播放列表初始化未提供参数');
             return;
         }
 
-        playlistIds.value = ids;
-        playlist.value = [{}];
-        playlist.value = ids.map((item, index) => {
+        await addMusic(ids, 0);
+        playlistIndex.value = 0;
+        save();//保存到localstorage
+        return;
+    }
+    /**
+     * 添加音乐到播放列表 默认添加到最前面
+     * @param {String} id 
+     * @param {Number} position 
+     */
+    async function addMusic(ids = [], position = 0) {
+        if (ids.length == 0) {//如果没传id
+            return;
+        }
+        let list = {};
+        list = ids.map(item => {
             return {
-                id: item,
-                ...playlist.value[index]
+                id: item
             }
         })
-
-
         //获取urls
         let res = await api.songUrlV1(ids.join(','), 'jymaster');
         res = res.data.data;
-
         //因为返回的数据不按请求的id顺序返回 所以特殊处理
         res = res.map(item => {
             return { id: item.id, url: item.url }
         })
-        playlist.value = api.mergeMusicObjArrs(playlist.value, res);
-
+        list = api.mergeMusicObjArrs(list, res);
         //获取detail
         res = await api.songDetail(ids.join(','));
         res = res.data.songs;
@@ -198,16 +202,19 @@ export const usePlayStore = defineStore('play', () => {
                 fee: item.fee,
             }
         })
-        playlist.value = api.mergeMusicObjArrs(playlist.value, res);
-        return;
+        list = api.mergeMusicObjArrs(list, res);
+        //将结果放到播放列表中
+        playlist.value.splice(position, 0, ...list)
+        console.log(playlistIds);
+        playlistIds.value.splice(position, 0, ...ids)
+        if (position < playlistIndex.value) {
+            playlistIndex.value += position;
+        }
     }
-    /**
-     * 添加音乐到播放列表 默认添加到最前面
-     * @param {String} id 
-     * @param {Number} position 
-     */
-    async function addMusic(id,position=0) {
-
+    function save(){
+        let storage = { version: 1, playlist: playlist.value, current: playlistIndex.value, ids: playlistIds.value, };
+        localStorage.removeItem('playlist');
+        localStorage.setItem('playlist', JSON.stringify(storage));
     }
     function stop() {
         player.value.src = ''
@@ -290,6 +297,7 @@ export const usePlayStore = defineStore('play', () => {
         playlistIndex,
         musicStatus,
         playlistInit,
+        addMusic,
         stop,
         play,
         pause,
