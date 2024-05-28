@@ -169,8 +169,9 @@ export const usePlayStore = defineStore('play', () => {
      * 添加音乐到播放列表 默认添加到最前面
      * @param {String} id 
      * @param {Number} position 
+     * @param {Boolean} letIndexIsNew 是否让index指向新添加的音乐的第一个
      */
-    async function addMusic(ids = [], position = 0) {
+    async function addMusic(ids = [], position = 0, letIndexIsNew = false) {
         if (ids.length == 0) {//如果没传id
             return;
         }
@@ -207,11 +208,15 @@ export const usePlayStore = defineStore('play', () => {
         playlist.value.splice(position, 0, ...list)
         console.log(playlistIds);
         playlistIds.value.splice(position, 0, ...ids)
-        if (position < playlistIndex.value) {
-            playlistIndex.value += position;
+        if (letIndexIsNew == true) {
+            playlistIndex.value = position;
+        } else {
+            if (position < playlistIndex.value) {
+                playlistIndex.value += position;
+            }
         }
     }
-    function save(){
+    function save() {
         let storage = { version: 1, playlist: playlist.value, current: playlistIndex.value, ids: playlistIds.value, };
         localStorage.removeItem('playlist');
         localStorage.setItem('playlist', JSON.stringify(storage));

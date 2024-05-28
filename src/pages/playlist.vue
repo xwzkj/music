@@ -1,5 +1,5 @@
 <template>
-    <div v-loading.fullscreen="!result.tracks|loading">
+    <div v-loading.fullscreen="!result.tracks | loading">
         <div id="playlistDetail">
             <img id="playlistImg" :src="result.coverImgUrl" v-if="result.coverImgUrl">
             <div id="playlistInfo">
@@ -49,13 +49,13 @@ async function parsePlayList() {
         let res = await api.recommendSongs();
         let d = new Date;
         result.value = {
-            tracks:res.data.data.dailySongs,
-            name:`${d.getMonth() + 1}/${d.getDate()} 每日推荐`,
-            description:`根据你的音乐口味生成，每天06:00更新`,
-            coverImgUrl:res.data.data.dailySongs[0].al.picUrl,
-            tags:['每日推荐']
+            tracks: res.data.data.dailySongs,
+            name: `${d.getMonth() + 1}/${d.getDate()} 每日推荐`,
+            description: `根据你的音乐口味生成，每天06:00更新`,
+            coverImgUrl: res.data.data.dailySongs[0].al.picUrl,
+            tags: ['每日推荐']
         }
-        
+
     } else {
         let res = await api.playlistDetail(props.id);
         // console.log(res.data);
@@ -63,23 +63,19 @@ async function parsePlayList() {
     }
 }
 
-async function playAll(){
+async function playAll() {
     loading.value = true;
     await playStore.playlistInit(result.value.tracks.map(item => item.id))
     playStore.play(true);
     loading.value = false;
-    router.push({ name: 'player'})
+    router.push({ name: 'player' })
 }
 async function play(id) {
     loading.value = true;
-    let list = playStore.playlistIds
-    let index = playStore.playlistIndex
-    list.splice(index,0,id)
-    await playStore.playlistInit(list)
+    await playStore.addMusic([id], 0, true);
     playStore.play(true);
-    playStore.playlistIndex = index
     loading.value = false;
-    router.push({ name: 'player'})
+    router.push({ name: 'player' })
 }
 </script>
 
