@@ -148,19 +148,21 @@ export const usePlayStore = defineStore('play', () => {
     //清除列表 使用新的列表替换
     async function playlistInit(ids) {
         stop()
+        let native = false;
         let storageNow = JSON.parse(localStorage.getItem('playlist') || '{}')
         if (ids == undefined && 'version' in storageNow && storageNow.version == 1) {//如果没传参数 使用本地数据
             ids = storageNow.ids;
             playlistIndex.value = storageNow.current;
             playlist.value = storageNow.playlist;
             playlistIds.value = storageNow.ids;
+            native = true;
             return;
         } else if (ids == undefined) {//没传参数，本地也没存，那我干鸡毛啊
             console.error('播放列表初始化未提供参数');
             return;
         }
 
-        await addMusic(ids, 0);
+        await addMusic(ids, 0, true,);
         playlistIndex.value = 0;
         save();//保存到localstorage
         return;
@@ -170,53 +172,72 @@ export const usePlayStore = defineStore('play', () => {
      * @param {String} id 
      * @param {Number} position 
      * @param {Boolean} letIndexIsNew 是否让index指向新添加的音乐的第一个
+     * @param {Boolean} isNativeList 是否只是补全本地列表
      */
-    async function addMusic(ids = [], position = 0, letIndexIsNew = false) {
+    async function addMusic(ids = [], position = 0, letIndexIsNew = false, isNativeList = false) {
         if (ids.length == 0) {//如果没传id
             return;
         }
         let list = {};
-        list = ids.map(item => {
-            return {
-                id: item
-            }
-        })
+        if (isNativeList) {
+            list = playlist.value;
+        } else {
+            list = ids.map(item => {
+                return {
+                    id: item
+                }
+            })
+            //获取detail
+            res = await api.songDetail(ids.join(','));
+            res = res.data.songs;
+            //因为返回的数据也许不按请求的id顺序返回 所以特殊处理
+            res = res.map(item => {
+                return {
+                    id: item.id,
+                    name: item.name,
+                    artist: item.ar.map(item => item.name).join('、'),
+                    picurl: item.al.picUrl,
+                    tns: api.parseArray(item.tns),
+                    fee: item.fee,
+                }
+            })
+            list = api.mergeMusicObjArrs(list, res);//按照唯一标识符id合并
+        }
+
         //获取urls
         let res = await api.songUrlV1(ids.join(','), 'jymaster');
         res = res.data.data;
-        //因为返回的数据不按请求的id顺序返回 所以特殊处理
+        //因为返回的数据确实不按请求的id顺序返回 所以特殊处理
         res = res.map(item => {
             return { id: item.id, url: item.url }
         })
-        list = api.mergeMusicObjArrs(list, res);
-        //获取detail
-        res = await api.songDetail(ids.join(','));
-        res = res.data.songs;
-        //同上，特殊处理
-        res = res.map(item => {
-            return {
-                id: item.id,
-                name: item.name,
-                artist: item.ar.map(item => item.name).join('、'),
-                picurl: item.al.picUrl,
-                tns: api.parseArray(item.tns),
-                fee: item.fee,
-            }
-        })
-        list = api.mergeMusicObjArrs(list, res);
+        list = api.mergeMusicObjArrs(list, res);//按照唯一标识符id合并
+
         //将结果放到播放列表中
-        playlist.value.splice(position, 0, ...list)
-        playlistIds.value.splice(position, 0, ...ids)
-        if (letIndexIsNew == true) {
-            playlistIndex.value = position;
+        if (isNativeList) {
+            //直接替换
+            playlist.value = list;
         } else {
-            if (position < playlistIndex.value) {
-                playlistIndex.value += position;
+            //插♂入列表
+            playlist.value.splice(position, 0, ...list)
+            playlistIds.value.splice(position, 0, ...ids)
+            //改变index
+            if (letIndexIsNew == true) {
+                playlistIndex.value = position;
+            } else {
+                if (position < playlistIndex.value) {
+                    playlistIndex.value += position;
+                }
             }
         }
     }
     function save() {
-        let storage = { version: 1, playlist: playlist.value, current: playlistIndex.value, ids: playlistIds.value, };
+        let list = playlist.value.map(item => {
+            //移除url和歌词 因为音频URL有时效性 歌词则是因为localstorage的容量限制 所以移除
+            let { url, lyric, ...a } = item;
+            return a;
+        })
+        let storage = { version: 1, playlist: list, current: playlistIndex.value, ids: playlistIds.value, };
         localStorage.removeItem('playlist');
         localStorage.setItem('playlist', JSON.stringify(storage));
     }

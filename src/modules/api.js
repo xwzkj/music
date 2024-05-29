@@ -3,6 +3,7 @@ import axios from 'axios'
 //pinia在request内部初始化 因为userstore和这个模块相互调用
 import pinia from '@/stores/index';
 import { useUserStore } from '@/stores/user';
+import { MD5 } from 'crypto-js';
 
 /*
 *-----------------------------------------------
@@ -20,23 +21,26 @@ let musicApi = axios.create({
  * @param {Object} params url: 请求地址,method: 请求方式,data: 请求参数
  * @returns 
  */
-export async function request(params) {
+export async function request(params,realTimeSync = true) {
     try {
         const userStore = useUserStore(pinia);
         //加时间戳避免缓存
-        params.url += `?timestamp=${Date.now()}&realIP=${userStore.ip}`;
+        if(realTimeSync){
+            params.params = { ...params.params, timestamp: Date.now() }
+        }
+        params.params = { ...params.params, realIP: userStore.ip }
         //判断如果跨域就尝试手动传递cookie
         if (localStorage.getItem('cookie') != null && apiurl.slice(0, 4) == 'http') {
             if (params.method == 'post') {
                 params.data = { ...params.data, cookie: userStore.cookie }
             } else if (params.method == 'get') {
-                params.params = { ...params.data, cookie: userStore.cookie }
+                params.params = { ...params.params, cookie: userStore.cookie }
             }
         }
         let req = await musicApi.request(params);
         return req;
     } catch (e) {
-        error(`api请求错误！\napiURL：${apiurl} \n参数：${JSON.stringify(params)} \n${e}`)
+        error(`api请求错误！\napiURL：${apiurl} \n参数：${JSON.stringify(params)} \n\n返回信息：\n${JSON.stringify(e.response)}`)
     }
 }
 
@@ -129,7 +133,30 @@ export function cloudsearch(keywords) {
         data: { keywords }
     })
 }
-
+export function loginWithPhone(phone, password=null, captcha) {
+    if(password!=null){
+        password = MD5(password).toString();
+    }
+    return request({
+        url: '/login/cellphone',
+        method: 'post',
+        data: { phone, md5_password:password, captcha }
+    })
+}
+export function sendCaptcha(phone) {
+    return request({
+        url: '/captcha/sent',
+        method: 'post',
+        data: { phone }
+    })
+}
+export function verifyCaptcha(phone,captcha) {
+    return request({
+        url: '/captcha/verify',
+        method: 'post',
+        data: { phone, captcha }
+    })
+}
 /*
 *-----------------------------------------------
 *以下是colorthief包装的方法
@@ -223,7 +250,7 @@ async function getIp(apiIndex) {
  * @param {string} message 
  */
 export function error(message) {
-    console.log('[error]', message);
+    console.error('[error]', message);
     message = message.replace(/\n/g, '<br/>');
     message = `<div style="max-width:90vw;max-height:90vh;">${message}</div>`
     ElMessage({
@@ -232,6 +259,15 @@ export function error(message) {
         type: 'error',
         showClose: true,
         duration: 0
+    })
+}
+export function success(message) {
+    message = message.replace(/\n/g, '<br/>');
+    message = `<div style="max-width:90vw;max-height:90vh;">${message}</div>`
+    ElMessage({
+        dangerouslyUseHTMLString: true,
+        message,
+        type: 'success',
     })
 }
 export function msToText(ms) {

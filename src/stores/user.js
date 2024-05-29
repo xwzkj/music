@@ -24,7 +24,7 @@ export const useUserStore = defineStore('user', {
             if (cookie == undefined && match != null) {
                 cookie = document.cookie.match(`MUSIC_U=[^;]+`)[0]
             } else if (cookie == undefined) {
-                console.log('没有cookie更新个毛的用户信息啊');
+                console.log('没有cookie更新不了aaa');
                 return;
             }
             localStorage.setItem('cookie', cookie)
@@ -33,11 +33,19 @@ export const useUserStore = defineStore('user', {
 
             let res = await api.loginStatus();
             if (res.data.data.code == 200) {
-                this.name = res.data.data.profile.nickname
-                this.avatar = res.data.data.profile.avatarUrl
-                this.uid = res.data.data.profile.userId
-                this.province = res.data.data.profile.province
-                this.city = res.data.data.profile.city
+                this.isLogin = !(res.data.data.profile == null)
+                if (this.isLogin) {
+                    this.name = res.data.data.profile.nickname
+                    this.avatar = res.data.data.profile.avatarUrl
+                    this.uid = res.data.data.profile.userId
+                    this.province = res.data.data.profile.province
+                    this.city = res.data.data.profile.city
+                }
+            }
+            if (!this.isLogin) {
+                this.logout()
+                api.error('登录状态过期，请重新登录！')
+                return;
             }
             res = await api.userPlaylist(this.uid)
             if (res.data.code == 200) {
@@ -64,7 +72,7 @@ export const useUserStore = defineStore('user', {
         async updateByStorage() {
             let user = JSON.parse(localStorage.getItem('user'))
             this.updateByObj(user)
-            if (this.ip == ''){
+            if (this.ip == '') {
                 this.ip = await api.getMyIp()
             }
             console.log('pinia updatedByStorage');
@@ -88,8 +96,14 @@ export const useUserStore = defineStore('user', {
         },
         clearStorage() {
             localStorage.removeItem('user')
+            localStorage.removeItem('cookie')
             console.log('pinia clearStorage');
         },
+        logout(){
+            this.$reset();
+            this.clearStorage();
+            document.cookie = "MUSIC_U=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        }
     }
 
 })

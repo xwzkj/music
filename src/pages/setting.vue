@@ -4,18 +4,14 @@
         <el-button @click="loginByCookie">输入cookie登录</el-button>
         <el-button @click="tishi">弹出一个message</el-button>
         <el-button @click="update">马上更新用户信息</el-button>
-
     </div>
 </template>
 
 <script setup name="setting" lang="js">
 import { useUserStore } from '@/stores/user'
-let userStore = useUserStore()// message.success('设置页');
+let userStore = useUserStore()
 function logout() {
-    userStore.$reset();
-    userStore.clearStorage();
-    document.cookie = "MUSIC_U=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    // console.log(userStore);
+    userStore.logout();
     ElMessage({
         message: '好了哦',
         type: 'success',
@@ -25,20 +21,20 @@ function loginByCookie(){
     document.cookie=prompt('输入包含MUSIC_U字段的cookie');
     userStore.updateByCookie();
     ElMessage({
-        message: '好了哦',
+        message: '开始尝试更新用户信息了喔',
         type: 'success',
     })
 }
 function tishi(){
     ElMessage({
-        message: '好了哦',
+        message: '呐呐呐呐呐，你点我干啥',
         type: 'success',
     })
 }
 function update(){
     userStore.updateByCookie();
     ElMessage({
-        message: '好了哦',
+        message: '开始更新',
         type: 'success',
     })
 }
