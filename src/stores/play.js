@@ -179,6 +179,7 @@ export const usePlayStore = defineStore('play', () => {
             return;
         }
         let list = {};
+        let res;
         if (isNativeList) {
             list = playlist.value;
         } else {
@@ -205,7 +206,7 @@ export const usePlayStore = defineStore('play', () => {
         }
 
         //获取urls
-        let res = await api.songUrlV1(ids.join(','), 'jymaster');
+        res = await api.songUrlV1(ids.join(','), 'jymaster');
         res = res.data.data;
         //因为返回的数据确实不按请求的id顺序返回 所以特殊处理
         res = res.map(item => {
