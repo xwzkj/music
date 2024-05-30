@@ -101,9 +101,8 @@ async function createQRcode() {
                 }
                 if (res.data.code == 803) {
                     qrStatus.value = '授权成功'
-                    userStore.updateByCookie(res.data.cookie);
                     clearInterval(check);
-                    router.push({ 'name': 'account' });
+                    afterLogin(res.data.cookie);
                 }
             })
     }, 3000)
@@ -129,8 +128,7 @@ async function login() {
         res = await api.loginWithPhone(name.value, key.value);
     }
     if (res.data.code == 200) {
-        userStore.updateByCookie(res.data.cookie);
-        api.success('登陆成功~')
+        afterLogin(res.data.cookie);
     } else {
         api.error(JSON.stringify(res.data))
     }
@@ -148,6 +146,12 @@ async function sendCaptcha() {
     } else {
         api.error(JSON.stringify(res.data))
     }
+}
+
+async function afterLogin(cookie){
+    api.success('登陆成功~')
+    userStore.updateByCookie(cookie);
+    router.push({ 'name': 'account' });
 }
 </script>
 
