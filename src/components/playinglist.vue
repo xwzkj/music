@@ -2,7 +2,7 @@
     <div>
         <ul>
             <li v-for="(item, index) in playStore.playlist" :key="item.id" @click="play(index)">
-                <img class="playinglist-img" :src="item.picurl + '?param=40y40'" :alt="item.name" />
+                <img class="playinglist-img" :src="item.picurl + '?param=80y80'" :alt="item.name" loading="lazy"/>
                 <div class="text">
                     <div class="name">
                         <el-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</el-tag>

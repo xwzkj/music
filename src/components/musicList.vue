@@ -22,7 +22,7 @@
 
             <n-list-item v-for="item in props.value" :key="item.id">
                 <div class="result-li">
-                    <img class="result-img result" :src="item.al.picUrl + '?param=40y40'" :alt="item.al.name" />
+                    <img class="result-img result" :src="item.al.picUrl + '?param=80y80'" :alt="item.al.name" loading="lazy"/>
                     <span class="result-name result" @click="props.nameOnClick(item.id)">
                         <span>{{ item.name }}</span>
                         <el-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</el-tag>
