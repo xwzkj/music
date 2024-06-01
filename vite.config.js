@@ -64,6 +64,7 @@ export default defineConfig({
     }
   },
   build: {
+    sourcemap: true,
     rollupOptions: {
       output: {
         entryFileNames: 'scripts/[name]-[hash].js', // 入口文件命名规则
