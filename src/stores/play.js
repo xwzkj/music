@@ -156,7 +156,6 @@ export const usePlayStore = defineStore('play', () => {
             playlist.value = storageNow.playlist;
             playlistIds.value = storageNow.ids;
             native = true;
-            return;
         } else if (ids == undefined) {//没传参数，本地也没存，那我干鸡毛啊
             console.error('播放列表初始化未提供参数');
             return;
@@ -165,6 +164,7 @@ export const usePlayStore = defineStore('play', () => {
         await addMusic(ids, 0, true,);
         playlistIndex.value = 0;
         save();//保存到localstorage
+        musicChanged();//把第一首歌（上面设置的0）应用到播放器
         return;
     }
     /**
@@ -175,6 +175,7 @@ export const usePlayStore = defineStore('play', () => {
      * @param {Boolean} isNativeList 是否只是补全本地列表
      */
     async function addMusic(ids = [], position = 0, letIndexIsNew = false, isNativeList = false) {
+        console.log('添加音乐到播放列表',ids,position,letIndexIsNew,isNativeList);
         if (ids.length == 0) {//如果没传id
             return;
         }
