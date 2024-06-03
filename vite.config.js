@@ -29,7 +29,7 @@ export default defineConfig({
       resolvers: [
         IconsResolver({
           prefix: 'i',
-          enabledCollections: ['ep', 'hugeicons'],
+          enabledCollections: ['ep', 'hugeicons','ant-design'],
         }),
         NaiveUiResolver()
       ],
