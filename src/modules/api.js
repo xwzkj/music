@@ -288,8 +288,8 @@ export function error(message) {
 export function success(message) {
     window.$message.success(message, {
         render: renderMessage,
-        closable: true,
-        duration: 0
+        closable: false,
+        duration: 1500
     })
 }
 export function msToText(ms) {
