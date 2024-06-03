@@ -4,7 +4,7 @@ import axios from 'axios'
 import pinia from '@/stores/index';
 import { useUserStore } from '@/stores/user';
 import { MD5 } from 'crypto-js';
-
+import { NAlert } from 'naive-ui';
 /*
 *-----------------------------------------------
 *以下是NeteaseCloudMusicApi接口的调用方法
@@ -21,11 +21,11 @@ let musicApi = axios.create({
  * @param {Object} params url: 请求地址,method: 请求方式,data: 请求参数
  * @returns 
  */
-export async function request(params,realTimeSync = true) {
+export async function request(params, realTimeSync = true) {
     try {
         const userStore = useUserStore(pinia);
         //加时间戳避免缓存
-        if(realTimeSync){
+        if (realTimeSync) {
             params.params = { ...params.params, timestamp: Date.now() }
         }
         params.params = { ...params.params, realIP: userStore.ip }
@@ -133,14 +133,14 @@ export function cloudsearch(keywords) {
         data: { keywords }
     })
 }
-export function loginWithPhone(phone, password=null, captcha) {
-    if(password!=null){
+export function loginWithPhone(phone, password = null, captcha) {
+    if (password != null) {
         password = MD5(password).toString();
     }
     return request({
         url: '/login/cellphone',
         method: 'post',
-        data: { phone, md5_password:password, captcha }
+        data: { phone, md5_password: password, captcha }
     })
 }
 export function sendCaptcha(phone) {
@@ -150,7 +150,7 @@ export function sendCaptcha(phone) {
         data: { phone }
     })
 }
-export function verifyCaptcha(phone,captcha) {
+export function verifyCaptcha(phone, captcha) {
     return request({
         url: '/captcha/verify',
         method: 'post',
@@ -246,28 +246,50 @@ async function getIp(apiIndex) {
         return `114.114.${random(0, 255)}.${random(0, 255)}`
     }
 }
+
+function renderMessage(props) {
+    let { type } = props;
+    let happy = ["o(≧▽≦)o", "(* ^ ω ^)", "(´｡• ω •｡`)", "ヽ(・∀・)ﾉ", "＼(≧▽≦)／", "ヽ(o＾▽＾o)ノ", "\(^ヮ^)/", "(´• ω •`)", "(..＞◡＜..)"]
+    let sad = ["(>_<)", "Σ(°ロ°)", '(つ﹏⊂)', '（・□・；）', '(o.O)', '(#｀皿´)', 'ヽ(≧Д≦)ノ', '（＞д＜）']
+    let title = 'awa'
+    if (type == 'error') {
+        title = sad[random(0, sad.length - 1)]
+    } else {
+        title = happy[random(0, happy.length - 1)]
+    }
+    return h(
+        NAlert,
+        {
+            closable: props.closable,
+            onClose: props.onClose,
+            type: type === "loading" ? "default" : type,
+            title,
+            style: {
+                boxShadow: "var(--n-box-shadow)",
+                maxWidth: "calc(100vw - 32px)",
+            }
+        },
+        {
+            default: () => props.content
+        }
+    );
+};
 /**
  * @param {string} message 
  */
 export function error(message) {
     console.error('[error]', message);
-    message = message.replace(/\n/g, '<br/>');
-    message = `<div style="max-width:90vw;max-height:90vh;">${message}</div>`
-    ElMessage({
-        dangerouslyUseHTMLString: true,
-        message,
-        type: 'error',
-        showClose: true,
+    window.$message.error(message, {
+        render: renderMessage,
+        closeable: true,
         duration: 0
     })
 }
 export function success(message) {
-    message = message.replace(/\n/g, '<br/>');
-    message = `<div style="max-width:90vw;max-height:90vh;">${message}</div>`
-    ElMessage({
-        dangerouslyUseHTMLString: true,
-        message,
-        type: 'success',
+    window.$message.success(message, {
+        render: renderMessage,
+        closable: true,
+        duration: 0
     })
 }
 export function msToText(ms) {

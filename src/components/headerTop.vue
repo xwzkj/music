@@ -2,11 +2,11 @@
     <div id="header">
         <div id="header-title" @click="router.push({ name: 'home' })">小丸子音乐</div>
         <span id="header-search">
-            <el-input v-model="value" type="text" placeholder="回车开始搜索..." @keyup="search" clearable />
+            <n-input v-model:value="value" type="text" placeholder="搜索..." @keyup="search" :clearable="true" />
         </span>
-        <el-avatar class="header-user" v-if="!userStore.isLogin" @click="router.push({ name: 'login' })">登录</el-avatar>
-        <el-avatar class="header-user" v-if="userStore.isLogin" :src="userStore.avatar"
-            @click="router.push({name:'account'})"></el-avatar>
+        <n-avatar class="header-user" v-if="!userStore.isLogin" round @click="router.push({ name: 'login' })">登录</n-avatar>
+        <n-avatar class="header-user" v-if="userStore.isLogin" round :src="userStore.avatar"
+            @click="router.push({name:'account'})" />
     </div>
 </template>
 <script setup>

@@ -70,39 +70,35 @@ function getImgMainColor() {
           </div>
           <!-- 进度条 -->
           <div id="music-progress">
-            <el-slider v-model="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration" :show-tooltip="false"
-              @input="(value) => playStore.seek(value)" />
+            <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
+              :show-tooltip="false" @on-update:value="(value) => playStore.seek(value)" />
           </div>
           <!-- 播放控制按钮 -->
           <div id="btn-control">
             <div id="btn-like" class="button">
-              <el-icon size="3.5rem" class="icon"><i-hugeicons-favourite-square /></el-icon>
+              <n-icon size="3.5rem" class="icon"><i-hugeicons-favourite-square /></n-icon>
             </div>
             <div id="btn-play-control">
               <div id="btn-prev" class="button">
-                <el-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></el-icon>
+                <n-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
               </div>
               <div id="btn-pause" class="button">
-                <el-icon size="3.5rem" class="icon" v-if="playStore.musicStatus.paused"
-                  @click="() => playStore.play()"><i-hugeicons-play /></el-icon>
-                <el-icon size="3.5rem" class="icon" v-if="!playStore.musicStatus.paused"
-                  @click="() => playStore.pause()"><i-hugeicons-pause /></el-icon>
+                <n-icon size="3.5rem" class="icon" v-if="playStore.musicStatus.paused"
+                  @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
+                <n-icon size="3.5rem" class="icon" v-if="!playStore.musicStatus.paused"
+                  @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
               </div>
               <div id="btn-next" class="button">
-                <el-icon size="3.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></el-icon>
+                <n-icon size="3.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
               </div>
             </div>
             <div id="btn-list" class="button">
-              <el-icon size="3.5rem" class="icon"
-                @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-02 /></el-icon>
+              <n-icon size="3.5rem" class="icon"
+                @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-02 /></n-icon>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- <el-drawer v-model="showPlayingList" direction="btt" size="70%" :modal="false">
-          <playinglist />
-        </el-drawer> -->
       <div class="drawer">
         <n-drawer v-model:show="showPlayingList" placement="bottom" to="#column-player" height="70%"
           show-mask="transparent">
@@ -116,7 +112,8 @@ function getImgMainColor() {
     <div class="column" id="column-lyric">
       <div id="container-lyric">
         <ul>
-          <div v-for="(item, index) in currentMusic.lyric" :key="index" :class="{ 'lyric-active': lyricActive == index }">
+          <div v-for="(item, index) in currentMusic.lyric" :key="index"
+            :class="{ 'lyric-active': lyricActive == index }">
             <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
             <li class="lyric-roma">{{ item.roma }}</li>
             <li class="lyric-tran">{{ item.tran }}</li>
@@ -133,10 +130,16 @@ function getImgMainColor() {
 }
 
 #outer {
-  position: relative;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-wrap: wrap;
-  background-color: rgba(255, 255, 255, 0.7)
+  background-image: v-bind('background');
+
 }
 
 #background {
@@ -147,7 +150,8 @@ function getImgMainColor() {
   width: 100%;
   top: 0;
   left: 0;
-  background-image: v-bind('background');
+  background-color: rgba(255, 255, 255, 0.7);
+
 }
 
 /* .column {

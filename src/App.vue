@@ -1,23 +1,23 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
-import { storeToRefs } from 'pinia'
+import { onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 import { usePlayStore } from '@/stores/play'
-import * as api from '@/modules/api'
+import MessageApi from "@/modules/messageApi.vue";
+import Container from "./pages/container.vue";
 let userStore = useUserStore();
 let playStore = usePlayStore();
 userStore.updateByStorage();
 
-//更新用户信息
-if (userStore.isLogin === true && Date.now() - userStore.updateTime > 1000 * 60 * 3) {//三分钟
-  userStore.updateByCookie();
-}
-onMounted(() => {
 
+onMounted(() => {
+  //更新用户信息
+  if (userStore.isLogin === true && Date.now() - userStore.updateTime > 1000 * 60 * 3) {//三分钟
+    userStore.updateByCookie();
+  }
+  //播放列表初始化
   if (localStorage.getItem('playlist') != null) {
     playStore.playlistInit()
   }
-
 })
 
 
@@ -25,17 +25,11 @@ onMounted(() => {
 
 <template>
   <div>
-    <router-view v-slot="{ Component }">
-        <keep-alive v-if="$route.meta.keepAlive">
-          <component :is="Component" :key="$route.name" v-if="$route.meta.keepAlive" />
-        </keep-alive>
-        <component :is="Component" :key="$route.name" v-else />
-      
-    </router-view>
+    <Container />
+    <n-message-provider>
+      <messageApi />
+    </n-message-provider>
   </div>
 </template>
 
-<style scoped>
-
-
-</style>
+<style scoped></style>

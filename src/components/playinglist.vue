@@ -5,8 +5,8 @@
                 <img class="playinglist-img" :src="item.picurl + '?param=80y80'" :alt="item.name" loading="lazy"/>
                 <div class="text">
                     <div class="name">
-                        <el-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</el-tag>
-                        <el-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</el-tag>
+                        <n-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</n-tag>
+                        <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
                         {{ item.name }}
                     </div>
                     <!-- 播放列表里的tns是解析好的字符串 -->

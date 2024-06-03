@@ -25,8 +25,8 @@
                     <img class="result-img result" :src="item.al.picUrl + '?param=80y80'" :alt="item.al.name" loading="lazy"/>
                     <span class="result-name result" @click="props.nameOnClick(item.id)">
                         <span>{{ item.name }}</span>
-                        <el-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</el-tag>
-                        <el-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</el-tag>
+                        <n-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</n-tag>
+                        <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
 
                         <div>
                             <span style="color: #b3b3b3;">{{ api.parseArray(item.tns) }}</span>

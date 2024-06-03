@@ -15,39 +15,41 @@
                         <div style="font-size:1.5rem">登录</div>
                     </div>
                     <div class="login-input-container">
-
-                        <el-input v-model="name" class="login-input">
+                        <!-- 手机号 -->
+                        <n-input v-model:value="name" class="login-input" :clearable="true" placeholder="请输入手机号">
                             <template #prefix>
-                                <el-icon size="1.2rem">
+                                <n-icon size="1.2rem">
                                     <i-hugeicons-smart-phone-01 />
-                                </el-icon>
+                                </n-icon>
                             </template>
-                        </el-input>
+                        </n-input>
                     </div>
                     <div class="login-input-container">
-
-                        <el-input v-model="key" class="login-input"
-                            :type="currentMethod == 'passwd' ? 'password' : 'text'">
+                        <!-- 密码或者验证码 -->
+                        <n-input v-model:value="key" class="login-input"
+                            :type="currentMethod == 'passwd' ? 'password' : 'text'"
+                            :placeholder="currentMethod == 'passwd' ? '请输入密码' : '请输入验证码'"
+                            >
                             <template #prefix>
-                                <el-icon size="1.2rem">
+                                <n-icon size="1.2rem">
                                     <i-hugeicons-square-lock-password v-show="currentMethod == 'passwd'" />
                                     <i-hugeicons-message-lock-01 v-show="currentMethod == 'sms'" />
-                                </el-icon>
+                                </n-icon>
                             </template>
-                        </el-input>
-                        <el-button v-show="currentMethod == 'sms'" @click="sendCaptcha">获取验证码</el-button>
+                        </n-input>
+                        <n-button v-show="currentMethod == 'sms'" @click="sendCaptcha">获取验证码</n-button>
                     </div>
-                    <el-button style="width:100%" @click="login">登录</el-button>
-                    <el-divider>或者</el-divider>
+                    <n-button style="width:100%" @click="login">登录</n-button>
+                    <n-divider class="login-divider">或者</n-divider>
                     <div>
-                        <el-icon size="1.5rem" class="login-icon login-method-icon" v-show="currentMethod != 'passwd'"
+                        <n-icon size="1.5rem" class="login-icon login-method-icon" v-show="currentMethod != 'passwd'"
                             @click="currentMethod = 'passwd'; key = ''">
                             <i-hugeicons-square-lock-password />
-                        </el-icon>
-                        <el-icon size="1.5rem" class="login-icon login-method-icon" v-show="currentMethod != 'sms'"
+                        </n-icon>
+                        <n-icon size="1.5rem" class="login-icon login-method-icon" v-show="currentMethod != 'sms'"
                             @click="currentMethod = 'sms'; key = ''">
                             <i-hugeicons-message-lock-01 />
-                        </el-icon>
+                        </n-icon>
                     </div>
                 </div>
             </div>
@@ -202,10 +204,9 @@ async function afterLogin(cookie){
     cursor: pointer;
 }
 
-.login-input {
-    height: 2rem;
+.login-divider{
+    margin: 0.5rem 0;
 }
-
 .login-row-qr {
     flex: 45%;
 }
@@ -225,6 +226,7 @@ async function afterLogin(cookie){
     flex-wrap: nowrap;
     align-items: center;
     width: 100%;
+    height:2.3rem;
 }
 
 @media (max-width:640px) {

@@ -2,7 +2,9 @@
     <div @click="props.click" class="item-card-outer">
         <img class="item-card-img" :src="props.imgurl" crossorigin="anonymous" ref="itemCardImg"
             @load="getImgMainColor">
-        <el-text class="item-card-name" line-clamp="2">{{ props.text }}</el-text>
+        <div class="item-card-name">
+            <n-ellipsis :line-clamp="2">{{ props.text }}</n-ellipsis>
+        </div>
     </div>
 </template>
 
@@ -38,6 +40,6 @@ function getImgMainColor() {
 .item-card-name {
     width: 100%;
     height: 2.7rem;
-    color: black;
+    color: rgb(0, 0, 0);
 }
 </style>

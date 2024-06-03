@@ -1,26 +1,29 @@
 <template>
-    <div v-loading.fullscreen="!result.tracks | loading">
-        <div id="playlistDetail">
-            <img id="playlistImg" :src="result.coverImgUrl" v-if="result.coverImgUrl">
-            <div id="playlistInfo">
-                <div id="playlistName">{{ result.name }}</div>
-                <div id="playlistAuthor" v-if="result.creator">
-                    <img id="playlistAuthorAvatar" :src="result.creator.avatarUrl">
-                    <div id="playlistAuthorName">{{ result.creator.nickname }}</div>
-                    <span id="playlistTagContainer">
-                        <el-tag v-for="item in result.tags" type="success" size="small" class="playlistTag">{{ item
-                            }}</el-tag>
-                    </span>
-                </div>
-                <div id="playlistDesc">{{ result.description }}</div>
-                <div id="playlistControler">
-                    <el-button @click="playAll">播放全部</el-button>
+    <div>
+        <div v-show="result.tracks | !loading">
+            <div id="playlistDetail">
+                <img id="playlistImg" :src="result.coverImgUrl" v-if="result.coverImgUrl">
+                <div id="playlistInfo">
+                    <div id="playlistName">{{ result.name }}</div>
+                    <div id="playlistAuthor" v-if="result.creator">
+                        <img id="playlistAuthorAvatar" :src="result.creator.avatarUrl">
+                        <div id="playlistAuthorName">{{ result.creator.nickname }}</div>
+                        <span id="playlistTagContainer">
+                            <n-tag v-for="item in result.tags" type="success" size="small" class="playlistTag">{{ item
+                                }}</n-tag>
+                        </span>
+                    </div>
+                    <div id="playlistDesc">{{ result.description }}</div>
+                    <div id="playlistControler">
+                        <n-button @click="playAll">播放全部</n-button>
+                    </div>
                 </div>
             </div>
+            <div id="playlistMusicList">
+                <musicList :value="result.tracks" :nameOnClick="play" />
+            </div>
         </div>
-        <div id="playlistMusicList">
-            <musicList :value="result.tracks" :nameOnClick="play" />
-        </div>
+        <n-spin size="large" v-if="!result.tracks | loading" />
     </div>
 </template>
 
@@ -36,12 +39,12 @@ let loading = ref(false);//点击播放后 解析播放列表的loading
 let result = ref([]);
 let props = defineProps(['id', 'isDailySongs']);
 watch(props, () => {
-    // console.log('playlist组件props被更新');
+    console.log('playlist组件props被更新');
     result.value = {};
     parsePlayList();
 }, { deep: true })
 onMounted(() => {
-    // console.log('playlist组件被挂载');
+    console.log('playlist组件被挂载');
     parsePlayList();
 })
 async function parsePlayList() {

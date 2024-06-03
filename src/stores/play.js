@@ -148,6 +148,9 @@ export const usePlayStore = defineStore('play', () => {
     //清除列表 使用新的列表替换
     async function playlistInit(ids) {
         stop()
+        playlist.value = [];
+        playlistIds.value = [];
+        playlistIndex.value = 0;
         let native = false;
         let storageNow = JSON.parse(localStorage.getItem('playlist') || '{}')
         if (ids == undefined && 'version' in storageNow && storageNow.version == 1) {//如果没传参数 使用本地数据
@@ -160,9 +163,7 @@ export const usePlayStore = defineStore('play', () => {
             console.error('播放列表初始化未提供参数');
             return;
         }
-
-        await addMusic(ids, 0, true,);
-        playlistIndex.value = 0;
+        await addMusic(ids, 0, true, native);
         save();//保存到localstorage
         musicChanged();//把第一首歌（上面设置的0）应用到播放器
         return;
@@ -175,7 +176,7 @@ export const usePlayStore = defineStore('play', () => {
      * @param {Boolean} isNativeList 是否只是补全本地列表
      */
     async function addMusic(ids = [], position = 0, letIndexIsNew = false, isNativeList = false) {
-        console.log('添加音乐到播放列表',ids,position,letIndexIsNew,isNativeList);
+        console.log('添加音乐到播放列表', ids, position, letIndexIsNew, isNativeList);
         if (ids.length == 0) {//如果没传id
             return;
         }
@@ -219,6 +220,7 @@ export const usePlayStore = defineStore('play', () => {
         if (isNativeList) {
             //直接替换
             playlist.value = list;
+            playlistIds.value = ids;
         } else {
             //插♂入列表
             playlist.value.splice(position, 0, ...list)

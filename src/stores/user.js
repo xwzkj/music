@@ -62,11 +62,7 @@ export const useUserStore = defineStore('user', {
             }
             this.updateTime = Date.now()
             this.storeToStorage()
-            ElMessage({
-                message: '已同步用户信息',
-                type: 'success',
-                duration: 1000
-            })
+            api.success('用户信息更新成功')
             console.log('pinia updatedByCookie');
         },
         async updateByStorage() {
