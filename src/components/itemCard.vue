@@ -1,10 +1,10 @@
 <template>
     <div @click="props.click" class="item-card-outer">
-            <img class="item-card-img" :src="props.imgurl" crossorigin="anonymous" ref="itemCardImg">
-            <!-- @load="getImgMainColor" -->
-            <div class="item-card-name">
-                <n-ellipsis :line-clamp="2">{{ props.text }}</n-ellipsis>
-            </div>
+        <img class="item-card-img" :src="props.imgurl" crossorigin="anonymous" ref="itemCardImg"
+            @load="getImgMainColor">
+        <div class="item-card-name">
+            <n-ellipsis :line-clamp="2">{{ props.text }}</n-ellipsis>
+        </div>
     </div>
 </template>
 
@@ -14,33 +14,39 @@ import { ref } from 'vue'
 let props = defineProps(['imgurl', 'text', 'click'])
 let itemColor = ref([235, 235, 235])
 let itemCardImg = ref(null)//img元素
-// function getImgMainColor() {
-//     let color = api.getColorFromImg(itemCardImg.value, true);
-//     itemColor.value = api.mixColor(color, [0, 0, 0], 0.1, false, false);
-// }
+function getImgMainColor() {
+    let color = api.getColorFromImg(itemCardImg.value, true);
+    itemColor.value = api.mixColor(color, [255,255,255], 0.5, false, false);
+}
 
 </script>
 
 <style scoped>
+*{
+    box-sizing: border-box;
+}
+
 .item-card-outer {
     margin: 0 1rem 2rem 1rem;
     padding: 0;
     cursor: pointer;
-    padding: 0.3rem;
-    /* box-shadow:0 0 0.2rem rgba(139, 150, 141, 0.7); */
-    /* border: 2px solid rgb(239, 239, 245); */
+    box-shadow: 0 0 0.2rem v-bind(itemColor);
+    background-color: v-bind(itemColor);
     border-radius: 1rem;
+    overflow: hidden;
 }
 
 .item-card-img {
+    margin: 0;
+    display: block;
     width: 100%;
-    border-radius: 1rem;
-    box-shadow: 0 0 0.2rem rgba(139, 150, 141, 0.2);
 }
 
 .item-card-name {
+    padding: 0.3rem;
     width: 100%;
-    height: 2.7rem;
+    height: 3.5rem;
     color: rgb(0, 0, 0);
+    overflow: hidden;
 }
 </style>
