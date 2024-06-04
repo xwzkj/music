@@ -19,6 +19,16 @@ export const useUserStore = defineStore('user', {
         updateTime: '',
     }),
     actions: {
+        async updateLikelist(){
+            let res = await api.likelist(this.uid)
+            if (res.data.code == 200) {
+                this.likedSongs = res.data.ids
+                this.storeToStorage()
+                return res.data.ids
+            }else{
+                throw new Error('获取喜欢列表失败')
+            }
+        },
         async updateByCookie(cookie) {
             let match = document.cookie.match(`MUSIC_U=[^;]+`)
             if (cookie == undefined && match != null) {
@@ -51,10 +61,8 @@ export const useUserStore = defineStore('user', {
             if (res.data.code == 200) {
                 this.playlists = res.data.playlist
             }
-            res = await api.likelist(this.uid)
-            if (res.data.code == 200) {
-                this.likedSongs = res.data.ids
-            }
+            await this.updateLikelist();
+
             res = await api.vipInfo();
             if (res.data.code == 200) {
                 this.vipIcon = res.data.data.associator.iconUrl

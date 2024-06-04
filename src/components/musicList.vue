@@ -31,8 +31,10 @@
                     <!-- 动作 比如收藏 -->
                     <td class="td-action">
                         <n-icon size="1.3rem">
-                            <i-ant-design-heart-outlined v-show="!userStore.likedSongs.includes(Number(item.id))" />
-                            <i-ant-design-heart-filled v-show="userStore.likedSongs.includes(Number(item.id))" />
+                            <i-ant-design-heart-outlined v-show="!isLiked[index]"
+                                @click="api.likeAndUpdateLikelist(item.id, true)" />
+                            <i-ant-design-heart-filled v-show="isLiked[index]"
+                                @click="api.likeAndUpdateLikelist(item.id, false)" />
                         </n-icon>
                     </td>
                     <!-- 专辑 -->
@@ -59,6 +61,13 @@ window.addEventListener('resize', () => {
 })
 let screenIsWide = computed(() => {
     return windowWidth.value > 700;
+})
+let isLiked = computed(() => {
+    let isLikedList = []
+    for (let i = 0; i < props.value.length; i++) {
+            isLikedList[i] = userStore.likedSongs.includes(Number(props.value[i].id))
+    }
+    return isLikedList
 })
 
 console.log(userStore.likedSongs.includes(34509838))

@@ -157,6 +157,28 @@ export function verifyCaptcha(phone, captcha) {
         data: { phone, captcha }
     })
 }
+export function like(id,like=true){
+    if(id==undefined || id==null){
+        throw new Error('[api][like]id不能为空');
+    }
+    return request({
+        url: '/like',
+        method: 'post',
+        params: {id,like}
+    })
+}
+
+export async function likeAndUpdateLikelist(id,like=true){
+    const userStore = useUserStore(pinia);
+    if(like){
+        userStore.likedSongs.push(Number(id));
+    }else{
+        userStore.likedSongs.splice(userStore.likedSongs.indexOf(Number(id)),1);
+    }
+    await this.like(id,like);
+    userStore.updateLikelist();
+}
+
 /*
 *-----------------------------------------------
 *以下是colorthief包装的方法
@@ -282,7 +304,7 @@ export function error(message) {
     window.$message.error(message, {
         render: renderMessage,
         closeable: true,
-        duration: 0
+        duration: 60000
     })
 }
 export function success(message) {
