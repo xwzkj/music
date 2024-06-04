@@ -30,7 +30,7 @@
                     </td>
                     <!-- 动作 比如收藏 -->
                     <td class="td-action">
-                        <n-icon size="1.3rem">
+                        <n-icon size="1.3rem" class="like-button">
                             <i-ant-design-heart-outlined v-show="!isLiked[index]"
                                 @click="api.likeAndUpdateLikelist(item.id, true)" />
                             <i-ant-design-heart-filled v-show="isLiked[index]"
@@ -76,6 +76,7 @@ console.log(userStore.likedSongs.includes(34509838))
 <style scoped>
 .td-music-detail {
     display: flex;
+    align-items: center;
     flex-direction: column;
 }
 
@@ -85,10 +86,14 @@ console.log(userStore.likedSongs.includes(34509838))
 }
 
 .td-music-img {
-    width: 2rem;
-    height: 2rem;
+    width: 2.8rem;
+    height: 2.8rem;
     border-radius: 0.5rem;
-    box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.2);
     margin-right: 1rem;
+}
+
+.like-button{
+    cursor: pointer;
 }
 </style>
