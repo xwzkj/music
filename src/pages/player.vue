@@ -71,7 +71,7 @@ function getImgMainColor() {
           <!-- 进度条 -->
           <div id="music-progress">
             <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
-              :show-tooltip="false" @on-update:value="(value) => playStore.seek(value)" />
+              :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
           </div>
           <!-- 播放控制按钮 -->
           <div id="btn-control">

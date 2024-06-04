@@ -283,6 +283,7 @@ export const usePlayStore = defineStore('play', () => {
         play(true);
     }
     function seek(time) {
+        // console.log(`[playStore]seek ${time}`);
         player.value.currentTime = time;
         updateProgress(true, { position: time, duration: player.value.duration });
     }
