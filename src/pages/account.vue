@@ -41,7 +41,7 @@ async function getArea(province, city) {
 }
 function getImgMainColor() {
     let color = api.getColorFromImg(document.getElementById('accountUserAvatar'), true);
-    usrAvaColor.value = api.mixColor(color, [255, 255, 255], 0.5);
+    usrAvaColor.value = api.mixColor(color, [255, 255, 255], 0.35);
 }
 </script>
 

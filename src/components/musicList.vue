@@ -1,51 +1,63 @@
 <template>
     <div>
-        <n-table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>歌曲</th>
-                    <th>&nbsp;</th>
-                    <th v-if="screenIsWide">专辑</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- 每一项 -->
-                <tr v-for="(item, index) in props.value" :key="index">
-                    <!-- 序号 -->
-                    <td class="td-num">{{ index + 1 }}</td>
-                    <!-- 音乐图片 名称 翻译名 艺术家 -->
-                    <td class="td-music" @click="props.nameOnClick(item.id)">
-                        <img class="td-music-img result" :src="item.al.picUrl + '?param=80y80'" :alt="item.al.name"
-                            loading="lazy" />
-                        <div class="td-music-detail">
-                            <span class="td-music-name result">
-                                <span>{{ item.name }}</span>
-                                <n-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</n-tag>
-                                <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
-                            </span>
-                            <span style="color: #b3b3b3;">{{ api.parseArray(item.tns) }}</span>
-                            <span class="td-music-ar result">{{ api.parseArtist(item.ar) }}</span>
+        <div class="list-head-div">
+            <n-card class="list-head-card" content-style="padding-top:0;padding-bottom:0;">
+                <div class="list-head-card-content">
+                    <div class="head-num">#</div>
+                    <div class="head-music">歌曲</div>
+                    <div class="head-action">&nbsp;</div>
+                    <div class="head-album" v-if="screenIsWide">专辑</div>
+                </div>
+            </n-card>
+        </div>
+        <div class="list-items">
+            <!-- 每一项 -->
+            <div v-for="(item, index) in props.value" :key="index" class="list-item-div">
+                <n-card class="list-item-card">
+                    <div class="list-item-card-content">
+                        <!-- 序号 -->
+                        <div class="item-num">{{ index + 1 }}</div>
+                        <!-- 音乐图片 名称 翻译名 艺术家 -->
+                        <div class="item-music" @click="props.nameOnClick(item.id)">
+                            <img class="item-music-img" :src="item.al.picUrl + '?param=80y80'" :alt="item.al.name"
+                                loading="lazy" />
+                            <div class="item-music-detail">
+                                <div class="item-music-name">
+                                    <span class="item-music-text">{{ item.name }}</span>
+                                    <span class="item-music-text" style="color: #b3b3b3;"
+                                        v-if="api.parseArray(item.tns) != ''">&nbsp;({{ api.parseArray(item.tns)
+                                        }})</span>
+                                </div>
+
+                                <div class="item-music-ar">
+                                    <n-tag v-if="item.fee == 1" type="warning" size="small"
+                                        :bordered="false">VIP</n-tag>
+                                    <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
+                                    <span class="item-music-text" style="color: #8b968d;">{{ api.parseArtist(item.ar)
+                                        }}</span>
+                                </div>
+                            </div>
                         </div>
-                    </td>
-                    <!-- 动作 比如收藏 -->
-                    <td class="td-action">
-                        <n-icon size="1.3rem" class="like-button">
-                            <i-ant-design-heart-outlined v-show="!isLiked[index]"
-                                @click="api.likeAndUpdateLikelist(item.id, true)" />
-                            <i-ant-design-heart-filled v-show="isLiked[index]"
-                                @click="api.likeAndUpdateLikelist(item.id, false)" />
-                        </n-icon>
-                    </td>
-                    <!-- 专辑 -->
-                    <td class="td-album">
-                        <span class="td-album-al result" v-if="screenIsWide">
-                            <span>{{ item.al.name }}</span>
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
-        </n-table>
+                        <!-- 动作 比如收藏 -->
+                        <div class="item-action">
+                            <n-icon size="1.3rem" class="like-button">
+                                <i-ant-design-heart-outlined v-show="!isLiked[index]"
+                                    @click="api.likeAndUpdateLikelist(item.id, true)" />
+                                <i-ant-design-heart-filled v-show="isLiked[index]"
+                                    @click="api.likeAndUpdateLikelist(item.id, false)" />
+                            </n-icon>
+                        </div>
+                        <!-- 专辑 -->
+                        <div class="item-album" v-if="screenIsWide">
+                            <span class="item-album-al">
+                                <span>{{ item.al.name }}</span>
+                            </span>
+                        </div>
+                    </div>
+                </n-card>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -65,7 +77,7 @@ let screenIsWide = computed(() => {
 let isLiked = computed(() => {
     let isLikedList = []
     for (let i = 0; i < props.value.length; i++) {
-            isLikedList[i] = userStore.likedSongs.includes(Number(props.value[i].id))
+        isLikedList[i] = userStore.likedSongs.includes(Number(props.value[i].id))
     }
     return isLikedList
 })
@@ -74,18 +86,67 @@ console.log(userStore.likedSongs.includes(34509838))
 </script>
 
 <style scoped>
-.td-music-detail {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+.head-num,
+.item-num {
+    width: 2rem;
 }
 
-.td-music {
+.head-music,
+.item-music {
+    flex: 2;
+    width: 60%;
+}
+
+.item-music-name,
+.item-music-ar,
+.item-music-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.head-action,
+.item-action {
+    width: 1.5rem;
+}
+
+.head-album,
+.item-album {
+    flex: 1;
+    padding-left: 1rem;
+}
+
+.list-head-card {
+    border: none;
+    padding: 0;
+}
+
+.list-head-div,
+.list-item-div {
+    margin: 0.5rem;
+    margin-bottom: 0;
+}
+
+.list-item-card-content,
+.list-head-card-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.item-music-detail {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width:calc(100% - 6rem);
+}
+
+.item-music {
     display: flex;
     cursor: pointer;
 }
 
-.td-music-img {
+.item-music-img {
     width: 2.8rem;
     height: 2.8rem;
     border-radius: 0.5rem;
@@ -93,7 +154,7 @@ console.log(userStore.likedSongs.includes(34509838))
     margin-right: 1rem;
 }
 
-.like-button{
+.like-button {
     cursor: pointer;
 }
 </style>

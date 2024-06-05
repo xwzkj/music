@@ -12,11 +12,11 @@
 import * as api from "@/modules/api.js"
 import { ref } from 'vue'
 let props = defineProps(['imgurl', 'text', 'click'])
-let itemColor = ref([235, 235, 235])
+let itemColor = ref('rgb(173,213,239)')
 let itemCardImg = ref(null)//img元素
 function getImgMainColor() {
     let color = api.getColorFromImg(itemCardImg.value, true);
-    itemColor.value = api.mixColor(color, [255,255,255], 0.5, false, false);
+    itemColor.value = api.mixColor(color, [255,255,255], 0.4, false, true);
 }
 
 </script>

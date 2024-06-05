@@ -157,25 +157,25 @@ export function verifyCaptcha(phone, captcha) {
         data: { phone, captcha }
     })
 }
-export function like(id,like=true){
-    if(id==undefined || id==null){
+export function like(id, like = true) {
+    if (id == undefined || id == null) {
         throw new Error('[api][like]id不能为空');
     }
     return request({
         url: '/like',
         method: 'post',
-        params: {id,like}
+        params: { id, like }
     })
 }
 
-export async function likeAndUpdateLikelist(id,like=true){
+export async function likeAndUpdateLikelist(id, like = true) {
     const userStore = useUserStore(pinia);
-    if(like){
+    if (like) {
         userStore.likedSongs.push(Number(id));
-    }else{
-        userStore.likedSongs.splice(userStore.likedSongs.indexOf(Number(id)),1);
+    } else {
+        userStore.likedSongs.splice(userStore.likedSongs.indexOf(Number(id)), 1);
     }
-    await this.like(id,like);
+    await this.like(id, like);
     userStore.updateLikelist();
 }
 
@@ -210,14 +210,17 @@ export function getColorFromImg(imgElement, needRaw = false) {
     return color;
 }
 export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter = false) {
-    let r = Math.round(colorA[0] + (colorB[0] - colorA[0]) * weight);
-    let g = Math.round(colorA[1] + (colorB[1] - colorA[1]) * weight);
-    let b = Math.round(colorA[2] + (colorB[2] - colorA[2]) * weight);
+    let r = Math.round(colorA[0] * weight + colorB[0] * (1 - weight));
+    let g = Math.round(colorA[1] * weight + colorB[1] * (1 - weight));
+    let b = Math.round(colorA[2] * weight + colorB[2] * (1 - weight));
     r = Math.min(r, 255);
     g = Math.min(g, 255);
     b = Math.min(b, 255);
+    r = Math.max(r, 0);
+    g = Math.max(g, 0);
+    b = Math.max(b, 0);
     // console.log('[debug][api]混合颜色', r, g, b);
-    if (r < 125 && g < 125 && b < 125 && lighter) {
+    if (r < 155 && g < 155 && b < 155 && lighter) {
         let a = mixColor([r, g, b], [255, 255, 255], 0.45, true, true);
         r = a[0];
         g = a[1];
@@ -271,21 +274,13 @@ async function getIp(apiIndex) {
 
 function renderMessage(props) {
     let { type } = props;
-    let happy = ["o(≧▽≦)o", "(* ^ ω ^)", "(´｡• ω •｡`)", "ヽ(・∀・)ﾉ", "＼(≧▽≦)／", "ヽ(o＾▽＾o)ノ", "\(^ヮ^)/", "(´• ω •`)", "(..＞◡＜..)"]
-    let sad = ["(>_<)", "Σ(°ロ°)", '(つ﹏⊂)', '（・□・；）', '(o.O)', '(#｀皿´)', 'ヽ(≧Д≦)ノ', '（＞д＜）']
-    let title = 'awa'
-    if (type == 'error') {
-        title = sad[random(0, sad.length - 1)]
-    } else {
-        title = happy[random(0, happy.length - 1)]
-    }
     return h(
         NAlert,
         {
             closable: props.closable,
             onClose: props.onClose,
             type: type === "loading" ? "default" : type,
-            title,
+            title: props.title,
             style: {
                 boxShadow: "var(--n-box-shadow)",
                 maxWidth: "calc(100vw - 32px)",
@@ -300,16 +295,20 @@ function renderMessage(props) {
  * @param {string} message 
  */
 export function error(message) {
+    let sad = ["(>_<)", "Σ(°ロ°)", '(つ﹏⊂)', '（・□・；）', '(o.O)', '(#｀皿´)', 'ヽ(≧Д≦)ノ', '（＞д＜）']
+    let title = sad[random(0, sad.length - 1)];
     console.error('[error]', message);
     window.$message.error(message, {
-        render: renderMessage,
-        closeable: true,
-        duration: 60000
+        render: (props) => renderMessage({ ...props, title }),
+        closable: true,
+        duration: 30000
     })
 }
 export function success(message) {
+    let happy = ["o(≧▽≦)o", "(* ^ ω ^)", "(´｡• ω •｡`)", "ヽ(・∀・)ﾉ", "＼(≧▽≦)／", "ヽ(o＾▽＾o)ノ", "\(^ヮ^)/", "(´• ω •`)", "(..＞◡＜..)"]
+    let title = happy[random(0, happy.length - 1)];
     window.$message.success(message, {
-        render: renderMessage,
+        render: (props) => renderMessage({ ...props, title }),
         closable: false,
         duration: 1500
     })
