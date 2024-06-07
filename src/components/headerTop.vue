@@ -36,7 +36,7 @@ span {
 #header-title {
     font-size: 1.5rem;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .header-user {

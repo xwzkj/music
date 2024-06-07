@@ -43,7 +43,7 @@ let date = new Date().getDate();
 
 #date {
     font-size: 5rem;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .homeRecommend-img {

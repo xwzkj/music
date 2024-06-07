@@ -75,7 +75,7 @@ function getImgMainColor() {
 #accountUserName {
     font-size: 1.5rem;
     padding-top: 1rem;
-    font-weight: bold;
+    font-weight: 500;
 }
 
 #accountUserArea {

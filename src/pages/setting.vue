@@ -1,25 +1,33 @@
 <template>
     <div>
         <div class="setting">
-            <div class="button">
-                <n-button @click="logout">退出登录</n-button>
-            </div>
-            <div class="button">
-                <n-button @click="loginByCookie">输入cookie登录</n-button>
-            </div>
-            <div class="button">
-                <n-button @click="tishi">弹出一个message</n-button>
-            </div>
-            <div class="button">
-                <n-button @click="update">马上更新用户信息</n-button>
-            </div>
-            <div class="button">
-                <n-button @click="showCk">显示cookie</n-button>
-            </div>
-            <div class="color">
-                <span>选择primary颜色</span>
-                <n-color-picker class="color-picker" v-model:value="primaryColor" :show-alpha="false" :modes="['hex']" />
-            </div>
+            <settingItem :actionOnClick="loginByCookie">
+                <template #t1>手动输入cookie来登录</template>
+                <template #t2>奇奇怪怪的登录方式</template>
+            </settingItem>
+            <settingItem :actionOnClick="update">
+                <template #t1>马上更新用户信息！</template>
+                <template #t2>每三分钟自动更新</template>
+            </settingItem>
+            <settingItem :actionOnClick="showCk">
+                <template #t1>查看当前的cookie</template>
+                <template #t2>言简意赅</template>
+            </settingItem>
+            <settingItem>
+                <template #t1>颜色-primary</template>
+                <template #t2>自定义！好耶</template>
+                <template #action>
+                    <n-color-picker class="color-picker" v-model:value="primaryColor" :show-alpha="false"
+                        :modes="['hex']" />
+                </template>
+            </settingItem>
+            <settingItem>
+                <template #t1>退出登录</template>
+                <template #t2>拜拜~</template>
+                <template #action>
+                    <n-button class="button" type="error" secondary @click="logout">退出登录</n-button>
+                </template>
+            </settingItem>
         </div>
     </div>
 </template>
@@ -29,6 +37,7 @@ import { useUserStore } from '@/stores/user'
 import * as api from '@/modules/api'
 import { generate } from '@ant-design/colors'
 import emitter from '@/utils/mitt';
+import settingItem from '@/components/settingItem.vue'
 let primaryColor = ref('')
 let userStore = useUserStore()
 function logout() {
@@ -40,9 +49,6 @@ function loginByCookie() {
     document.cookie = prompt('输入包含MUSIC_U字段的cookie');
     userStore.updateByCookie();
 }
-function tishi() {
-    api.success('呐呐呐呐呐，你点我干啥')
-}
 function update() {
     api.success('开始更新，成功后会有提示')
     userStore.updateByCookie();
@@ -53,7 +59,6 @@ function showCk() {
 }
 watch(primaryColor, (value) => {
     let colors = generate(value)
-    console.log(value);
     emitter.emit('changeTheme', {
         common: {
             primaryColor: colors[5],
@@ -77,10 +82,9 @@ watch(primaryColor, (value) => {
     align-items: center;
 }
 
-.button {
-    margin: 1rem;
+/* .button {
     width: fit-content;
-}
+} */
 
 .color {
     margin: 1rem;

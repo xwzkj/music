@@ -176,7 +176,7 @@ function getImgMainColor() {
 }
 
 .lyric-active {
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .lyric-active .lyric-lrc {

@@ -21,7 +21,6 @@ onMounted(() => {
 })
 emitter.on('changeTheme', (theme) => {
   themeOverrides.value = { ...themeOverrides.value, ...theme }
-  console.log(theme,themeOverrides);
 })
 
 
