@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/colors": "^7.0.2",
     "axios": "^1.6.8",
     "colorthief": "^2.2.0",
     "crypto-js": "^4.2.0",
+    "mitt": "^3.0.1",
     "naive-ui": "^2.38.2",
     "path": "^0.12.7",
     "pinia": "^2.1.7",
