@@ -1,8 +1,8 @@
 <template>
-    <div v-loading="!result">
+    <div v-show="result">
         <musicList v-if="result" :value="result" :nameOnClick="play" />
     </div>
-
+    <n-spin v-if="!result" class="loading-center" />
 
 </template>
 <script setup name="search">
@@ -10,6 +10,8 @@ import * as api from '@/modules/api.js'
 import { useRouter } from 'vue-router'
 import { ref, onMounted, watch } from 'vue'
 import musicList from '@/components/musicList.vue'
+import { usePlayStore } from '@/stores/play'
+let playStore = usePlayStore();
 let router = useRouter();
 let props = defineProps(['keyword']);
 let result = ref('');
@@ -31,10 +33,9 @@ async function search() {
     result.value = res.data.result.songs;
 }
 async function play(id) {
-    let list = playStore.playlistIds
-    list = list.splice(playStore.playlistIndex,0,id)
-    await playStore.playlistInit(list)
-    router.push({ name: 'player'})
+    await playStore.addMusic([id], 0, true);
+    playStore.play(true);
+    router.push({ name: 'player' })
 }
 </script>
 <style scoped>

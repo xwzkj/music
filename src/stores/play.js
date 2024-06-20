@@ -145,24 +145,45 @@ export const usePlayStore = defineStore('play', () => {
             playlist.value[playlistIndex.value].lyric = lyric;//最终赋值
         }
     }
-    //清除列表 使用新的列表替换
-    async function playlistInit(ids) {
+    //把api返回的detail内容转换为播放列表的存储形式
+    function parseDetailToList(data) {
+        return data.map((item) => {
+            return {
+                id: item.id,
+                name: item.name,
+                artist: item.ar.map(item => item.name).join('、'),
+                picurl: item.al.picUrl,
+                tns: api.parseArray(item.tns),
+                fee: item.fee,
+            }
+        });
+    }
+    //清除列表 使用新的列表替换 参数一二选择一个传入
+    async function playlistInit(ids = null, dataFromApi = null) {
+        if (!ids && !dataFromApi) {
+            console.error('播放列表初始化未提供参数');
+            return;
+        }
         stop()
         playlist.value = [];
         playlistIds.value = [];
         playlistIndex.value = 0;
         let native = false;
-        let storageNow = JSON.parse(localStorage.getItem('playlist') || '{}')
-        if (ids == undefined && 'version' in storageNow && storageNow.version == 1) {//如果没传参数 使用本地数据
-            ids = storageNow.ids;
-            playlistIndex.value = storageNow.current;
-            playlist.value = storageNow.playlist;
-            playlistIds.value = storageNow.ids;
+        if (dataFromApi) {//如果传入了api数据
+            playlist.value = parseDetailToList(dataFromApi);
+            playlistIds.value = playlist.value.map(item => item.id);
+            ids = playlistIds.value;
             native = true;
-        } else if (ids == undefined) {//没传参数，本地也没存，那我干鸡毛啊
-            console.error('播放列表初始化未提供参数');
-            return;
-        }
+        } else {//没有传递api数据 那么视为使用本地数据
+            let storageNow = JSON.parse(localStorage.getItem('playlist') || '{}')
+            if (ids == null && 'version' in storageNow && storageNow.version == 1) {//如果没传参数 使用本地数据
+                ids = storageNow.ids;
+                playlistIndex.value = storageNow.current;
+                playlist.value = storageNow.playlist;
+                playlistIds.value = storageNow.ids;
+                native = true;
+            }
+        }//直接走这里是使用传递的id列表
         await addMusic(ids, 0, true, native);
         save();//保存到localstorage
         musicChanged();//把第一首歌（上面设置的0）应用到播放器
@@ -190,24 +211,15 @@ export const usePlayStore = defineStore('play', () => {
                     id: item
                 }
             })
-            //获取detail
+            //获取detail----------------------
             res = await api.songDetail(ids.join(','));
             res = res.data.songs;
             //因为返回的数据也许不按请求的id顺序返回 所以特殊处理
-            res = res.map(item => {
-                return {
-                    id: item.id,
-                    name: item.name,
-                    artist: item.ar.map(item => item.name).join('、'),
-                    picurl: item.al.picUrl,
-                    tns: api.parseArray(item.tns),
-                    fee: item.fee,
-                }
-            })
+            res = parseDetailToList(res);
             list = api.mergeMusicObjArrs(list, res);//按照唯一标识符id合并
         }
 
-        //获取urls
+        //获取urls-----------------------------
         res = await api.songUrlV1(ids.join(','), 'jymaster');
         res = res.data.data;
         //因为返回的数据确实不按请求的id顺序返回 所以特殊处理
@@ -216,13 +228,13 @@ export const usePlayStore = defineStore('play', () => {
         })
         list = api.mergeMusicObjArrs(list, res);//按照唯一标识符id合并
 
-        //将结果放到播放列表中
+        //将结果放到播放列表中---------------------
         if (isNativeList) {
             //直接替换
             playlist.value = list;
             playlistIds.value = ids;
         } else {
-            //插♂入列表
+            //插入列表
             playlist.value.splice(position, 0, ...list)
             playlistIds.value.splice(position, 0, ...ids)
             //改变index
