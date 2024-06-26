@@ -137,8 +137,8 @@ function getImgMainColor() {
   z-index: 1;
   left: 0;
   top: 0;
-  width: 100vw;
-  height: 100vh;
+  width: calc(var(--vw) * 100);
+  height: calc(var(--vh) * 100);
   display: flex;
   justify-content: center;
   background-image: v-bind('background');
@@ -208,7 +208,7 @@ function getImgMainColor() {
 #column-player {
   display: flex;
   flex: 50%;
-  height: 100vh;
+  height: 100%;
   align-items: center;
   justify-content: center;
   min-width: 300px;
@@ -239,7 +239,7 @@ function getImgMainColor() {
   position: relative;
   display: flex;
   flex: 50%;
-  height: 100vh;
+  height: 100%;
   padding: 2em 0 2em 1em;
 }
 

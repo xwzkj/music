@@ -12,16 +12,34 @@
 <body>
   <div id="app"></div>
   <script type="module" src="/src/main.js"></script>
+  <script>
+    function setRealVhVw() {
+      let realVh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${realVh}px`);
+      let realVw = window.innerWidth * 0.01;
+      document.documentElement.style.setProperty('--vw', `${realVw}px`);
+    }
+
+    window.addEventListener('resize', setRealVhVw);
+    window.addEventListener('orientationchange', setRealVhVw);
+    document.addEventListener('DOMContentLoaded', setRealVhVw); 
+  </script>
 </body>
 <style>
+  :root {
+    --vh: 1vh;
+    --vw: 1vw;
+  }
+
   @font-face {
     font-family: "MiSans";
     src: url("/fonts/MiSans VF.ttf") format("truetype");
+    font-display: swap;
   }
 
   body {
     margin: 0;
-    font-family: "MiSans",sans-serif;
+    font-family: "MiSans", sans-serif;
   }
 
   #column-player .n-drawer {
