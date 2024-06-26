@@ -112,16 +112,16 @@ function getImgMainColor() {
       </div>
 
       <div class="column" id="column-lyric">
-          <n-scrollbar id="container-lyric" ref="lyricScrollbarRef">
-            <ul>
-              <div v-for="(item, index) in currentMusic.lyric" :key="index"
-                :class="{ 'lyric-active': lyricActive == index }">
-                <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
-                <li class="lyric-roma">{{ item.roma }}</li>
-                <li class="lyric-tran">{{ item.tran }}</li>
-              </div>
-            </ul>
-          </n-scrollbar>
+        <n-scrollbar id="container-lyric" ref="lyricScrollbarRef">
+          <ul class="lyric-list">
+            <div v-for="(item, index) in currentMusic.lyric" :key="index"
+              :class="{ 'lyric-active': lyricActive == index }">
+              <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
+              <li class="lyric-roma">{{ item.roma }}</li>
+              <li class="lyric-tran">{{ item.tran }}</li>
+            </div>
+          </ul>
+        </n-scrollbar>
       </div>
     </div>
   </div>
@@ -134,13 +134,19 @@ function getImgMainColor() {
 
 #outer {
   position: fixed;
+  /* 覆盖下层元素 */
   z-index: 1;
+
   left: 0;
   top: 0;
   width: calc(var(--vw) * 100);
   height: calc(var(--vh) * 100);
+
   display: flex;
+
+  /* 配合下面content的最大宽度 实现居中 */
   justify-content: center;
+  /* 背景渐变 */
   background-image: v-bind('background');
 
 }
@@ -154,8 +160,8 @@ function getImgMainColor() {
 }
 
 #background {
+  /* 半透明遮罩 */
   position: absolute;
-  z-index: 0;
   display: block;
   height: 100%;
   width: 100%;
@@ -164,47 +170,68 @@ function getImgMainColor() {
   background-color: rgba(255, 255, 255, 0.7);
 
 }
-
-/* .column {
-  border-width: 2px;
-  border-color: chocolate;
-  border-style: solid;
-} */
+/************************歌词部分**********************************************************************/
 .lyric-lrc {
+  /* 歌词原文 */
   color: rgba(68, 68, 68, 0.8);
   font-size: 1.5rem;
   margin-top: 0.5rem;
 }
 
 .lyric-roma {
+  /* 歌词罗马音 */
   color: rgba(87, 87, 87, 0.8);
   font-size: 1.2rem;
 }
 
 .lyric-tran {
+  /* 歌词翻译 */
   color: rgba(87, 87, 87, 0.8);
   font-size: 1.4rem;
 }
 
 .lyric-active {
+  /* 当前歌词 */
   font-weight: 500;
 }
 
 .lyric-active .lyric-lrc {
+  /* 当前歌词原文 */
   color: black;
   font-size: 1.6rem;
 }
 
 .lyric-active .lyric-roma {
+  /* 当前歌词罗马音 */
   color: rgb(50, 50, 50);
   font-size: 1.3rem;
 }
 
 .lyric-active .lyric-tran {
+  /* 当前歌词翻译 */
   color: rgb(45, 45, 45);
   font-size: 1.5rem;
 }
 
+#column-lyric {
+  position: relative;
+  display: flex;
+  flex: 50%;
+  height: 100%;
+  padding: 2em 0 2em 1em;
+}
+
+#container-lyric {
+  width: 100%;
+  height: 100%;
+  /* overflow-y: scroll; */
+}
+
+.lyric-list {
+  padding-top: 50%;
+  padding-bottom: 50%;
+}
+/********************************播放控件**********************************************************/
 #column-player {
   display: flex;
   flex: 50%;
@@ -226,31 +253,13 @@ function getImgMainColor() {
 #btn-control {
   width: 100%;
   display: flex;
-  flex-direction: row;
   justify-content: space-around;
   align-items: center;
 }
 
 #btn-play-control {
+  /* 上一曲 暂停 下一曲 按钮 */
   display: flex;
-}
-
-#column-lyric {
-  position: relative;
-  display: flex;
-  flex: 50%;
-  height: 100%;
-  padding: 2em 0 2em 1em;
-}
-
-#container-lyric {
-  width: 100%;
-  height: 100%;
-  /* overflow-y: scroll; */
-}
-
-ul {
-  padding: 0;
 }
 
 #container-player {
@@ -293,5 +302,17 @@ ul {
 
 ul {
   list-style: none;
+}
+
+@media (max-width: 500px) {
+
+  /* 0-500px 竖屏设备 */
+  #column-lyric {
+    display: none;
+  }
+
+  #column-player {
+    flex: 100%;
+  }
 }
 </style>

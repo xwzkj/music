@@ -71,7 +71,7 @@ let windowWidth = ref(window.innerWidth);
 window.addEventListener('resize', () => {
     windowWidth.value = window.innerWidth;
 })
-let screenIsWide = computed(() => {
+let screenIsWide = computed(() => {//不如媒体查询
     return windowWidth.value > 700;
 })
 let isLiked = computed(() => {
@@ -82,7 +82,6 @@ let isLiked = computed(() => {
     return isLikedList
 })
 
-console.log(userStore.likedSongs.includes(34509838))
 </script>
 
 <style scoped>
