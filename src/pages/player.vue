@@ -7,6 +7,8 @@ import playinglist from '@/components/playinglist.vue'
 
 let playStore = usePlayStore();
 let { currentMusic } = storeToRefs(playStore);//这样要.value
+let lyricScrollbarRef = ref();
+
 let showPlayingList = ref(false);//是否展示播放列表
 let lyricActive = ref();//当前的歌词序号
 let background = ref('');//背景渐变色数据
@@ -15,7 +17,7 @@ let id_clock1 = NaN;//定时器id
 onMounted(async () => {
   //监听歌词滚动
   watch(lyricActive, (value) => {
-    document.getElementById('container-lyric').scrollTo({ top: document.getElementById('lrc-' + value).offsetTop - 200, behavior: 'smooth' });
+    lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + value).offsetTop - 200, behavior: 'smooth' });
   })
   //更新当前歌词
   id_clock1 = setInterval(() => {
@@ -56,69 +58,70 @@ function getImgMainColor() {
 
 <template>
   <div id="outer">
-    <div id="background">
-    </div>
+    <div id="background"></div>
+    <div id="content">
 
-    <div class="column" id="column-player">
-      <div id="container-player">
-        <div id="music-name">{{ currentMusic.name }}</div>
-        <div id="music-artist">{{ currentMusic.artist }}</div>
-        <div id="player-centerblock">
-          <div id="music-img-container">
-            <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img" @load="getImgMainColor"
-              crossorigin="anonymous">
-          </div>
-          <!-- 进度条 -->
-          <div id="music-progress">
-            <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
-              :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
-          </div>
-          <!-- 播放控制按钮 -->
-          <div id="btn-control">
-            <div id="btn-like" class="button">
-              <n-icon size="3.5rem" class="icon"><i-hugeicons-favourite-square /></n-icon>
+      <div class="column" id="column-player">
+        <div id="container-player">
+          <div id="music-name">{{ currentMusic.name }}</div>
+          <div id="music-artist">{{ currentMusic.artist }}</div>
+          <div id="player-centerblock">
+            <div id="music-img-container">
+              <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img" @load="getImgMainColor"
+                crossorigin="anonymous">
             </div>
-            <div id="btn-play-control">
-              <div id="btn-prev" class="button">
-                <n-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
-              </div>
-              <div id="btn-pause" class="button">
-                <n-icon size="3.5rem" class="icon" v-if="playStore.musicStatus.paused"
-                  @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
-                <n-icon size="3.5rem" class="icon" v-if="!playStore.musicStatus.paused"
-                  @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
-              </div>
-              <div id="btn-next" class="button">
-                <n-icon size="3.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
-              </div>
+            <!-- 进度条 -->
+            <div id="music-progress">
+              <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
+                :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
             </div>
-            <div id="btn-list" class="button">
-              <n-icon size="3.5rem" class="icon"
-                @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-02 /></n-icon>
+            <!-- 播放控制按钮 -->
+            <div id="btn-control">
+              <div id="btn-like" class="button">
+                <n-icon size="3.5rem" class="icon"><i-hugeicons-favourite-square /></n-icon>
+              </div>
+              <div id="btn-play-control">
+                <div id="btn-prev" class="button">
+                  <n-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
+                </div>
+                <div id="btn-pause" class="button">
+                  <n-icon size="3.5rem" class="icon" v-if="playStore.musicStatus.paused"
+                    @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
+                  <n-icon size="3.5rem" class="icon" v-if="!playStore.musicStatus.paused"
+                    @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
+                </div>
+                <div id="btn-next" class="button">
+                  <n-icon size="3.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
+                </div>
+              </div>
+              <div id="btn-list" class="button">
+                <n-icon size="3.5rem" class="icon"
+                  @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-02 /></n-icon>
+              </div>
             </div>
           </div>
         </div>
+        <div class="drawer">
+          <n-drawer v-model:show="showPlayingList" placement="bottom" to="#column-player" height="70%"
+            show-mask="transparent">
+            <n-drawer-content :closable="true" :native-scrollbar="false" title="播放列表">
+              <playinglist />
+            </n-drawer-content>
+          </n-drawer>
+        </div>
       </div>
-      <div class="drawer">
-        <n-drawer v-model:show="showPlayingList" placement="bottom" to="#column-player" height="70%"
-          show-mask="transparent">
-          <n-drawer-content :closable="true" :native-scrollbar="false" title="播放列表">
-            <playinglist />
-          </n-drawer-content>
-        </n-drawer>
-      </div>
-    </div>
 
-    <div class="column" id="column-lyric">
-      <div id="container-lyric">
-        <ul>
-          <div v-for="(item, index) in currentMusic.lyric" :key="index"
-            :class="{ 'lyric-active': lyricActive == index }">
-            <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
-            <li class="lyric-roma">{{ item.roma }}</li>
-            <li class="lyric-tran">{{ item.tran }}</li>
-          </div>
-        </ul>
+      <div class="column" id="column-lyric">
+          <n-scrollbar id="container-lyric" ref="lyricScrollbarRef">
+            <ul>
+              <div v-for="(item, index) in currentMusic.lyric" :key="index"
+                :class="{ 'lyric-active': lyricActive == index }">
+                <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
+                <li class="lyric-roma">{{ item.roma }}</li>
+                <li class="lyric-tran">{{ item.tran }}</li>
+              </div>
+            </ul>
+          </n-scrollbar>
       </div>
     </div>
   </div>
@@ -137,14 +140,22 @@ function getImgMainColor() {
   width: 100vw;
   height: 100vh;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
   background-image: v-bind('background');
 
 }
 
+#content {
+  display: flex;
+  height: 100%;
+  min-width: 400px;
+  width: 100%;
+  max-width: calc(100vh/9*16);
+}
+
 #background {
   position: absolute;
-  z-index: -1;
+  z-index: 0;
   display: block;
   height: 100%;
   width: 100%;
@@ -160,19 +171,19 @@ function getImgMainColor() {
   border-style: solid;
 } */
 .lyric-lrc {
-  color: black;
-  font-size: 1.2rem;
+  color: rgba(68, 68, 68, 0.8);
+  font-size: 1.5rem;
   margin-top: 0.5rem;
 }
 
 .lyric-roma {
-  color: rgb(68, 68, 68);
-  font-size: 0.9rem;
+  color: rgba(87, 87, 87, 0.8);
+  font-size: 1.2rem;
 }
 
 .lyric-tran {
-  color: rgb(68, 68, 68);
-  font-size: 1.1rem;
+  color: rgba(87, 87, 87, 0.8);
+  font-size: 1.4rem;
 }
 
 .lyric-active {
@@ -180,20 +191,23 @@ function getImgMainColor() {
 }
 
 .lyric-active .lyric-lrc {
-  font-size: 1.4rem;
+  color: black;
+  font-size: 1.6rem;
 }
 
 .lyric-active .lyric-roma {
-  font-size: 1.1rem;
+  color: rgb(50, 50, 50);
+  font-size: 1.3rem;
 }
 
 .lyric-active .lyric-tran {
-  font-size: 1.2rem;
+  color: rgb(45, 45, 45);
+  font-size: 1.5rem;
 }
 
 #column-player {
   display: flex;
-  flex: 40%;
+  flex: 50%;
   height: 100vh;
   align-items: center;
   justify-content: center;
@@ -224,15 +238,15 @@ function getImgMainColor() {
 #column-lyric {
   position: relative;
   display: flex;
-  flex: 60%;
+  flex: 50%;
   height: 100vh;
+  padding: 2em 0 2em 1em;
 }
 
 #container-lyric {
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
-  padding: 10%;
+  /* overflow-y: scroll; */
 }
 
 ul {

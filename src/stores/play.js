@@ -15,7 +15,6 @@ export const usePlayStore = defineStore('play', () => {
     let currentMusic = computed(() => { return playlist.value[playlistIndex.value] })
     let musicStatus = ref({ duration: 0, currentTime: 0, paused: true })
     // 播放列表
-    let playlistIds = ref([])
     //{id,name,artist,tns,url,picurl,?lyric}
     let playlist = ref([])
     // 播放列表索引
@@ -87,15 +86,17 @@ export const usePlayStore = defineStore('play', () => {
     }
     //切歌后操作 需要手动调用
     function musicChanged() {
+        if(playlist.value.length == 0){
+            return;
+        }
         let value = currentMusic.value
-        parseLyric(value.id)//解析歌词
-        player.value.src = value.url//将audio元素的源地址设置为这首歌
+        parseLyric()
         if ("mediaSession" in navigator) {//更新session元数据信息
             navigator.mediaSession.metadata = null
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: currentMusic.value.name,
-                artist: currentMusic.value.artist,
-                artwork: [{ src: currentMusic.value.picurl }]
+                title: value.name,
+                artist: value.artist,
+                artwork: [{ src: value.picurl }]
             })
         }
         updateProgress(true, { position: 0, duration: player.value.duration });
@@ -103,7 +104,7 @@ export const usePlayStore = defineStore('play', () => {
         save();
 
     }
-    //解析歌词
+    //获取并解析歌词
     async function parseLyric() {
         if (!('lyric' in currentMusic.value)) {//如果没有保存的数据才去请求
             let apiResult = await api.lyricNew(currentMusic.value.id)
@@ -145,6 +146,13 @@ export const usePlayStore = defineStore('play', () => {
             playlist.value[playlistIndex.value].lyric = lyric;//最终赋值
         }
     }
+    //获取并应用歌曲url
+    async function getAudioUrl(id) {
+        let res = await api.songUrlV1(id, 'jymaster');
+        res = res.data.data[0].url;
+        player.value.src = res;
+        return res;
+    }
     //把api返回的detail内容转换为播放列表的存储形式
     function parseDetailToList(data) {
         return data.map((item) => {
@@ -160,92 +168,62 @@ export const usePlayStore = defineStore('play', () => {
     }
     //清除列表 使用新的列表替换 参数一二选择一个传入
     async function playlistInit(ids = null, dataFromApi = null) {
-        if (!ids && !dataFromApi) {
-            console.error('播放列表初始化未提供参数');
-            return;
-        }
         stop()
         playlist.value = [];
-        playlistIds.value = [];
         playlistIndex.value = 0;
-        let native = false;
-        if (dataFromApi) {//如果传入了api数据
-            playlist.value = parseDetailToList(dataFromApi);
-            playlistIds.value = playlist.value.map(item => item.id);
-            ids = playlistIds.value;
-            native = true;
-        } else {//没有传递api数据 那么视为使用本地数据
+        if (ids == null) {//没传递id列表
             let storageNow = JSON.parse(localStorage.getItem('playlist') || '{}')
-            if (ids == null && 'version' in storageNow && storageNow.version == 1) {//如果没传参数 使用本地数据
-                ids = storageNow.ids;
+            if (dataFromApi) {//传入了api数据
+                playlist.value = parseDetailToList(dataFromApi);
+            } else if (ids == null && 'version' in storageNow && storageNow.version == 2) {//如果没传参数 使用localstorage的数据
                 playlistIndex.value = storageNow.current;
                 playlist.value = storageNow.playlist;
-                playlistIds.value = storageNow.ids;
-                native = true;
+            } else {//localstorage也没有数据
+                console.error('播放列表初始化未提供参数');
             }
-        }//直接走这里是使用传递的id列表
-        await addMusic(ids, 0, true, native);
+        } else {//传了id列表
+            await addMusic(ids, 0, true);
+        }
         save();//保存到localstorage
-        musicChanged();//把第一首歌（上面设置的0）应用到播放器
-        return;
+        musicChanged();//把当前音乐应用到播放器
     }
     /**
      * 添加音乐到播放列表 默认添加到最前面
      * @param {String} id 
      * @param {Number} position 
      * @param {Boolean} letIndexIsNew 是否让index指向新添加的音乐的第一个
-     * @param {Boolean} isNativeList 是否只是补全本地列表
      */
-    async function addMusic(ids = [], position = 0, letIndexIsNew = false, isNativeList = false) {
-        console.log('添加音乐到播放列表', ids, position, letIndexIsNew, isNativeList);
+    async function addMusic(ids = [], position = 0, letIndexIsNew = false) {
+        console.log('添加音乐到播放列表', ids, position, letIndexIsNew);
         if (ids.length == 0) {//如果没传id
             return;
         }
         let list = {};
         let res;
-        if (isNativeList) {
-            list = playlist.value;
-        } else {
-            list = ids.map(item => {
-                return {
-                    id: item
-                }
-            })
-            //获取detail----------------------
-            res = await api.songDetail(ids.join(','));
-            res = res.data.songs;
-            //因为返回的数据也许不按请求的id顺序返回 所以特殊处理
-            res = parseDetailToList(res);
-            list = api.mergeMusicObjArrs(list, res);//按照唯一标识符id合并
-        }
-
-        //获取urls-----------------------------
-        res = await api.songUrlV1(ids.join(','), 'jymaster');
-        res = res.data.data;
-        //因为返回的数据确实不按请求的id顺序返回 所以特殊处理
-        res = res.map(item => {
-            return { id: item.id, url: item.url }
+        list = ids.map(item => {
+            return {
+                id: item
+            }
         })
+        //获取detail----------------------
+        res = await api.songDetail(ids.join(','));
+        res = res.data.songs;
+        //因为返回的数据也许不按请求的id顺序返回 所以特殊处理
+        res = parseDetailToList(res);
         list = api.mergeMusicObjArrs(list, res);//按照唯一标识符id合并
 
         //将结果放到播放列表中---------------------
-        if (isNativeList) {
-            //直接替换
-            playlist.value = list;
-            playlistIds.value = ids;
+        //插入列表
+        playlist.value.splice(position, 0, ...list)
+        //改变index
+        if (letIndexIsNew == true) {
+            playlistIndex.value = position;
         } else {
-            //插入列表
-            playlist.value.splice(position, 0, ...list)
-            playlistIds.value.splice(position, 0, ...ids)
-            //改变index
-            if (letIndexIsNew == true) {
-                playlistIndex.value = position;
-            } else {
-                if (position < playlistIndex.value) {
-                    playlistIndex.value += position;
-                }
+            if (position < playlistIndex.value) {
+                playlistIndex.value += position;
             }
         }
+
     }
     function save() {
         let list = playlist.value.map(item => {
@@ -253,7 +231,7 @@ export const usePlayStore = defineStore('play', () => {
             let { url, lyric, ...a } = item;
             return a;
         })
-        let storage = { version: 1, playlist: list, current: playlistIndex.value, ids: playlistIds.value, };
+        let storage = { version: 2, playlist: list, current: playlistIndex.value };
         localStorage.removeItem('playlist');
         localStorage.setItem('playlist', JSON.stringify(storage));
     }
@@ -266,10 +244,11 @@ export const usePlayStore = defineStore('play', () => {
         updateProgress(true);
     }
     //开始/继续播放 从头播放需要传入true 调用前需要设置好audio的src
-    function play(isNew = false) {
+    async function play(isNew = false) {
         if (isNew) {
             player.value.currentTime = 0;
             musicChanged();
+            await getAudioUrl(currentMusic.value.id)
         }
         player.value.play();
         updateProgress(true);
@@ -277,7 +256,7 @@ export const usePlayStore = defineStore('play', () => {
     function next() {
         pause()
         console.log(`[playStore]next`);
-        if (playlistIndex.value < playlistIds.value.length - 1) {
+        if (playlistIndex.value < playlist.value.length - 1) {
             playlistIndex.value++;
         } else {
             playlistIndex.value = 0;
@@ -290,7 +269,7 @@ export const usePlayStore = defineStore('play', () => {
         if (playlistIndex.value > 0) {
             playlistIndex.value--;
         } else {
-            playlistIndex.value = playlistIds.value.length - 1;
+            playlistIndex.value = playlist.value.length - 1;
         }
         play(true);
     }
@@ -335,7 +314,6 @@ export const usePlayStore = defineStore('play', () => {
         player,
         currentMusic,
         playlist,
-        playlistIds,
         playlistIndex,
         musicStatus,
         playlistInit,
