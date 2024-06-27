@@ -328,6 +328,27 @@ export function parseArtist(arObj) {
     let ar = arObj.map(item => item.name);
     return ar.join('、');
 }
+/**
+ * 把一个对象合并到目标对象 这个函数是多级递归合并
+ * @param {Object} target 要合并到的对象
+ * @param {Object} source 源对象
+ * @returns 
+ */
+export function objDeepMerge(target, source) {
+    for (const key in source) {
+      if (source.hasOwnProperty(key)) {
+        if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
+          if (!target[key]) {
+            target[key] = {};
+          }
+          objDeepMerge(target[key], source[key]);
+        } else {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  }
 /**把简单数组用'、'连起来 会判断是否为数组 不是的话会返回空文本
  * @param {Array} array
  */

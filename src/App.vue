@@ -5,7 +5,13 @@ import { usePlayStore } from '@/stores/play'
 import MessageApi from "@/modules/messageApi.vue";
 import Container from "./pages/container.vue";
 import emitter from "@/utils/mitt";
-let themeOverrides = ref({});
+import * as api from "@/modules/api";
+let themeOverrides = ref({
+  common: {
+    borderRadius: "10px",
+    borderRadiusSmall: "7px"
+  }
+});
 let userStore = useUserStore();
 let playStore = usePlayStore();
 userStore.updateByStorage();
@@ -20,7 +26,8 @@ onMounted(() => {
   }
 })
 emitter.on('changeTheme', (theme) => {
-  themeOverrides.value = { ...themeOverrides.value, ...theme }
+  api.objDeepMerge(themeOverrides.value, theme)
+  console.log(themeOverrides.value);
 })
 
 
