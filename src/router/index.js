@@ -10,7 +10,7 @@ const router = createRouter({
                 return route.query
             },
             meta: {
-                keepAlive: true
+                keepAlive: false
             }
         },
         {
