@@ -3,11 +3,15 @@ import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
+import { useUserStore } from '@/stores/user'
 import playinglist from '@/components/playinglist.vue'
-
+let userStore = useUserStore();
 let playStore = usePlayStore();
 let { currentMusic } = storeToRefs(playStore);//这样要.value
 let lyricScrollbarRef = ref();
+let isLiked = computed(() => {
+  return userStore.likedSongs.includes(currentMusic.value.id);
+})
 
 let showPlayingList = ref(false);//是否展示播放列表
 let lyricActive = ref();//当前的歌词序号
@@ -78,7 +82,10 @@ function getImgMainColor() {
             <!-- 播放控制按钮 -->
             <div id="btn-control">
               <div id="btn-like" class="button">
-                <n-icon size="3.5rem" class="icon"><i-hugeicons-favourite-square /></n-icon>
+                <n-icon size="3.5rem" class="icon">
+                  <i-ant-design-heart-outlined v-show="!isLiked" />
+                  <i-ant-design-heart-filled v-show="isLiked" />
+                </n-icon>
               </div>
               <div id="btn-play-control">
                 <div id="btn-prev" class="button">
@@ -96,7 +103,7 @@ function getImgMainColor() {
               </div>
               <div id="btn-list" class="button">
                 <n-icon size="3.5rem" class="icon"
-                  @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-02 /></n-icon>
+                  @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-03 /></n-icon>
               </div>
             </div>
           </div>
@@ -170,6 +177,7 @@ function getImgMainColor() {
   background-color: rgba(255, 255, 255, 0.7);
 
 }
+
 /************************歌词部分**********************************************************************/
 .lyric-lrc {
   /* 歌词原文 */
@@ -231,6 +239,7 @@ function getImgMainColor() {
   padding-top: 50%;
   padding-bottom: 50%;
 }
+
 /********************************播放控件**********************************************************/
 #column-player {
   display: flex;

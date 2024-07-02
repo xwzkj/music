@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-show="result.tracks | !loading">
+        <div v-if="result.tracks && !loading" key="playlst-content">
             <div id="playlistDetail">
                 <img id="playlistImg" :src="result.coverImgUrl" v-if="result.coverImgUrl">
                 <div id="playlistInfo">
@@ -23,7 +23,9 @@
                 <musicList :value="result.tracks" :nameOnClick="play" />
             </div>
         </div>
-        <n-spin size="large" v-if="!result.tracks | loading" class="playlist-spin"/>
+        <div class="playlist-spin" key="playlst-spin" v-if="!result.tracks || loading" >
+            <n-spin size="large" />
+        </div>
     </div>
 </template>
 
@@ -68,7 +70,7 @@ async function parsePlayList() {
 
 async function playAll() {
     loading.value = true;
-    await playStore.playlistInit(null,result.value.tracks)
+    await playStore.playlistInit(null, result.value.tracks)
     playStore.play(true);
     router.push({ name: 'player' })
     loading.value = false;

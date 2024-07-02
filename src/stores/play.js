@@ -86,7 +86,7 @@ export const usePlayStore = defineStore('play', () => {
     }
     //切歌后操作 需要手动调用
     function musicChanged() {
-        if(playlist.value.length == 0){
+        if (playlist.value.length == 0) {
             return;
         }
         let value = currentMusic.value
@@ -245,6 +245,10 @@ export const usePlayStore = defineStore('play', () => {
     }
     //开始/继续播放 从头播放需要传入true 调用前需要设置好audio的src
     async function play(isNew = false) {
+        //如果当前没有可以播放的源 那么就现在获取
+        if (player.value.readyState == 0) {
+            isNew = true
+        }
         if (isNew) {
             player.value.currentTime = 0;
             musicChanged();

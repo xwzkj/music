@@ -1,16 +1,8 @@
 <template>
     <div id="home">
-        <h1>这个小破站还没完工啊啊啊啊啊啊</h1>
-        <p>目前可用：</p>
-        <ul>
-            <li>搜索</li>
-            <li>播放</li>
-            <li>日推</li>
-            <li>歌单</li>
-            <li>登录</li>
-            <li>自己的主页</li>
-            <li>设置(半成品)<a href="/#/setting">/setting</a></li>
-        </ul>
+        <div>播放页<a href="/#/player">点我</a></div>
+        <div>登录页面<a href="/#/login">点我</a></div>
+        <div>设置<a href="/#/setting">点我</a></div>
         <div id="homeRecommend">
             <div class="recommend-item" id="homeDailySongs"
                 @click="router.push({ name: 'playlist', query: { isDailySongs: true } })">
