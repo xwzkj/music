@@ -170,6 +170,7 @@ export function like(id, like = true) {
 
 export async function likeAndUpdateLikelist(id, like = true) {
     const userStore = useUserStore(pinia);
+    //先把结果更新到列表 防止操作延迟降低使用体验
     if (like) {
         userStore.likedSongs.push(Number(id));
     } else {

@@ -83,8 +83,8 @@ function getImgMainColor() {
             <div id="btn-control">
               <div id="btn-like" class="button">
                 <n-icon size="3.5rem" class="icon">
-                  <i-ant-design-heart-outlined v-show="!isLiked" />
-                  <i-ant-design-heart-filled v-show="isLiked" />
+                  <i-ant-design-heart-outlined v-show="!isLiked" @click="api.likeAndUpdateLikelist(currentMusic.id,true)"/>
+                  <i-ant-design-heart-filled v-show="isLiked" @click="api.likeAndUpdateLikelist(currentMusic.id,false)" />
                 </n-icon>
               </div>
               <div id="btn-play-control">
