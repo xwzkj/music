@@ -10,11 +10,11 @@ import { NAlert } from 'naive-ui';
 *以下是NeteaseCloudMusicApi接口的调用方法
 *-----------------------------------------------
 */
-export let apiurl = '/api'
+export let apiurl = 'https://api.xwzkj.top'
 let musicApi = axios.create({
     baseURL: apiurl,
     timeout: 20000,
-    withCredentials: true,
+    // withCredentials: true,//跨域时可能因为允许的源是通配符（*）而阻止访问接口 故直接通过参数传递cookie
 })
 /**
  * 网络请求函数
@@ -239,39 +239,6 @@ export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter 
 *-----------------------------------------------
 */
 
-export async function getMyIp() {
-    console.log('[api]获取我的ip');
-    for (let i = 0; i < 4; i++) {
-        try {
-            let ip = await getIp(i);
-            console.log(`获取ip成功：${ip}`);
-            return ip;
-        } catch (e) {
-            console.log(`获取ip时网络错误`, i, e);
-        }
-    }
-}
-async function getIp(apiIndex) {
-    if (apiIndex == 0) {
-        let ip = await axios.get(`${apiurl}/api`)//下面那仨全踏马跨域 自己搭了一个
-        return ip.data;
-    }
-    // if (apiIndex == 0) {
-    //     let ip = await axios.get('https://whois.pconline.com.cn/ipJson.jsp?json=true')
-    //     return ip.data.ip;
-    // }
-    // if (apiIndex == 1) {
-    //     let ip = await axios.get('https://webapi-pc.meitu.com/common/ip_location')
-    //     return Object.keys(ip.data.data)[0]
-    // }
-    // if (apiIndex == 2) {
-    //     let ip = await axios.get('https://api.ipify.org')
-    //     return ip.data;
-    // }
-    if (apiIndex >= 1) {
-        return `114.114.${random(0, 255)}.${random(0, 255)}`
-    }
-}
 
 function renderMessage(props) {
     let { type } = props;
