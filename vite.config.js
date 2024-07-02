@@ -1,3 +1,5 @@
+const INVALID_CHAR_REGEX = /[\u0000-\u001F"#$&*+,:;<=>?[\]^`{|}\u007F]/g
+const DRIVE_LETTER_REGEX = /^[a-z]:/i
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
@@ -58,4 +60,32 @@ export default defineConfig({
     //   }
     // }
   },
+
+  build: {
+    reportCompressedSize: false,
+    sourcemap: true,
+    commonjsOptions: {
+      ignoreTryCatch: false
+    },
+    outDir: 'dist',
+    assetsDir: 'assets',
+    chunkSizeWarningLimit: 2000, // 解决包大小超过500kb的警告
+    rollupOptions: {
+      output: {
+        manualChunks: {},
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+        // 解决文件名中的非法字符
+        sanitizeFileName: (name) => {
+          const match = DRIVE_LETTER_REGEX.exec(name)
+          const driveLetter = match ? match[0] : ''
+          return (
+            driveLetter + name.slice(driveLetter.length).replace(INVALID_CHAR_REGEX, '')
+          )
+        }
+      }
+    }
+  }
+
 })
