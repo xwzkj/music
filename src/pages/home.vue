@@ -17,6 +17,7 @@
 
 <script setup name="home">
 import { useRouter } from 'vue-router';
+import marqueePlus from '@/components/marqueePlus.vue';
 const router = useRouter();
 let date = new Date().getDate();
 </script>

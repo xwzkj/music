@@ -5,6 +5,7 @@ import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
 import { useUserStore } from '@/stores/user'
 import playinglist from '@/components/playinglist.vue'
+import MarqueePlus from '@/components/marqueePlus.vue'
 let userStore = useUserStore();
 let playStore = usePlayStore();
 let { currentMusic } = storeToRefs(playStore);//这样要.value
@@ -12,7 +13,15 @@ let lyricScrollbarRef = ref();
 let isLiked = computed(() => {
   return userStore.likedSongs.includes(currentMusic.value.id);
 })
-
+let nameWithTns = computed(() => {
+  let tns = currentMusic.value.tns;
+  let name = currentMusic.value.name;
+  if (tns) {
+    return name + `<span style="color:grey">&nbsp;&nbsp;&nbsp;(${tns})</span>`
+  } else{
+    return name;
+  }
+})
 let showPlayingList = ref(false);//是否展示播放列表
 let lyricActive = ref();//当前的歌词序号
 let background = ref('');//背景渐变色数据
@@ -67,7 +76,9 @@ function getImgMainColor() {
 
       <div class="column" id="column-player">
         <div id="container-player">
-          <div id="music-name">{{ currentMusic.name }}</div>
+          <div id="music-name">
+            <MarqueePlus :html="nameWithTns" />
+          </div>
           <div id="music-artist">{{ currentMusic.artist }}</div>
           <div id="player-centerblock">
             <div id="music-img-container">
@@ -83,8 +94,10 @@ function getImgMainColor() {
             <div id="btn-control">
               <div id="btn-like" class="button">
                 <n-icon size="3.5rem" class="icon">
-                  <i-ant-design-heart-outlined v-show="!isLiked" @click="api.likeAndUpdateLikelist(currentMusic.id,true)"/>
-                  <i-ant-design-heart-filled v-show="isLiked" @click="api.likeAndUpdateLikelist(currentMusic.id,false)" />
+                  <i-ant-design-heart-outlined v-show="!isLiked"
+                    @click="api.likeAndUpdateLikelist(currentMusic.id, true)" />
+                  <i-ant-design-heart-filled v-show="isLiked"
+                    @click="api.likeAndUpdateLikelist(currentMusic.id, false)" />
                 </n-icon>
               </div>
               <div id="btn-play-control">

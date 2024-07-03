@@ -63,7 +63,7 @@ export default defineConfig({
 
   build: {
     reportCompressedSize: false,
-    sourcemap: true,
+    sourcemap: false,
     commonjsOptions: {
       ignoreTryCatch: false
     },
