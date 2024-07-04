@@ -38,10 +38,10 @@ function updateIfNeedScroll() {
         let widthValue = Math.max(text1Ele.value.offsetWidth, staticTextEle.value.offsetWidth)
         needScroll.value = widthValue > sizerEle.value.offsetWidth
         if (needScroll.value){
-            sizerEle.value.style.setProperty('--marquee-duration', (widthValue / 120) + 's')
+            sizerEle.value.style.setProperty('--marquee-duration', (widthValue / 80) + 's')
         }
-        console.log('marquee 判断', widthValue, sizerEle.value.offsetWidth);
-        console.log(text1Ele.value, staticTextEle.value, sizerEle.value);
+        // console.log('marquee 判断', widthValue, sizerEle.value.offsetWidth);
+        // console.log(text1Ele.value, staticTextEle.value, sizerEle.value);
     } else {
         needScroll.value = false
         console.log('marquee 判断 未挂载', text1Ele.value, sizerEle.value);

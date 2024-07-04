@@ -8,52 +8,19 @@ import playinglist from '@/components/playinglist.vue'
 import MarqueePlus from '@/components/marqueePlus.vue'
 let userStore = useUserStore();
 let playStore = usePlayStore();
-let { currentMusic } = storeToRefs(playStore);//这样要.value
+let { currentMusic } = storeToRefs(playStore);
 let lyricScrollbarRef = ref();
-let isLiked = computed(() => {
-  return userStore.likedSongs.includes(currentMusic.value.id);
-})
-let nameWithTns = computed(() => {
-  let tns = currentMusic.value.tns;
-  let name = currentMusic.value.name;
-  if (tns) {
-    return name + `<span style="color:grey">&nbsp;&nbsp;&nbsp;(${tns})</span>`
-  } else{
-    return name;
-  }
-})
 let showPlayingList = ref(false);//是否展示播放列表
-let lyricActive = ref();//当前的歌词序号
+// let lyricActive = ref();//当前的歌词序号 现在用playstore里的currentMusic中的currentLyricIndex
 let background = ref('');//背景渐变色数据
 let id_clock1 = NaN;//定时器id
 //挂载
 onMounted(async () => {
   //监听歌词滚动
-  watch(lyricActive, (value) => {
-    lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + value).offsetTop - 200, behavior: 'smooth' });
-  })
-  //更新当前歌词
-  id_clock1 = setInterval(() => {
-    try {
-      if (playStore.musicStatus.paused == false && 'lyric' in playStore.currentMusic) {
-        //歌词滚动
-        for (let i = 0; i < playStore.currentMusic.lyric.length; i++) {
-          let next = false;
-          if (i == playStore.currentMusic.lyric.length - 1) {
-            next = true;
-          } else if (playStore.currentMusic.lyric[i + 1].time > playStore.musicStatus.currentTime * 1000) {
-            next = true;
-          }
-          if (playStore.currentMusic.lyric[i].time <= playStore.musicStatus.currentTime * 1000 && next == true) {
-            lyricActive.value = i;
-            break;
-          }
-        }
-      }
-    } catch (e) {
-      api.error(`出错了！\n位置:player.vue onMounted setInterval\n错误信息:${e}`)
-    }
-  }, 50)
+  watch(() => currentMusic.value.currentLyricIndex, (value) => {
+    console.log('当前歌词改变');
+    lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + value)?.offsetTop - 200, behavior: 'smooth' });
+  }, { deep: true })
 })
 //卸载前
 onBeforeUnmount(() => {
@@ -77,7 +44,7 @@ function getImgMainColor() {
       <div class="column" id="column-player">
         <div id="container-player">
           <div id="music-name">
-            <MarqueePlus :html="nameWithTns" />
+            <MarqueePlus :html="playStore.nameWithTns" />
           </div>
           <div id="music-artist">{{ currentMusic.artist }}</div>
           <div id="player-centerblock">
@@ -88,34 +55,34 @@ function getImgMainColor() {
             <!-- 进度条 -->
             <div id="music-progress">
               <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
-                :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
+                :tooltip="false" :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
             </div>
             <!-- 播放控制按钮 -->
             <div id="btn-control">
               <div id="btn-like" class="button">
-                <n-icon size="3.5rem" class="icon">
-                  <i-ant-design-heart-outlined v-show="!isLiked"
+                <n-icon size="2.5rem" class="icon">
+                  <i-ant-design-heart-outlined v-if="!currentMusic?.isLiked"
                     @click="api.likeAndUpdateLikelist(currentMusic.id, true)" />
-                  <i-ant-design-heart-filled v-show="isLiked"
+                  <i-ant-design-heart-filled v-if="currentMusic?.isLiked"
                     @click="api.likeAndUpdateLikelist(currentMusic.id, false)" />
                 </n-icon>
               </div>
               <div id="btn-play-control">
                 <div id="btn-prev" class="button">
-                  <n-icon size="3.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
+                  <n-icon size="4rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
                 </div>
                 <div id="btn-pause" class="button">
-                  <n-icon size="3.5rem" class="icon" v-if="playStore.musicStatus.paused"
+                  <n-icon size="4rem" class="icon" v-if="playStore.musicStatus.paused"
                     @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
-                  <n-icon size="3.5rem" class="icon" v-if="!playStore.musicStatus.paused"
+                  <n-icon size="4rem" class="icon" v-if="!playStore.musicStatus.paused"
                     @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
                 </div>
                 <div id="btn-next" class="button">
-                  <n-icon size="3.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
+                  <n-icon size="4rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
                 </div>
               </div>
               <div id="btn-list" class="button">
-                <n-icon size="3.5rem" class="icon"
+                <n-icon size="2.5rem" class="icon"
                   @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-03 /></n-icon>
               </div>
             </div>
@@ -135,7 +102,7 @@ function getImgMainColor() {
         <n-scrollbar id="container-lyric" ref="lyricScrollbarRef">
           <ul class="lyric-list">
             <div v-for="(item, index) in currentMusic.lyric" :key="index"
-              :class="{ 'lyric-active': lyricActive == index }">
+              :class="{ 'lyric-active': currentMusic.currentLyricIndex == index }">
               <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
               <li class="lyric-roma">{{ item.roma }}</li>
               <li class="lyric-tran">{{ item.tran }}</li>

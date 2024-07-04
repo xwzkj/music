@@ -12,12 +12,16 @@
                 <div class="homeRecommend-title">每日推荐</div>
             </div>
         </div>
+        <br>
+        音乐控件卡片预览：
+        <MusicController />
     </div>
 </template>
 
 <script setup name="home">
 import { useRouter } from 'vue-router';
 import marqueePlus from '@/components/marqueePlus.vue';
+import MusicController from '@/components/musicController.vue';
 const router = useRouter();
 let date = new Date().getDate();
 </script>

@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import * as api from '@/modules/api'
 import { ref, computed } from 'vue'
+import { useUserStore } from "./user";
 
 export const usePlayStore = defineStore('play', () => {
+    console.log('playstore被创建 ');
     /**
      * @typedef {Object} AudioElementWithValue
      * @property {HTMLAudioElement} value - 包含的HTMLAudioElement实例
@@ -12,7 +14,15 @@ export const usePlayStore = defineStore('play', () => {
      * @type {AudioElementWithValue}
      */
     let player = ref(new Audio());
-    let currentMusic = computed(() => { return playlist.value[playlistIndex.value] })
+    let lyricIndexNow = ref(0);//内部变量 供给下面的计算属性使用
+    let currentMusic = computed(() => {
+        let userStore = useUserStore();
+        return {
+            ...playlist.value[playlistIndex.value],
+            isLiked: userStore.likedSongs.includes(playlist.value[playlistIndex.value].id),
+            currentLyricIndex: lyricIndexNow.value
+        }
+    })
     let musicStatus = ref({ duration: 0, currentTime: 0, paused: true })
     // 播放列表
     //{id,name,artist,tns,url,picurl,?lyric}
@@ -20,6 +30,15 @@ export const usePlayStore = defineStore('play', () => {
     // 播放列表索引
     let playlistIndex = ref(0)
 
+    let nameWithTns = computed(() => {
+        let tns = currentMusic.value.tns;
+        let name = currentMusic.value.name;
+        if (tns) {
+            return name + `<span style="color:grey">&nbsp;&nbsp;&nbsp;(${tns})</span>`
+        } else {
+            return name;
+        }
+    })
 
     //设置媒体会话的动作
     if ("mediaSession" in navigator) {
@@ -283,7 +302,27 @@ export const usePlayStore = defineStore('play', () => {
         updateProgress(true, { position: time, duration: player.value.duration });
     }
 
-
+    setInterval(() => {
+        try {
+            if (musicStatus.value.paused == false && 'lyric' in currentMusic.value) {
+                //歌词滚动
+                for (let i = 0; i < currentMusic.value.lyric.length; i++) {
+                    let next = false;
+                    if (i == currentMusic.value.lyric.length - 1) {
+                        next = true;
+                    } else if (currentMusic.value.lyric[i + 1].time > musicStatus.value.currentTime * 1000) {
+                        next = true;
+                    }
+                    if (currentMusic.value.lyric[i].time <= musicStatus.value.currentTime * 1000 && next == true) {
+                        lyricIndexNow.value = i;
+                        break;
+                    }
+                }
+            }
+        } catch (e) {
+            api.error(`出错了！\n位置:playStore 歌词interval\n错误信息:${e}`)
+        }
+    }, 100)
 
     /**
 获取一行lrc的第一个时间标签，并转换为毫秒
@@ -320,6 +359,7 @@ export const usePlayStore = defineStore('play', () => {
         playlist,
         playlistIndex,
         musicStatus,
+        nameWithTns,
         playlistInit,
         addMusic,
         stop,
