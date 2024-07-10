@@ -43,6 +43,6 @@ ul {
 
 #homeRecommendPlaylist {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
 }
 </style>
