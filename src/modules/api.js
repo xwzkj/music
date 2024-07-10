@@ -180,6 +180,13 @@ export async function likeAndUpdateLikelist(id, like = true) {
     userStore.updateLikelist();
 }
 
+export async function getPersonalizedPlaylist(){
+    return request({
+        url: '/personalized',
+        method: 'post'
+    })
+}
+
 /*
 *-----------------------------------------------
 *以下是colorthief包装的方法

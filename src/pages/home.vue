@@ -1,17 +1,16 @@
 <template>
     <div id="home">
+        
+        <ul id="homeRecommendPlaylist">
+            <itemCard :isDailySongs="true" v-if="userStore.isLogin" />
+            <li v-for="(item, index) in personalizedPlaylist.result" :key="item.id">
+                <itemCard :imgurl="item?.picUrl" :text="item?.name"
+                :click="() => router.push(`/playlist?id=${item.id}`)" />
+            </li>
+        </ul>
         <div>播放页<a href="/#/player">点我</a></div>
         <div>登录页面<a href="/#/login">点我</a></div>
         <div>设置<a href="/#/setting">点我</a></div>
-        <div id="homeRecommend">
-            <div class="recommend-item" id="homeDailySongs"
-                @click="router.push({ name: 'playlist', query: { isDailySongs: true } })">
-                <div id="日推图片位" class="homeRecommend-img">
-                    <span id="date">{{ date }}</span>
-                </div>
-                <div class="homeRecommend-title">每日推荐</div>
-            </div>
-        </div>
         <br>
         音乐控件卡片预览：
         <MusicController />
@@ -19,46 +18,31 @@
 </template>
 
 <script setup name="home">
-import { useRouter } from 'vue-router';
-import marqueePlus from '@/components/marqueePlus.vue';
+import itemCard from '@/components/itemCard.vue';
 import MusicController from '@/components/musicController.vue';
-const router = useRouter();
-let date = new Date().getDate();
+import * as api from '@/modules/api';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
+let userStore = useUserStore();
+let personalizedPlaylist = ref({ result: [] });
+let router = useRouter();
+api.getPersonalizedPlaylist().then(res => {
+    personalizedPlaylist.value = res.data;
+    console.log(res.data);
+});
 </script>
 
 <style scoped>
-#homeRecommend {
-    display: flex;
+li {
+    list-style: none;
 }
 
-#日推图片位 {
-    border: 0.5rem solid rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+ul {
+    padding: 0;
 }
 
-#date {
-    font-size: 5rem;
-    font-weight: 700;
-}
-
-.homeRecommend-img {
-    height: 12.5rem;
-    width: 12.5rem;
-    border-radius: 1rem;
-    margin-top: 1rem;
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
-}
-
-.homeRecommend-title {
-    padding-top: 0.5rem;
-    padding-left: 1rem;
-}
-
-.recommend-item {
-    cursor: pointer;
+#homeRecommendPlaylist {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
 }
 </style>

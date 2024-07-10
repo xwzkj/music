@@ -19,7 +19,7 @@ export const usePlayStore = defineStore('play', () => {
         let userStore = useUserStore();
         return {
             ...playlist.value[playlistIndex.value],
-            isLiked: userStore.likedSongs.includes(playlist.value[playlistIndex.value].id),
+            isLiked: userStore.likedSongs.includes(playlist.value[playlistIndex.value]?.id),
             currentLyricIndex: lyricIndexNow.value
         }
     })
