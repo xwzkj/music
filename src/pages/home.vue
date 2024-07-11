@@ -1,8 +1,8 @@
 <template>
     <div id="home">
-        
+        <div class="home-sub-title">精选歌单</div>
         <ul id="homeRecommendPlaylist">
-            <itemCard :isDailySongs="true" v-if="userStore.isLogin" />
+            <li><itemCard :isDailySongs="true" v-if="userStore.isLogin" /></li>
             <li v-for="(item, index) in personalizedPlaylist.result" :key="item.id">
                 <itemCard :imgurl="item?.picUrl" :text="item?.name"
                 :click="() => router.push(`/playlist?id=${item.id}`)" />
@@ -44,5 +44,10 @@ ul {
 #homeRecommendPlaylist {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+}
+.home-sub-title {
+    margin:1rem;
+    font-size: 1.5rem;
+    font-weight: 500;
 }
 </style>

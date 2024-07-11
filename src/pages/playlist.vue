@@ -13,7 +13,9 @@
                                 }}</n-tag>
                         </span>
                     </div>
-                    <div id="playlistDesc">{{ result.description }}</div>
+                    <div class="playlist-desc">
+                        <n-ellipsis :line-clamp="3">{{ result.description }}</n-ellipsis>
+                    </div>
                     <div id="playlistControler">
                         <n-button @click="playAll">播放全部</n-button>
                     </div>
@@ -23,7 +25,7 @@
                 <musicList :value="result.tracks" :nameOnClick="play" />
             </div>
         </div>
-        <div class="playlist-spin" key="playlst-spin" v-if="!result.tracks || loading" >
+        <div class="playlist-spin" key="playlst-spin" v-if="!result.tracks || loading">
             <n-spin size="large" />
         </div>
     </div>
@@ -101,11 +103,13 @@ async function play(id) {
 
 #playlistDetail {
     display: flex;
-    width: 100%;
+    width: calc(var(--vw, 1vw)*100);
 }
 
 #playlistImg {
     width: 10rem;
+    min-width: 10rem;
+    height: 10rem;
     border-radius: 0.8rem;
     margin: 1rem;
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
@@ -114,8 +118,8 @@ async function play(id) {
 #playlistInfo {
     margin-left: 1rem;
     display: flex;
+    flex: 1;
     flex-direction: column;
-    width: 100%;
 }
 
 #playlistAuthor {
@@ -146,7 +150,11 @@ async function play(id) {
     font-weight: 500;
 }
 
-#playlistDesc {
+.playlist-desc {
     color: gray;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    width: 100%;
+    white-space: inherit;
 }
 </style>
