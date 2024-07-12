@@ -1,22 +1,22 @@
 <template>
     <div>
         <div v-if="result.tracks && !loading" key="playlst-content">
-            <div id="playlistDetail">
-                <img id="playlistImg" :src="result.coverImgUrl" v-if="result.coverImgUrl">
-                <div id="playlistInfo">
-                    <div id="playlistName">{{ result.name }}</div>
-                    <div id="playlistAuthor" v-if="result.creator">
-                        <img id="playlistAuthorAvatar" :src="result.creator.avatarUrl">
-                        <div id="playlistAuthorName">{{ result.creator.nickname }}</div>
-                        <span id="playlistTagContainer">
+            <div class="playlistDetail">
+                <img class="playlistImg" :src="result.coverImgUrl" v-if="result.coverImgUrl">
+                <div class="playlistInfo">
+                    <div class="playlistName playlist-info-item">{{ result.name }}</div>
+                    <div class="playlistAuthor playlist-info-item" v-if="result.creator">
+                        <img class="playlistAuthorAvatar" :src="result.creator.avatarUrl">
+                        <div class="playlistAuthorName">{{ result.creator.nickname }}</div>
+                        <span class="playlistTagContainer">
                             <n-tag v-for="item in result.tags" type="success" size="small" class="playlistTag">{{ item
                                 }}</n-tag>
                         </span>
                     </div>
-                    <div class="playlist-desc">
-                        <n-ellipsis :line-clamp="3">{{ result.description }}</n-ellipsis>
+                    <div class="playlist-desc playlist-info-item">
+                        <n-ellipsis style="max-width: 100%;" :line-clamp="3">{{ result.description }}</n-ellipsis>
                     </div>
-                    <div id="playlistControler">
+                    <div class="playlistControler playlist-info-item">
                         <n-button @click="playAll">播放全部</n-button>
                     </div>
                 </div>
@@ -101,12 +101,14 @@ async function play(id) {
     margin-bottom: 0.5rem;
 }
 
-#playlistDetail {
+.playlistDetail {
     display: flex;
     width: calc(var(--vw, 1vw)*100);
+    max-width: calc(var(--vw, 1vw)*100);
 }
 
-#playlistImg {
+.playlistImg {
+    flex:0;
     width: 10rem;
     min-width: 10rem;
     height: 10rem;
@@ -115,46 +117,49 @@ async function play(id) {
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
 }
 
-#playlistInfo {
-    margin-left: 1rem;
+.playlistInfo {
     display: flex;
-    flex: 1;
+    width:calc(var(--vw,1vw)*100 - 12rem);
+    flex:0 0 auto;
     flex-direction: column;
+    position: relative;
 }
 
-#playlistAuthor {
+.playlistAuthor {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     margin-bottom: 0.5rem;
 }
 
-#playlistTagContainer {
+.playlistTagContainer {
     display: flex;
     flex-wrap: wrap;
 }
 
-#playlistAuthorName {
+.playlistAuthorName {
     margin-left: 0.5rem;
 }
 
-#playlistAuthorAvatar {
+.playlistAuthorAvatar {
     width: 2rem;
     border-radius: 1rem;
     height: auto;
 }
 
-#playlistName {
+.playlistName {
     font-size: 1.5rem;
     padding-top: 1rem;
     font-weight: 500;
 }
-
+.playlist-info-item{
+    max-width: 100%;
+    /* display: none; */
+}
 .playlist-desc {
     color: gray;
-    word-break: break-all;
+    /* word-break: break-all;
     overflow-wrap: break-word;
-    width: 100%;
-    white-space: inherit;
+    white-space: inherit; */
 }
 </style>
