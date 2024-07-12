@@ -2,7 +2,7 @@
     <div id="home">
         <div class="home-sub-title">精选歌单</div>
         <ul id="homeRecommendPlaylist">
-            <li><itemCard :isDailySongs="true" v-if="userStore.isLogin" /></li>
+            <li v-if="userStore.isLogin"><itemCard :isDailySongs="true" /></li>
             <li v-for="(item, index) in personalizedPlaylist.result" :key="item.id">
                 <itemCard :imgurl="item?.picUrl" :text="item?.name"
                 :click="() => router.push(`/playlist?id=${item.id}`)" />
