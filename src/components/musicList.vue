@@ -6,7 +6,7 @@
                     <div class="head-num">#</div>
                     <div class="head-music">歌曲</div>
                     <div class="head-action">&nbsp;</div>
-                    <div class="head-album" v-if="screenIsWide">专辑</div>
+                    <div class="head-album">专辑</div>
                 </div>
             </n-card>
         </div>
@@ -48,7 +48,7 @@
                             </n-icon>
                         </div>
                         <!-- 专辑 -->
-                        <div class="item-album" v-if="screenIsWide">
+                        <div class="item-album">
                             <span class="item-album-al">
                                 <span>{{ item.al.name }}</span>
                             </span>
@@ -70,9 +70,6 @@ let userStore = useUserStore();
 let windowWidth = ref(window.innerWidth);
 window.addEventListener('resize', () => {
     windowWidth.value = window.innerWidth;
-})
-let screenIsWide = computed(() => {//不如媒体查询
-    return windowWidth.value > 700;
 })
 let isLiked = computed(() => {
     let isLikedList = []
@@ -155,5 +152,12 @@ let isLiked = computed(() => {
 
 .like-button {
     cursor: pointer;
+}
+
+@media (max-width: 700px) {
+    .item-album,
+    .head-album{
+        display: none;
+    }
 }
 </style>

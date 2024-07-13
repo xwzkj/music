@@ -2,7 +2,9 @@
     <div>
         <div v-if="result.tracks && !loading" key="playlst-content">
             <div class="playlistDetail">
-                <img class="playlistImg" :src="result.coverImgUrl" v-if="result.coverImgUrl">
+                <div v-if="result.coverImgUrl" class="playlistImg">
+                    <img :src="result.coverImgUrl" />
+                </div>
                 <div class="playlistInfo">
                     <div class="playlistName playlist-info-item">{{ result.name }}</div>
                     <div class="playlistAuthor playlist-info-item" v-if="result.creator">
@@ -103,24 +105,23 @@ async function play(id) {
 
 .playlistDetail {
     display: flex;
-    width: calc(var(--vw, 1vw)*100);
-    max-width: calc(var(--vw, 1vw)*100);
+    width: 100%;
 }
 
 .playlistImg {
-    flex:0;
-    width: 10rem;
-    min-width: 10rem;
-    height: 10rem;
-    border-radius: 0.8rem;
     margin: 1rem;
+}
+
+.playlistImg img {
+    width: 100%;
+    border-radius: 0.8rem;
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
 }
 
 .playlistInfo {
     display: flex;
-    width:calc(var(--vw,1vw)*100 - 12rem);
-    flex:0 0 auto;
+    /* width:calc(var(--vw,1vw)*100 - 12rem); */
+    flex: 1;
     flex-direction: column;
     position: relative;
 }
@@ -152,14 +153,24 @@ async function play(id) {
     padding-top: 1rem;
     font-weight: 500;
 }
-.playlist-info-item{
+
+.playlist-info-item {
     max-width: 100%;
     /* display: none; */
 }
+
 .playlist-desc {
     color: gray;
     /* word-break: break-all;
     overflow-wrap: break-word;
     white-space: inherit; */
+}
+
+@media (min-width:620px) {
+    .playlistImg {
+        flex: none;
+        width: 10rem;
+        height: 10rem;
+    }
 }
 </style>
