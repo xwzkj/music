@@ -10,7 +10,7 @@ let userStore = useUserStore();
 let playStore = usePlayStore();
 let { currentMusic } = storeToRefs(playStore);
 let lyricScrollbarRef = ref();
-let showPlayingList = ref(false);//是否展示播放列表
+// let showPlayingList = ref(false);//是否展示播放列表
 // let lyricActive = ref();//当前的歌词序号 现在用playstore里的currentMusic中的currentLyricIndex
 let background = ref('');//背景渐变色数据
 let id_clock1 = NaN;//定时器id
@@ -37,79 +37,75 @@ function getImgMainColor() {
 
 
 <template>
-  <div id="outer">
-    <div id="background"></div>
-    <div id="content">
+  <div id="playerOoouter">
+    <div id="playerOuter">
+      <div id="playerBackground"></div>
+      <div id="playerContent">
 
-      <div class="column" id="column-player">
-        <div id="container-player">
-          <div id="music-name">
-            <MarqueePlus :html="playStore.nameWithTns" />
-          </div>
-          <div id="music-artist">{{ currentMusic.artist }}</div>
-          <div id="player-centerblock">
-            <div id="music-img-container">
-              <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img" @load="getImgMainColor"
-                crossorigin="anonymous">
+        <div class="column" id="column-player">
+          <div id="container-player">
+            <div id="music-name">
+              <MarqueePlus :html="playStore.nameWithTns" />
             </div>
-            <!-- 进度条 -->
-            <div id="music-progress">
-              <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
-                :tooltip="false" :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
-            </div>
-            <!-- 播放控制按钮 -->
-            <div id="btn-control">
-              <div id="btn-like" class="button">
-                <n-icon size="2.5rem" class="icon">
-                  <i-ant-design-heart-outlined v-if="!currentMusic?.isLiked"
-                    @click="api.likeAndUpdateLikelist(currentMusic.id, true)" />
-                  <i-ant-design-heart-filled v-if="currentMusic?.isLiked"
-                    @click="api.likeAndUpdateLikelist(currentMusic.id, false)" />
-                </n-icon>
+            <div id="music-artist">{{ currentMusic.artist }}</div>
+            <div id="player-centerblock">
+              <div id="music-img-container">
+                <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img"
+                  @load="getImgMainColor" crossorigin="anonymous">
               </div>
-              <div id="btn-play-control">
-                <div id="btn-prev" class="button">
-                  <n-icon size="4rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
-                </div>
-                <div id="btn-pause" class="button">
-                  <n-icon size="4rem" class="icon" v-if="playStore.musicStatus.paused"
-                    @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
-                  <n-icon size="4rem" class="icon" v-if="!playStore.musicStatus.paused"
-                    @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
-                </div>
-                <div id="btn-next" class="button">
-                  <n-icon size="4rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
-                </div>
+              <!-- 进度条 -->
+              <div id="music-progress">
+                <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
+                  :tooltip="false" :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
               </div>
-              <div id="btn-list" class="button">
-                <n-icon size="2.5rem" class="icon"
-                  @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-03 /></n-icon>
+              <!-- 播放控制按钮 -->
+              <div id="btn-control">
+                <div id="btn-like" class="button">
+                  <n-icon size="2.5rem" class="icon">
+                    <i-ant-design-heart-outlined v-if="!currentMusic?.isLiked"
+                      @click="api.likeAndUpdateLikelist(currentMusic.id, true)" />
+                    <i-ant-design-heart-filled v-if="currentMusic?.isLiked"
+                      @click="api.likeAndUpdateLikelist(currentMusic.id, false)" />
+                  </n-icon>
+                </div>
+                <div id="btn-play-control">
+                  <div id="btn-prev" class="button">
+                    <n-icon size="4rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
+                  </div>
+                  <div id="btn-pause" class="button">
+                    <n-icon size="4rem" class="icon" v-if="playStore.musicStatus.paused"
+                      @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
+                    <n-icon size="4rem" class="icon" v-if="!playStore.musicStatus.paused"
+                      @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
+                  </div>
+                  <div id="btn-next" class="button">
+                    <n-icon size="4rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
+                  </div>
+                </div>
+                <div id="btn-list" class="button">
+                  <n-icon size="2.5rem" class="icon"><i-hugeicons-playlist-03 /></n-icon>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="drawer">
-          <n-drawer v-model:show="showPlayingList" placement="bottom" to="#column-player" height="70%"
-            show-mask="transparent">
-            <n-drawer-content :closable="true" :native-scrollbar="false" title="播放列表">
-              <playinglist />
-            </n-drawer-content>
-          </n-drawer>
+
+        <div class="column" id="column-lyric">
+          <n-scrollbar id="container-lyric" ref="lyricScrollbarRef">
+            <ul class="lyric-list">
+              <div v-for="(item, index) in currentMusic.lyric" :key="index"
+                :class="{ 'lyric-active': currentMusic.currentLyricIndex == index }">
+                <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
+                <li class="lyric-roma">{{ item.roma }}</li>
+                <li class="lyric-tran">{{ item.tran }}</li>
+              </div>
+            </ul>
+          </n-scrollbar>
         </div>
       </div>
-
-      <div class="column" id="column-lyric">
-        <n-scrollbar id="container-lyric" ref="lyricScrollbarRef">
-          <ul class="lyric-list">
-            <div v-for="(item, index) in currentMusic.lyric" :key="index"
-              :class="{ 'lyric-active': currentMusic.currentLyricIndex == index }">
-              <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
-              <li class="lyric-roma">{{ item.roma }}</li>
-              <li class="lyric-tran">{{ item.tran }}</li>
-            </div>
-          </ul>
-        </n-scrollbar>
-      </div>
+    </div>
+    <div class="player-playinglist">
+      <playinglist />
     </div>
   </div>
 </template>
@@ -119,15 +115,15 @@ function getImgMainColor() {
   box-sizing: border-box;
 }
 
-#outer {
+#playerOuter {
   position: fixed;
   /* 覆盖下层元素 */
   z-index: 1;
 
   left: 0;
   top: 0;
-  width: calc(var(--vw) * 100);
-  height: calc(var(--vh) * 100);
+  width: calc(var(--vw, 1vw) * 100);
+  height: calc(var(--vh, 1vh) * 100);
 
   display: flex;
 
@@ -138,7 +134,7 @@ function getImgMainColor() {
 
 }
 
-#content {
+#playerContent {
   display: flex;
   height: 100%;
   min-width: 400px;
@@ -146,7 +142,7 @@ function getImgMainColor() {
   max-width: calc(100vh/9*16);
 }
 
-#background {
+#playerBackground {
   /* 半透明遮罩 */
   position: absolute;
   display: block;
@@ -291,6 +287,19 @@ function getImgMainColor() {
 
 ul {
   list-style: none;
+}
+
+.player-playinglist {
+  position: fixed;
+  top:20%;
+  left:5%;
+  width:90%;
+  height:80%;
+  z-index:2;
+  background-color: rgba(255,255,255,0.65);
+  backdrop-filter: blur(20px);
+  border-radius: 0.8rem;
+  overflow: hidden;
 }
 
 @media (max-width: 500px) {

@@ -48,17 +48,8 @@ export default defineConfig({
     }
   },
   server: {
-
     port: 80,
     host: '0.0.0.0',
-
-    // proxy: {
-    //   '/api': {
-    //     target: 'https://api.xwzkj.top',
-    //     changeOrigin: true,
-    //     rewrite: path => path.replace(/^\/api/, '')
-    //   }
-    // }
   },
 
   build: {

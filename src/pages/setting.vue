@@ -46,7 +46,7 @@ function logout() {
 }
 function loginByCookie() {
     api.success('开始尝试更新用户信息了喔');
-    document.cookie = prompt('输入包含MUSIC_U字段的cookie');
+    document.cookie = prompt('输入cookie的MUSIC_U字段 例如MUSIC_U=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
     userStore.updateByCookie();
 }
 function update() {

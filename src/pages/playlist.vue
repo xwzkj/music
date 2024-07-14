@@ -110,6 +110,7 @@ async function play(id) {
 
 .playlistImg {
     margin: 1rem;
+    flex:1;
 }
 
 .playlistImg img {

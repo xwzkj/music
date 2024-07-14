@@ -2,7 +2,7 @@
     <div class="playinglist">
         <n-scrollbar id="playinglist-scrollbar" ref="playinglistScrollbarRef">
             <ul>
-                <li v-for="(item, index) in playStore.playlist" :key="item.id" @click="play(index)"
+                <li v-for="(item, index) in playStore.playlist" :key="item.id" @click="play(index)" class="playinglist-item"
                     ref="playinglistItemRef">
                     <img class="playinglist-img" :src="item.picurl + '?param=80y80'" :alt="item.name" loading="lazy" />
                     <div class="text">
@@ -47,7 +47,7 @@ ul {
     padding: 0;
 }
 
-li {
+.playinglist-item {
     border: 0.1rem solid rgba(0, 0, 0, 0);
     padding: 0.5rem;
     margin: 0.5rem;
@@ -55,7 +55,7 @@ li {
     cursor: pointer;
     box-shadow: 0 0 2px rgba(0, 0, 0, 0.233);
     display: flex;
-
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 .playinglist-img {
