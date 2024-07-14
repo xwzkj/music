@@ -1,35 +1,47 @@
 <template>
-    <div>
-        <ul>
-            <li v-for="(item, index) in playStore.playlist" :key="item.id" @click="play(index)">
-                <img class="playinglist-img" :src="item.picurl + '?param=80y80'" :alt="item.name" loading="lazy"/>
-                <div class="text">
-                    <div class="name">
-                        <n-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</n-tag>
-                        <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
-                        {{ item.name }}
+    <div class="playinglist">
+        <n-scrollbar id="playinglist-scrollbar" ref="playinglistScrollbarRef">
+            <ul>
+                <li v-for="(item, index) in playStore.playlist" :key="item.id" @click="play(index)"
+                    ref="playinglistItemRef">
+                    <img class="playinglist-img" :src="item.picurl + '?param=80y80'" :alt="item.name" loading="lazy" />
+                    <div class="text">
+                        <div class="name">
+                            <n-tag v-if="item.fee == 1" type="warning" size="small" :bordered="false">VIP</n-tag>
+                            <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
+                            {{ item.name }}
+                        </div>
+                        <div class="tns">{{ item.tns }}</div>
+                        <div class="artist">
+                            {{ item.artist }}
+                        </div>
                     </div>
-                    <!-- 播放列表里的tns是解析好的字符串 -->
-                    <div class="tns">{{ item.tns }}</div>
-                    <div class="artist">
-                        {{ item.artist }}
-                    </div>
-                </div>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        </n-scrollbar>
     </div>
 </template>
 
 <script setup name="playinglist">
 import { usePlayStore } from '@/stores/play';
 const playStore = usePlayStore();
+let playinglistScrollbarRef = ref(null);
+let playinglistItemRef = ref([]);
 function play(index) {
     playStore.playlistIndex = index;
     playStore.play(true);
 }
+onMounted(() => {
+    playinglistScrollbarRef.value.scrollTo({ top: playinglistItemRef.value[playStore.playlistIndex].offsetTop - 80 });
+})
 </script>
 
 <style scoped>
+.playinglist {
+    height: 100%;
+    width: 100%;
+}
+
 ul {
     list-style: none;
     padding: 0;

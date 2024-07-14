@@ -35,7 +35,7 @@ export const useUserStore = defineStore('user', {
                 cookie = document.cookie.match(`MUSIC_U=[^;]+`)[0]
             } else if (cookie == undefined) {
                 this.logout()
-                api.error('[未登录]更新用户信息时：没有cookie');
+                api.error('[未登录]更新用户信息时：没有cookie',cookie,document.cookie);
                 return;
             }
             localStorage.setItem('cookie', cookie)

@@ -14,12 +14,17 @@
         <br>
         音乐控件卡片预览：
         <MusicController />
+        播放列表预览：
+        <div style="height:20rem;width:20rem">
+            <playinglist />
+        </div>
     </div>
 </template>
 
 <script setup name="home">
 import itemCard from '@/components/itemCard.vue';
 import MusicController from '@/components/musicController.vue';
+import playinglist from '@/components/playinglist.vue';
 import * as api from '@/modules/api';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
