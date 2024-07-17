@@ -32,7 +32,7 @@ function play(index) {
     playStore.play(true);
 }
 onMounted(() => {
-    playinglistScrollbarRef.value.scrollTo({ top: playinglistItemRef.value[playStore.playlistIndex].offsetTop - 80 });
+    playinglistScrollbarRef.value.scrollTo({ top: playinglistItemRef.value?.[playStore.playlistIndex]?.offsetTop - 80 });
 })
 </script>
 

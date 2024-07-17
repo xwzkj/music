@@ -14,6 +14,10 @@ let lyricScrollbarRef = ref();
 // let lyricActive = ref();//当前的歌词序号 现在用playstore里的currentMusic中的currentLyricIndex
 let background = ref('');//背景渐变色数据
 let id_clock1 = NaN;//定时器id
+let displayList = ref(false);
+let playingListTop = computed(() => {
+  return displayList.value ? '0%' : '100%';
+})
 //挂载
 onMounted(async () => {
   //监听歌词滚动
@@ -83,7 +87,8 @@ function getImgMainColor() {
                   </div>
                 </div>
                 <div id="btn-list" class="button">
-                  <n-icon size="2.5rem" class="icon"><i-hugeicons-playlist-03 /></n-icon>
+                  <n-icon size="2.5rem" class="icon"
+                    @click="() => { displayList = !displayList; return; }"><i-hugeicons-playlist-03 /></n-icon>
                 </div>
               </div>
             </div>
@@ -104,8 +109,10 @@ function getImgMainColor() {
         </div>
       </div>
     </div>
-    <div class="player-playinglist">
-      <playinglist />
+    <div class="player-playinglist-box" @click="() => {displayList = false;}">
+      <div class="player-playinglist">
+        <playinglist />
+      </div>
     </div>
   </div>
 </template>
@@ -289,14 +296,24 @@ ul {
   list-style: none;
 }
 
-.player-playinglist {
+.player-playinglist-box {
   position: fixed;
-  top:20%;
-  left:5%;
-  width:90%;
-  height:80%;
-  z-index:2;
-  background-color: rgba(255,255,255,0.65);
+  top: v-bind(playingListTop);
+  height: 100%;
+  width: 100%;
+  background: none;
+  z-index: 2;
+  transition: all 0.7s ease-in-out;
+}
+
+.player-playinglist {
+  position: absolute;
+  top: 20%;
+  left: 5%;
+  width: 90%;
+  height: 80%;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(20px);
   border-radius: 0.8rem;
   overflow: hidden;
