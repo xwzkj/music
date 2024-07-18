@@ -176,7 +176,7 @@ export async function likeAndUpdateLikelist(id, like = true) {
     } else {
         userStore.likedSongs.splice(userStore.likedSongs.indexOf(Number(id)), 1);
     }
-    await this.like(id, like);
+    await like(id, like);
     userStore.updateLikelist();
 }
 
