@@ -20,8 +20,8 @@ let musicApi = axios.create({
  * 网络请求函数
  * @param {Object} params url: 请求地址,method: 请求方式,data: 请求参数
  * @returns 
- */
-export async function request(params, realTimeSync = true) {
+*/
+let request = async (params, realTimeSync = true) => {
     try {
         const userStore = useUserStore(pinia);
         //加时间戳避免缓存
@@ -44,6 +44,15 @@ export async function request(params, realTimeSync = true) {
     }
 }
 
+if (window.hasOwnProperty('netease')) {
+    request = async (param,_) => {
+        let { url, method, params, data } = param;
+        if (localStorage.getItem('cookie')) {
+            data = { ...data, cookie: localStorage.getItem('cookie') }
+        }
+        return await window.netease(url, { ...data, ...params });
+    }
+}
 
 export function loginStatus() {
     return request({
@@ -180,7 +189,7 @@ export async function likeAndUpdateLikelist(id, isLike = true) {
     userStore.updateLikelist();
 }
 
-export async function getPersonalizedPlaylist(){
+export async function getPersonalizedPlaylist() {
     return request({
         url: '/personalized',
         method: 'post'
@@ -311,19 +320,19 @@ export function parseArtist(arObj) {
  */
 export function objDeepMerge(target, source) {
     for (const key in source) {
-      if (source.hasOwnProperty(key)) {
-        if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
-          if (!target[key]) {
-            target[key] = {};
-          }
-          objDeepMerge(target[key], source[key]);
-        } else {
-          target[key] = source[key];
+        if (source.hasOwnProperty(key)) {
+            if (typeof source[key] === 'object' && source[key] !== null && !Array.isArray(source[key])) {
+                if (!target[key]) {
+                    target[key] = {};
+                }
+                objDeepMerge(target[key], source[key]);
+            } else {
+                target[key] = source[key];
+            }
         }
-      }
     }
     return target;
-  }
+}
 /**把简单数组用'、'连起来 会判断是否为数组 不是的话会返回空文本
  * @param {Array} array
  */
