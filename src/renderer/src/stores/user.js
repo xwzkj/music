@@ -30,12 +30,13 @@ export const useUserStore = defineStore('user', {
             }
         },
         async updateByCookie(cookie) {
-            let match = document.cookie.match(`MUSIC_U=[^;]+`)
-            if (cookie == undefined && match != null) {
-                cookie = document.cookie.match(`MUSIC_U=[^;]+`)[0]
-            } else if (cookie == undefined) {
+            let match = localStorage.getItem('cookie') || document.cookie.match(/MUSIC_U=[^;]+/)?.[0]
+            console.log(localStorage.getItem('cookie'),document.cookie.match(/MUSIC_U=[^;]+/),match);
+            if (!cookie && match) {
+                cookie = match
+            } else if (!cookie) {
                 this.logout()
-                console.log(cookie,document.cookie);
+                console.log(cookie,document.cookie,match);
                 api.error('[未登录]更新用户信息时：没有cookie');
                 return;
             }

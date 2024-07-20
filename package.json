@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "An Electron application with Vue",
   "main": "./out/main/index.js",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "xwzkj",
+  "homepage": "https://github.com/xwzkj/music",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
