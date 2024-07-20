@@ -1,4 +1,4 @@
-import colorThief from '/node_modules/colorthief/dist/color-thief.mjs'
+import colorThief from 'colorthief'
 import axios from 'axios'
 //pinia在request内部初始化 因为userstore和这个模块相互调用
 import pinia from '@/stores/index';
