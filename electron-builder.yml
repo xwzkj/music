@@ -12,7 +12,6 @@ asarUnpack:
   - resources/**
 win:
   executableName: music
-  sign: false
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
