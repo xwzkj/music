@@ -36,7 +36,7 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           REPOSITORY_NAME: xwzkj/xwzkj.github.io
           BRANCH: main
-          FOLDER: out/render
+          FOLDER: out/renderer
           #注意这里的 public 是仓库根目录下的 public，也就是 npm run build 生成静态资源的路径，比如有的人是 `docs/.vuepress/dist`
       - name: Deploy to server
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
@@ -44,6 +44,6 @@ jobs:
           username: 'root'   #ssh user name
           server: '${{ secrets.SERVER_IP }}' #引用之前创建好的secret
           ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}' #引用之前创建好的secret
-          local_path: './out/render/*'  # 对应我们项目build的文件夹路径
+          local_path: './out/renderer/*'  # 对应我们项目build的文件夹路径
           remote_path: '/www/wwwroot/music.xwzkj.top/vue'
           delete_remote_files: true
