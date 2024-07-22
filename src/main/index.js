@@ -6,8 +6,8 @@ import * as netease from 'NeteaseCloudMusicApi'
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: 1150,
+    height: 800,
     autoHideMenuBar: true,
     icon: join(__dirname, '../../resources/icon.png'),
     webPreferences: {
@@ -25,7 +25,7 @@ app.on('ready', () => {
   ipcMain.handle('netease', async (_, path, data) => {
     try {
       let res = await netease[path](data)
-      console.log('neteaseApi', path, res);
+      // console.log('neteaseApi', path, res);
       return { data: res.body};
     } catch (e) {
       return e

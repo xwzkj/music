@@ -20,31 +20,31 @@
                     :tooltip="false" :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
             </div>
             <!-- 播放控制按钮 -->
-            <div id="btn-control">
-                <div id="btn-like" class="button">
-                    <n-icon size="2.5rem" class="icon">
+            <div class="btn-control">
+                <div class="btn-like button">
+                    <n-icon size="1.5rem" class="icon">
                         <i-ant-design-heart-outlined v-if="!playStore.currentMusic?.isLiked"
                             @click="api.likeAndUpdateLikelist(playStore.currentMusic.id, true)" />
                         <i-ant-design-heart-filled v-else
                             @click="api.likeAndUpdateLikelist(playStore.currentMusic.id, false)" />
                     </n-icon>
                 </div>
-                <div id="btn-play-control">
-                    <div id="btn-prev" class="button">
-                        <n-icon size="4rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
+                <div class="btn-play-control">
+                    <div class="btn-prev button">
+                        <n-icon size="2.5rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
                     </div>
-                    <div id="btn-pause" class="button">
-                        <n-icon size="4rem" class="icon" v-if="playStore.musicStatus.paused"
+                    <div class="btn-pause button">
+                        <n-icon size="2.5rem" class="icon" v-if="playStore.musicStatus.paused"
                             @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
-                        <n-icon size="4rem" class="icon" v-if="!playStore.musicStatus.paused"
+                        <n-icon size="2.5rem" class="icon" v-if="!playStore.musicStatus.paused"
                             @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
                     </div>
-                    <div id="btn-next" class="button">
-                        <n-icon size="4rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
+                    <div class="btn-next button">
+                        <n-icon size="2.5rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
                     </div>
                 </div>
-                <div id="btn-list" class="button">
-                    <n-icon size="2.5rem" class="icon"
+                <div class="btn-list button">
+                    <n-icon size="1.5rem" class="icon"
                         @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-03 /></n-icon>
                 </div>
             </div>
@@ -71,29 +71,33 @@ let lyricNow = computed(() => {
     box-sizing: border-box;
 }
 
-.ctrl-half-top {
-    height: 50%;
-    display: flex;
-    justify-content: space-around;
-}
-
 .ctrl-outer {
     width: 25rem;
-    height: 16rem;
+    height: 11.5rem;
     border: 1px solid grey;
     border-radius: 1rem;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
 }
+
+.ctrl-half-top {
+    display: flex;
+    flex:1;
+}
+
 
 .ctrl-img-box {
     position: relative;
     border-radius: 1rem;
     box-shadow: 0 0 0.2rem grey;
-    width: 30%;
+    margin-top: 0.3rem;
+    margin-bottom: 0.3rem;
+    width: 20%;
     /* 宽度等于父元素宽度 */
     height: 0;
     /* 初始高度为0 */
-    padding-bottom: 30%;
+    padding-bottom: 20%;
     /* 高度被撑开为宽度的100% */
     overflow: hidden;
     /* 隐藏溢出部分 */
@@ -107,7 +111,7 @@ let lyricNow = computed(() => {
 }
 
 .ctrl-info-box {
-    padding: 1rem;
+    padding-left: 1rem;
     width: 70%;
 }
 
@@ -115,24 +119,22 @@ let lyricNow = computed(() => {
     font-size: 1.3rem;
 }
 
-
-
-.ctrl-half-bottom {
-    padding-top: 1rem;
+.ctrl-half-bottom{
+    flex: 1;
 }
 
-.button {
+.button{
     cursor: pointer;
 }
 
-#btn-control {
+.btn-control {
     width: 100%;
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
-#btn-play-control {
+.btn-play-control {
     /* 上一曲 暂停 下一曲 按钮 */
     display: flex;
 }

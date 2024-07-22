@@ -8,9 +8,9 @@
                 :click="() => router.push(`/playlist?id=${item.id}`)" />
             </li>
         </ul>
-        <div>播放页<a href="/#/player">点我</a></div>
-        <div>登录页面<a href="/#/login">点我</a></div>
-        <div>设置<a href="/#/setting">点我</a></div>
+        <div>播放页<a href="#/player">点我</a></div>
+        <div>登录页面<a href="#/login">点我</a></div>
+        <div>设置<a href="#/setting">点我</a></div>
         <br>
         音乐控件卡片预览：
         <MusicController />

@@ -45,7 +45,11 @@ function getImgMainColor() {
     <div id="playerOuter">
       <div id="playerBackground"></div>
       <div id="playerContent">
-
+        <div style="position:absolute;top:1rem;left:1rem;z-index: 1000;">
+          <n-icon size="2rem" style="transform: rotate(-90deg);" @click="api.windowBack">
+            <i-hugeicons-arrow-up-01 />
+          </n-icon>
+        </div>
         <div class="column" id="column-player">
           <div id="container-player">
             <div id="music-name">
@@ -109,7 +113,7 @@ function getImgMainColor() {
         </div>
       </div>
     </div>
-    <div class="player-playinglist-box" @click="() => {displayList = false;}">
+    <div class="player-playinglist-box" @click="() => { displayList = false; }">
       <div class="player-playinglist">
         <playinglist />
       </div>

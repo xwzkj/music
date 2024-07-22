@@ -255,6 +255,9 @@ export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter 
 *-----------------------------------------------
 */
 
+export function windowBack(){
+    window.history.back()
+}
 
 function renderMessage(props) {
     let { type } = props;
