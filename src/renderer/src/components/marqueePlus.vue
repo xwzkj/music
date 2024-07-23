@@ -26,8 +26,17 @@ onMounted(() => {
         resizeObserver.observe(sizerEle.value);
     }
 })
+
+let limit = true;//避免重复计算
+watch(props, () => {
+    limit = false;
+}, { deep: true })
+
 onUpdated(() => {
-    updateIfNeedScroll()
+    if (!limit) {
+        updateIfNeedScroll()
+    }
+    limit = true;
 })
 
 onUnmounted(() => {
@@ -37,7 +46,7 @@ function updateIfNeedScroll() {
     if (text1Ele.value != null && sizerEle.value != null && staticTextEle.value != null) {
         let widthValue = Math.max(text1Ele.value.offsetWidth, staticTextEle.value.offsetWidth)
         needScroll.value = widthValue > sizerEle.value.offsetWidth
-        if (needScroll.value){
+        if (needScroll.value) {
             sizerEle.value.style.setProperty('--marquee-duration', (widthValue / 80) + 's')
         }
         // console.log('marquee 判断', widthValue, sizerEle.value.offsetWidth);

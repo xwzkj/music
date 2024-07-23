@@ -31,15 +31,17 @@ span {
 
 .header {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
 .header-search {
+    margin-left: 2rem;
     display: flex;
 }
 
 .header-user {
+    margin-right: 2rem;
     cursor: pointer;
 }
 </style>

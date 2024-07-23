@@ -301,8 +301,10 @@ export const usePlayStore = defineStore('play', () => {
         player.value.currentTime = time;
         updateProgress(true, { position: time, duration: player.value.duration });
     }
-
-    setInterval(() => {
+    player.value.addEventListener('timeupdate', () => {
+        updateLyric();
+    })
+    function updateLyric() {
         try {
             if (musicStatus.value.paused == false && 'lyric' in currentMusic.value) {
                 //歌词滚动
@@ -314,15 +316,17 @@ export const usePlayStore = defineStore('play', () => {
                         next = true;
                     }
                     if (currentMusic.value.lyric[i].time <= musicStatus.value.currentTime * 1000 && next == true) {
-                        lyricIndexNow.value = i;
+                        if (lyricIndexNow.value != i) {
+                            lyricIndexNow.value = i;
+                        }
                         break;
                     }
                 }
             }
         } catch (e) {
-            api.error(`出错了！\n位置:playStore 歌词interval\n错误信息:${e}`)
+            api.error(`出错了！\n位置:playStore updateLyric\n错误信息:${e}`)
         }
-    }, 100)
+    }
 
     /**
 获取一行lrc的第一个时间标签，并转换为毫秒

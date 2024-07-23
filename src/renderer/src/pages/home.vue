@@ -12,8 +12,6 @@
         <div>登录页面<a href="#/login">点我</a></div>
         <div>设置<a href="#/setting">点我</a></div>
         <br>
-        音乐控件卡片预览：
-        <MusicController />
         播放列表预览：
         <div style="height:20rem;width:20rem">
             <playinglist />
