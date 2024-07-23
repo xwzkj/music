@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, net } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, net, session } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import * as netease from 'NeteaseCloudMusicApi'
@@ -31,6 +31,7 @@ app.on('ready', () => {
       return e
     }
   })
+  session.defaultSession.loadExtension(join(__dirname, '../../resources/devTool/6.6.3_0'))
 
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.xwzkj.music')
