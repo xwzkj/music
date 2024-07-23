@@ -302,6 +302,7 @@ ul {
 
 .player-playinglist-box {
   position: fixed;
+  left: 0;
   top: v-bind(playingListTop);
   height: 100%;
   width: 100%;
