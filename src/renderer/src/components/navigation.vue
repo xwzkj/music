@@ -1,5 +1,5 @@
 <template>
-    <div class="header-title" @click="router.push({ name: 'home' })">小丸子音乐</div>
+    <div class="header-title" @click="router.push({ name: 'home' })">奶酪音乐</div>
     <div>
         画饼的导航栏
     </div>

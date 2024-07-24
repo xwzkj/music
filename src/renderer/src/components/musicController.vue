@@ -91,6 +91,7 @@ let lyricNow = computed(() => {
 .ctrl-left {
     display: flex;
     width: calc(100% / 3.5);
+    cursor: pointer;
 }
 
 .ctrl-img-box {

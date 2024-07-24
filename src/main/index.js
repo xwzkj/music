@@ -10,6 +10,7 @@ function createWindow() {
     height: 800,
     autoHideMenuBar: true,
     icon: join(__dirname, '../../resources/icon.png'),
+    // titleBarStyle: 'hidden',
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false

@@ -1,5 +1,5 @@
 appId: com.xwzkj.music
-productName: 小丸子音乐
+productName: 奶酪音乐
 directories:
   buildResources: build
 files:
@@ -11,7 +11,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: music
+  executableName: CheeseMusic
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

@@ -1,7 +1,7 @@
 {
-  "name": "music",
+  "name": "cheesemusic",
   "version": "1.0.0",
-  "description": "An Electron application with Vue",
+  "description": "奶酪音乐",
   "main": "./out/main/index.js",
   "author": "xwzkj",
   "homepage": "https://github.com/xwzkj/music",
