@@ -1,0 +1,26 @@
+name: Release
+on:
+    push:
+      tags:
+        - '*'  # 任何标签的推送都会触发
+
+jobs:
+  build-and-deploy:
+    # 服务器环境：最新版 Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+      # 拉取代码
+      - name: pull
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      # 1、生成静态文件
+      - name: Build
+        run: npm install && npm run build:win
+      # 2、发布release
+      - name: Create Release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+            token: ${{ secrets.ACCESS_TOKEN }}
+            artifacts: 'dist/*.exe'
+            body: '该发行版由 GitHub Actions 自动发布'
