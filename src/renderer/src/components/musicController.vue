@@ -104,7 +104,8 @@ let lyricNow = computed(() => {
     width: 100%;
     height: calc(var(--vh, 1vh) * 100);
     overflow: hidden;
-    border: 1px solid grey;
+    /* border: 1px solid grey; */
+    box-shadow: 0 0 0.2rem grey;
     border-radius: 1rem 1rem 0 0;
     padding: 1rem;
     display: flex;
