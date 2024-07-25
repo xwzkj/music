@@ -19,18 +19,23 @@ function renderIcon(icon: Component) {
     return () => h(NIcon, { size: '1.2rem' }, { default: () => h(icon) })
 }
 function renderLink(name: string, text: string, props?: object) {
-    return () => h(RouterLink, { to: { name, query:props } } as RouterLinkProps, () => text)
+    return () => h(RouterLink, { to: { name, query: props } } as RouterLinkProps, () => text)
 }
 let activeNow = ref('home');
 // 监听路由 自动更新选中项
 watch(
-    () => route.name,
+    () => route,
     (val) => {
-        updateActiveItem(val);
+        updateActiveItem(val.name, val.query);
     },
-);
-function updateActiveItem(key: any) {
-    activeNow.value = key;
+    { deep: true });
+function updateActiveItem(key: any, query: any) {
+    if (key == 'playlist' && query.id == userStore.playlists?.[0]?.id) {
+        //喜欢的歌单
+        activeNow.value = 'likedList';
+    } else {
+        activeNow.value = key;
+    }
 }
 
 let menuData = computed<MenuOption[]>(() => {
@@ -40,12 +45,18 @@ let menuData = computed<MenuOption[]>(() => {
             key: 'home'
         },
         {
+            show: !userStore.isLogin,
+            label: renderLink('login', '登录'),
+            key: 'login'
+        },
+        {
+            show: userStore.isLogin,
             label: renderLink('account', '我的'),
             key: 'account'
         },
         {
             show: userStore.isLogin,
-            label: renderLink('playlist', '我喜欢的音乐', { id: userStore.playlists?.[0].id }),
+            label: renderLink('playlist', '我喜欢的音乐', { id: userStore.playlists?.[0]?.id }),
             key: 'likedList'
         }
     ]
