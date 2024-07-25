@@ -6,7 +6,7 @@ on:
 
 jobs:
   release:
-    # 服务器环境：最新版 Ubuntu
+    # 服务器环境：最新版 windows
     runs-on: windows-latest
     steps:
       # 拉取代码
