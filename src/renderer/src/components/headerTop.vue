@@ -1,7 +1,8 @@
 <template>
     <div class="header">
         <span class="header-search">
-            <n-icon size="2rem" style="transform: rotate(-90deg);" @click="api.windowBack"><i-hugeicons-arrow-up-01 /></n-icon>
+            <n-icon size="2rem" style="transform: rotate(-90deg);"
+                @click="api.windowBack"><i-hugeicons-arrow-up-01 /></n-icon>
             <n-input v-model:value="value" type="text" placeholder="搜索..." @keyup="search" :clearable="true" />
         </span>
         <n-avatar class="header-user" v-if="!userStore.isLogin" round
@@ -30,6 +31,7 @@ span {
 }
 
 .header {
+    padding-top: 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;

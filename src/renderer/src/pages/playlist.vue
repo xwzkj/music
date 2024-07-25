@@ -43,7 +43,7 @@ const playStore = usePlayStore();
 const router = useRouter();
 let loading = ref(false);//点击播放后 解析播放列表的loading
 let result = ref([]);
-let props = defineProps(['id', 'isDailySongs']);
+let props = defineProps(['id', 'isDailySongs', 'autoPlay']);
 watch(props, () => {
     console.log('playlist组件props被更新');
     result.value = {};
@@ -70,20 +70,21 @@ async function parsePlayList() {
         // console.log(res.data);
         result.value = res.data.playlist;
     }
+    if (props.autoPlay) {
+        playAll();
+    }
 }
 
 async function playAll() {
     loading.value = true;
     await playStore.playlistInit(null, result.value.tracks)
     playStore.play(true);
-    router.push({ name: 'player' })
     loading.value = false;
 }
 async function play(id) {
     loading.value = true;
     await playStore.addMusic([id], 0, true);
     playStore.play(true);
-    router.push({ name: 'player' })
     loading.value = false;
 }
 </script>

@@ -1,16 +1,15 @@
 {
     "compilerOptions": {
-      "target": "es6",
+      "target": "esnext",
       "module": "esnext",
-      "checkJs": false,  // 禁用 TypeScript 类型检查
+      "moduleResolution": "node",
+      "strict": true,
+      "jsx": "preserve",
+      "sourceMap": true,
       "baseUrl": ".",
       "paths": {
         "@/*": ["src/renderer/src/*"]  // 配置路径别名
       }
-    },
-    "exclude": [
-      "node_modules",
-      "**/node_modules/*"
-    ]
+    }
   }
   
