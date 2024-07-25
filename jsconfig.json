@@ -5,7 +5,7 @@
       "checkJs": false,  // 禁用 TypeScript 类型检查
       "baseUrl": ".",
       "paths": {
-        "@/*": ["src/renderer/src/*"]  // 配置路径别名
+        "@/*": ["src/renderer/src/*"],  // 配置路径别名
       }
     },
     "exclude": [

@@ -39,6 +39,7 @@ import MusicController from '@/components/musicController.vue';
 
 .container-main {
   display: flex;
+  height: calc(var(--vh, 1vh) * 100 - 7rem);
 }
 
 .container-nav {
@@ -48,7 +49,6 @@ import MusicController from '@/components/musicController.vue';
 
 .container-content {
   flex: 1;
-  height: calc(var(--vh, 1vh) * 100 - 7rem);
   display: flex;
   flex-direction: column;
 }

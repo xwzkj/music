@@ -3,10 +3,10 @@ import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
-import { useUserStore } from '@/stores/user'
+import { useThemeStore } from '@/stores/theme'
 import playinglist from '@/components/playinglist.vue'
 import MarqueePlus from '@/components/marqueePlus.vue'
-let userStore = useUserStore();
+let themeStore = useThemeStore();
 let playStore = usePlayStore();
 let { currentMusic } = storeToRefs(playStore);
 let lyricScrollbarRef = ref();
@@ -18,6 +18,10 @@ let displayList = ref(false);
 let playingListTop = computed(() => {
   return displayList.value ? '0%' : '100%';
 })
+let bgMask = computed(() => {
+  return themeStore.styleColors.background + '90';
+})
+
 //挂载
 onMounted(async () => {
   //监听歌词滚动
@@ -161,7 +165,7 @@ function getImgMainColor() {
   width: 100%;
   top: 0;
   left: 0;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: v-bind(bgMask);
 
 }
 

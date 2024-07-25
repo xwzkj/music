@@ -2,6 +2,7 @@
 import { onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 import { usePlayStore } from '@/stores/play'
+import { useThemeStore } from "@/stores/theme";
 import MessageApi from "@/modules/messageApi.vue";
 import Container from "./pages/container.vue";
 import emitter from "@/utils/mitt";
@@ -14,6 +15,14 @@ let themeOverrides = ref({
 });
 let userStore = useUserStore();
 let playStore = usePlayStore();
+let themeStore = useThemeStore();
+let textColor = computed(() => {
+  return themeStore.styleColors.text
+})
+let bgcolor = computed(() => {
+  return themeStore.styleColors.background
+})
+
 userStore.updateByStorage();
 onMounted(() => {
   //更新用户信息
@@ -24,6 +33,8 @@ onMounted(() => {
   if (localStorage.getItem('playlist') != null) {
     playStore.playlistInit()
   }
+  //主题初始化
+  themeStore.initByLocalStorage()
 })
 emitter.on('changeTheme', (theme) => {
   api.objDeepMerge(themeOverrides.value, theme)
@@ -34,7 +45,7 @@ emitter.on('changeTheme', (theme) => {
 </script>
 
 <template>
-  <div>
+  <div class="app">
     <n-config-provider :theme-overrides="themeOverrides">
       <Container />
       <n-message-provider>
@@ -44,4 +55,15 @@ emitter.on('changeTheme', (theme) => {
   </div>
 </template>
 
-<style scoped></style>
+<style>
+.app{
+  background-color: v-bind(bgcolor);
+}
+.icon,
+.n-icon{
+  color: v-bind(textColor);
+}
+div{
+  color: v-bind(textColor);
+}
+</style>

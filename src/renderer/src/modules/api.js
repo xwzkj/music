@@ -45,7 +45,7 @@ let request = async (params, realTimeSync = true) => {
 }
 
 if (window.hasOwnProperty('netease')) {
-    request = async (param,_) => {
+    request = async (param, _) => {
         let { url, method, params, data } = param;
         if (localStorage.getItem('cookie')) {
             data = { ...data, cookie: localStorage.getItem('cookie') }
@@ -255,47 +255,47 @@ export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter 
 *-----------------------------------------------
 */
 
-export function windowBack(){
+export function windowBack() {
     window.history.back()
 }
 
-function renderMessage(props) {
-    let { type } = props;
-    return h(
-        NAlert,
-        {
-            closable: props.closable,
-            onClose: props.onClose,
-            type: type === "loading" ? "default" : type,
-            title: props.title,
-            style: {
-                boxShadow: "var(--n-box-shadow)",
-                maxWidth: "calc(100vw - 32px)",
-            }
-        },
-        {
-            default: () => props.content
-        }
-    );
-};
+// function renderMessage(props) {
+//     let { type } = props;
+//     return h(
+//         NAlert,
+//         {
+//             closable: props.closable,
+//             onClose: props.onClose,
+//             type: type === "loading" ? "default" : type,
+//             title: props.title,
+//             style: {
+//                 boxShadow: "var(--n-box-shadow)",
+//                 maxWidth: "calc(100vw - 32px)",
+//             }
+//         },
+//         {
+//             default: () => props.content
+//         }
+//     );
+// };
 /**
  * @param {string} message 
  */
 export function error(message) {
-    let sad = ["(>_<)", "Σ(°ロ°)", '(つ﹏⊂)', '（・□・；）', '(o.O)', '(#｀皿´)', 'ヽ(≧Д≦)ノ', '（＞д＜）']
-    let title = sad[random(0, sad.length - 1)];
+    // let sad = ["(>_<)", "Σ(°ロ°)", '(つ﹏⊂)', '（・□・；）', '(o.O)', '(#｀皿´)', 'ヽ(≧Д≦)ノ', '（＞д＜）']
+    // let title = sad[random(0, sad.length - 1)];
     console.error('[error]', message);
-    window.$message.error(message, {
-        render: (props) => renderMessage({ ...props, title }),
+    window.$NMessageApi.error(message, {
+        // render: (props) => renderMessage({ ...props, title }),
         closable: true,
-        duration: 30000
+        duration: 60000
     })
 }
 export function success(message) {
-    let happy = ["o(≧▽≦)o", "(* ^ ω ^)", "(´｡• ω •｡`)", "ヽ(・∀・)ﾉ", "＼(≧▽≦)／", "ヽ(o＾▽＾o)ノ", "\(^ヮ^)/", "(´• ω •`)", "(..＞◡＜..)"]
-    let title = happy[random(0, happy.length - 1)];
-    window.$message.success(message, {
-        render: (props) => renderMessage({ ...props, title }),
+    // let happy = ["o(≧▽≦)o", "(* ^ ω ^)", "(´｡• ω •｡`)", "ヽ(・∀・)ﾉ", "＼(≧▽≦)／", "ヽ(o＾▽＾o)ノ", "\(^ヮ^)/", "(´• ω •`)", "(..＞◡＜..)"]
+    // let title = happy[random(0, happy.length - 1)];
+    window.$NMessageApi.success(message, {
+        // render: (props) => renderMessage({ ...props, title }),
         closable: false,
         duration: 1500
     })

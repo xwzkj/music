@@ -3,14 +3,14 @@
         <div class="ctrl-box">
             <div class="ctrl-left" @click="() => router.push({ name: 'player' })">
                 <div class="ctrl-img-box">
-                    <img class="ctrl-img" :src="playStore.currentMusic.picurl"></img>
+                    <img class="ctrl-img" :src="playStore.currentMusic.picurl ?? '/icon.png'"></img>
                 </div>
                 <div class="ctrl-info-box">
                     <div class="ctrl-info-title">
-                        <MarqueePlus :html="playStore.nameWithTns" />
+                        <MarqueePlus :html="playStore.nameWithTns ?? '奶酪音乐'" />
                     </div>
                     <div class="ctrl-info-artist">
-                        <MarqueePlus :html="playStore.currentMusic.artist" />
+                        <MarqueePlus :html="playStore.currentMusic.artist ?? ''" />
                     </div>
                     <div class="ctrl-info-lyric">
                         <marqueePlus :html="lyricNow" />
@@ -161,6 +161,7 @@ let lyricNow = computed(() => {
 center--------------------------------------------------------
  */
 .ctrl-center {
+    padding-top: 0.8rem;
     width: calc(100% / 3.5);
 }
 

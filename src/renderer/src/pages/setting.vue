@@ -14,7 +14,7 @@
                 <template #t2>言简意赅</template>
             </settingItem>
             <settingItem>
-                <template #t1>颜色-primary</template>
+                <template #t1>主题色</template>
                 <template #t2>自定义！好耶</template>
                 <template #action>
                     <n-color-picker class="color-picker" v-model:value="primaryColor" :show-alpha="false"
@@ -34,12 +34,18 @@
 
 <script setup name="setting" lang="js">
 import { useUserStore } from '@/stores/user'
+import { useThemeStore } from '@/stores/theme'
 import * as api from '@/modules/api'
-import { generate } from '@ant-design/colors'
-import emitter from '@/utils/mitt';
 import settingItem from '@/components/settingItem.vue'
-let primaryColor = ref('')
 let userStore = useUserStore()
+let themeStore = useThemeStore()
+let primaryColor = ref(themeStore.mainColor);
+onMounted(() => {
+    primaryColor.value = themeStore.mainColor;
+    watch(primaryColor, (value) => {
+        themeStore.setMainColor(value)
+    })
+})
 function logout() {
     userStore.logout();
     api.success('退出登录~')
@@ -54,20 +60,9 @@ function update() {
     userStore.updateByCookie();
 }
 function showCk() {
-    let ck = document.cookie + ' ' + userStore.cookie
+    let ck = userStore.cookie
     alert(ck)
 }
-watch(primaryColor, (value) => {
-    let colors = generate(value)
-    emitter.emit('changeTheme', {
-        common: {
-            primaryColor: colors[5],
-            primaryColorHover: colors[4],
-            primaryColorSuppl: colors[4],
-            primaryColorPressed: colors[6]
-        }
-    })
-})
 </script>
 
 <style scoped>

@@ -6,7 +6,7 @@
 
 <script setup>
 import { useMessage } from "naive-ui";
-window.$message = useMessage();
+window.$NMessageApi = useMessage();
 </script>
 
 <style scoped></style>

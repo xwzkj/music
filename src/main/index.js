@@ -1,6 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain, net, session } from 'electron'
-import { join } from 'path'
+import { join, dirname } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+const fs = require('fs')
 import * as netease from 'NeteaseCloudMusicApi'
 
 function createWindow() {
@@ -22,20 +23,41 @@ function createWindow() {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+function mkdirIfUnexist(dir) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+function pathToAbsolute(filePath) {
+  return join(dirname(app.getPath('exe')), filePath);
+}
+console.log(pathToAbsolute('./data/userData'))
+//更改数据目录到程序文件夹内
+mkdirIfUnexist(pathToAbsolute('./data/userData'));
+app.setPath('userData', pathToAbsolute('./data/userData'));
+mkdirIfUnexist(pathToAbsolute('./data/sessionData'));
+app.setPath('sessionData', pathToAbsolute('./data/sessionData'));
+
 app.on('ready', () => {
+  //往亦晕音乐api 本地处理
   ipcMain.handle('netease', async (_, path, data) => {
     try {
       let res = await netease[path](data)
-      // console.log('neteaseApi', path, res);
-      return { data: res.body};
+      return { data: res.body };
     } catch (e) {
       return e
     }
   })
+  //加载devTool插件
   session.defaultSession.loadExtension(join(__dirname, '../../resources/devTool/6.6.3_0'))
 
   // Set app user model id for windows
-  electronApp.setAppUserModelId('com.xwzkj.music')
+  if (is.dev) {
+    electronApp.setAppUserModelId('com.xwzkj.music.dev')
+  } else {
+    electronApp.setAppUserModelId('com.xwzkj.music')
+  }
   createWindow()
 })
 app.on('window-all-closed', () => {

@@ -6,10 +6,16 @@
             <n-ellipsis :line-clamp="2">{{ props.text }}</n-ellipsis>
         </div>
     </div>
-    <div v-else class="item-card-outer" @click="router.push({ name: 'playlist', query: { isDailySongs: true } })">
+    <div v-else 
+    class="item-card-outer" 
+    @click="router.push({ name: 'playlist', query: { isDailySongs: true } })"
+    :style="{ backgroundColor: themeStore.mainColors?.[1] }"
+    >
         <div class="item-card-date-box">
-            <n-icon size="11rem" class="item-card-icon"><i-ic-twotone-calendar-today /><div class="item-card-date">{{ date }}</div></n-icon>
-            
+            <n-icon size="11rem" class="item-card-icon"><i-ic-twotone-calendar-today />
+                <div class="item-card-date">{{ date }}</div>
+            </n-icon>
+
         </div>
         <div class="item-card-name">每日推荐</div>
     </div>
@@ -19,12 +25,12 @@
 import * as api from "@/modules/api.js"
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
-
+import { useThemeStore } from "@/stores/theme";
+let themeStore = useThemeStore();
 let props = defineProps(['imgurl', 'text', 'click', 'isDailySongs'])
-let itemColor = ref('rgb(173,213,239)')
+let itemColor = ref(themeStore.mainColors?.[1])
 let itemCardImg = ref(null)//img元素
 let date = new Date().getDate();
-
 function getImgMainColor() {
     let color = api.getColorFromImg(itemCardImg.value, true);
     itemColor.value = api.mixColor(color, [255, 255, 255], 0.4, false, true);
@@ -42,7 +48,7 @@ const router = useRouter();
     margin: 0 1rem 2rem 1rem;
     padding: 0;
     cursor: pointer;
-    box-shadow: 0 0 0.2rem v-bind(itemColor);
+    box-shadow: 0 0 0.2rem lightgray;
     background-color: v-bind(itemColor);
     border-radius: 1rem;
     overflow: hidden;
@@ -68,21 +74,23 @@ const router = useRouter();
     height: 0;
     width: 100%;
     padding-bottom: 100%;
-    background-color: rgba(255,255,255,0.5);
+    background-color: rgba(255, 255, 255, 0.5);
 }
-.item-card-date{
+
+.item-card-date {
     font-size: 4.5rem;
     font-weight: 700;
-    position:absolute;
-    left:50%;
-    top:7.2rem;
+    position: absolute;
+    left: 50%;
+    top: 7.2rem;
     transform: translateX(-50%) translateY(-50%);
     font-style: normal;
 }
-.item-card-icon{
-    position:absolute;
-    left:50%;
-    top:50%;
+
+.item-card-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
     transform: translateX(-50%) translateY(-50%);
 }
 </style>
