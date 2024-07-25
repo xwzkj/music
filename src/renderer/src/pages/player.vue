@@ -114,7 +114,7 @@ function getImgMainColor() {
       </div>
     </div>
     <div class="player-playinglist-box" @click="() => { displayList = false; }">
-      <div class="player-playinglist">
+      <div class="player-playinglist" @click.stop>
         <playinglist />
       </div>
     </div>
@@ -129,7 +129,7 @@ function getImgMainColor() {
 #playerOuter {
   position: fixed;
   /* 覆盖下层元素 */
-  z-index: 1;
+  z-index: 10;
 
   left: 0;
   top: 0;
@@ -307,7 +307,7 @@ ul {
   height: 100%;
   width: 100%;
   background: none;
-  z-index: 2;
+  z-index: 11;
   transition: all 0.7s ease-in-out;
 }
 

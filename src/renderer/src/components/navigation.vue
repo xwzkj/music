@@ -12,11 +12,18 @@ import type { Component } from 'vue';
 import type { MenuOption } from 'naive-ui';
 import { NIcon } from 'naive-ui';
 import { useUserStore } from '@/stores/user.js'
+
+//图标引入 用于jsx
+import HugeiconsHome06 from '~icons/hugeicons/home-06';
+import HugeiconsUserAccount from '~icons/hugeicons/user-account';
+import HugeiconsLogin01 from '~icons/hugeicons/login-01';
+import HugeiconsHeartCheck from '~icons/hugeicons/heart-check';
+import HugeiconsSettings05 from '~icons/hugeicons/settings-05';
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
 function renderIcon(icon: Component) {
-    return () => h(NIcon, { size: '1.2rem' }, { default: () => h(icon) })
+    return () => h(NIcon, null, { default: () => h(icon) })
 }
 function renderLink(name: string, text: string, props?: object) {
     return () => h(RouterLink, { to: { name, query: props } } as RouterLinkProps, () => text)
@@ -42,22 +49,31 @@ let menuData = computed<MenuOption[]>(() => {
     return [
         {
             label: renderLink('home', '首页'),
-            key: 'home'
+            key: 'home',
+            icon: renderIcon(HugeiconsHome06)
         },
         {
             show: !userStore.isLogin,
             label: renderLink('login', '登录'),
-            key: 'login'
+            key: 'login',
+            icon: renderIcon(HugeiconsLogin01)
         },
         {
             show: userStore.isLogin,
             label: renderLink('account', '我的'),
-            key: 'account'
+            key: 'account',
+            icon: renderIcon(HugeiconsUserAccount)
         },
         {
             show: userStore.isLogin,
             label: renderLink('playlist', '我喜欢的音乐', { id: userStore.playlists?.[0]?.id }),
-            key: 'likedList'
+            key: 'likedList',
+            icon: renderIcon(HugeiconsHeartCheck)
+        },
+        {
+            label: renderLink('setting', '设置'),
+            key: 'setting',
+            icon: renderIcon(HugeiconsSettings05)
         }
     ]
 }

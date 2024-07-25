@@ -31,6 +31,7 @@ span {
 }
 
 .header {
+    padding: 0.5rem;
     padding-top: 1rem;
     display: flex;
     justify-content: space-between;

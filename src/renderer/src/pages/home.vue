@@ -8,21 +8,13 @@
                 :click="() => router.push(`/playlist?id=${item.id}`)" />
             </li>
         </ul>
-        <div>播放页<a href="#/player">点我</a></div>
         <div>登录页面<a href="#/login">点我</a></div>
         <div>设置<a href="#/setting">点我</a></div>
-        <br>
-        播放列表预览：
-        <div style="height:20rem;width:20rem">
-            <playinglist />
-        </div>
     </div>
 </template>
 
 <script setup name="home">
 import itemCard from '@/components/itemCard.vue';
-import MusicController from '@/components/musicController.vue';
-import playinglist from '@/components/playinglist.vue';
 import * as api from '@/modules/api';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';

@@ -1,6 +1,6 @@
 <template>
     <div class="playinglist">
-        <n-scrollbar id="playinglist-scrollbar" ref="playinglistScrollbarRef">
+        <n-scrollbar class="playinglist-scrollbar" ref="playinglistScrollbarRef">
             <ul>
                 <li v-for="(item, index) in playStore.playlist" :key="item.id" @click="play(index)" class="playinglist-item"
                     ref="playinglistItemRef">
@@ -32,8 +32,16 @@ function play(index) {
     playStore.play(true);
 }
 onMounted(() => {
-    playinglistScrollbarRef.value.scrollTo({ top: playinglistItemRef.value?.[playStore.playlistIndex]?.offsetTop - 80 });
+    scrollToCurrent();
 })
+
+watch(() => playStore.playlistIndex, (value) => {
+    scrollToCurrent();
+})
+
+function scrollToCurrent() {
+    playinglistScrollbarRef.value.scrollTo({ top: playinglistItemRef.value?.[playStore.playlistIndex]?.offsetTop - 80 , behavior:'smooth'});
+}
 </script>
 
 <style scoped>
