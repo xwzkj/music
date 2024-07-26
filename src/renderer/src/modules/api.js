@@ -44,7 +44,7 @@ let request = async (params, realTimeSync = true) => {
     }
 }
 
-if (window.hasOwnProperty('netease')) {
+if (window.$isElectron) {
     request = async (param, _) => {
         let { url, method, params, data } = param;
         if (localStorage.getItem('cookie')) {

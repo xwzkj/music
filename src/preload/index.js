@@ -8,3 +8,6 @@ contextBridge.exposeInMainWorld('netease', (url, data) => {
   let path = url.replace(/\//g, '_');
   return ipcRenderer.invoke('netease', path, data)
 })
+contextBridge.exposeInMainWorld('lyric', (lyricNowObj) => {
+  return ipcRenderer.send('lyric', lyricNowObj);
+})

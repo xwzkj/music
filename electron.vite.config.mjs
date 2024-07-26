@@ -14,7 +14,19 @@ export default defineConfig({
     plugins: [externalizeDepsPlugin()]
   },
   preload: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    build: {
+      rollupOptions: {
+        input: {
+          // 可以为不同的预加载脚本指定不同的文件
+          index: resolve(__dirname, 'src/preload/index.js'),
+          lyric: resolve(__dirname, 'src/preload/lyric.js')
+        },
+        output: {
+          entryFileNames: '[name].js'
+        }
+      }
+    }
   },
   renderer: {
     resolve: {
