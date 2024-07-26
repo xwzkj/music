@@ -13,7 +13,7 @@
                         <MarqueePlus :html="playStore.currentMusic.artist ?? ''" :speed="40"/>
                     </div>
                     <div class="ctrl-info-lyric">
-                        <marqueePlus :html="lyricNow" :speed="40" :lyricMode="true"/>
+                        <marqueePlus :html="lyricNow" :speed="60" :lyricMode="true"/>
                     </div>
                 </div>
             </div>

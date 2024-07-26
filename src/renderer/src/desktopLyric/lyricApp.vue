@@ -1,6 +1,6 @@
 <template>
     <div class="lyric">
-        <marqueePlus :html="lyricText" />
+        <marqueePlus :html="lyricText" :speed="160" :lyricMode="true"/>
     </div>
 </template>
 <script setup lang="ts">
