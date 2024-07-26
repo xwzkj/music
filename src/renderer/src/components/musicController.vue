@@ -7,13 +7,13 @@
                 </div>
                 <div class="ctrl-info-box">
                     <div class="ctrl-info-title">
-                        <MarqueePlus :html="playStore.nameWithTns ?? '奶酪音乐'" />
+                        <MarqueePlus :html="playStore.nameWithTns ?? '奶酪音乐'" :speed="40"/>
                     </div>
                     <div class="ctrl-info-artist">
-                        <MarqueePlus :html="playStore.currentMusic.artist ?? ''" />
+                        <MarqueePlus :html="playStore.currentMusic.artist ?? ''" :speed="40"/>
                     </div>
                     <div class="ctrl-info-lyric">
-                        <marqueePlus :html="lyricNow" />
+                        <marqueePlus :html="lyricNow" :speed="40" :lyricMode="true"/>
                     </div>
                 </div>
             </div>
