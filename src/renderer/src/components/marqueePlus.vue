@@ -14,12 +14,19 @@
 // 这个组件最好在外部包裹div来设定尺寸位置和字体信息
 // speed 单位px/s
 // lyricMode 是否是歌词模式 歌词模式将会只滚动一次
-let props = defineProps({ html: String , speed: Number ,lyricMode: Boolean })
+let props = defineProps({ html: String, speed: Number, lyricMode: Boolean })
 let text1Ele = ref(null)
 let sizerEle = ref(null)
 let staticTextEle = ref(null)
 let needScroll = ref(false)
-let marqueeLyricDistance = ref('-100%')
+let marqueeAnimation = ref({
+    loop: 'infinite',
+    name: 'marquee',
+    duration: '5s',
+    delay: '0.3s',
+    lyricDistance: '-50%'
+})
+
 const resizeObserver = new ResizeObserver(() => {
     updateIfNeedScroll();
 });
@@ -30,8 +37,9 @@ onMounted(() => {
     }
 })
 
-let limit = true;//避免重复计算
+let limit = true;// 避免重复计算
 watch(props, () => {
+    marqueeAnimation.value.name = '';// 清除动画
     limit = false;
 }, { deep: true })
 
@@ -50,10 +58,13 @@ function updateIfNeedScroll() {
         let widthValue = Math.max(text1Ele.value.offsetWidth, staticTextEle.value.offsetWidth)//取目前显示的那个元素的宽度
         needScroll.value = widthValue > sizerEle.value.offsetWidth
         if (needScroll.value) {
-            sizerEle.value.style.setProperty('--marquee-duration', (widthValue / (props.speed ?? 80)) + 's')
+            marqueeAnimation.value.name = props.lyricMode ? 'marquee-lyric' : 'marquee'
+            marqueeAnimation.value.duration = ((props.lyricMode ? widthValue - sizerEle.value.offsetWidth : widthValue) / (props.speed ?? 80)) + 's'
+            marqueeAnimation.value.loop = props.lyricMode ? '1' : 'infinite'
+            marqueeAnimation.value.lyricDistance = '-' + (widthValue - sizerEle.value.offsetWidth) + 'px'
         }
-        console.log('marquee 判断', widthValue, sizerEle.value.offsetWidth);
-        console.log(text1Ele.value, staticTextEle.value, sizerEle.value);
+        // console.log('marquee 判断', widthValue, sizerEle.value.offsetWidth);
+        // console.log(text1Ele.value, staticTextEle.value, sizerEle.value);
     } else {
         needScroll.value = false
         console.log('marquee 判断 未挂载', text1Ele.value, sizerEle.value);
@@ -84,7 +95,7 @@ function updateIfNeedScroll() {
     display: inline-block;
     height: 100%;
     position: relative;
-    animation: marquee var(--marquee-duration) linear infinite;
+    animation: v-bind('marqueeAnimation.name') v-bind('marqueeAnimation.duration') linear v-bind('marqueeAnimation.delay') v-bind('marqueeAnimation.loop') forwards;
 }
 
 .marquee-content {
@@ -92,14 +103,16 @@ function updateIfNeedScroll() {
 }
 
 .marquee-text2 {
-    margin-left: 2.5em;
-    margin-right: 2.5em;
+    padding-left: 2.5em;
+    padding-right: 2.5em;
 }
 
 .marquee-static-text {
     display: inline-block;
 }
+</style>
 
+<style>
 @keyframes marquee {
     0% {
         transform: translateX(0%);
@@ -116,7 +129,7 @@ function updateIfNeedScroll() {
     }
 
     100% {
-        transform: translateX(v-bind(marqueeLyricDistance));
+        transform: translateX(v-bind('marqueeAnimation.lyricDistance'));
     }
 }
 </style>
