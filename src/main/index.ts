@@ -48,11 +48,18 @@ app.on('ready', () => {
     }
   })
   //桌面歌词传递
-  ipcMain.on('lyric', (_,data) => {
-    console.log('lyric: ',data);
-    
+  ipcMain.on('lyric', (_, data) => {
+    console.log('lyric: ', data);
+
     if (lyricWindow) {
       lyricWindow.webContents.send('lyric', data)
+    }
+  })
+  //主题色传递
+  ipcMain.on('themeColors', (_, data) => {
+    console.log('theme: ', data);
+    if (lyricWindow) {
+      lyricWindow.webContents.send('themeColors', data)
     }
   })
   //加载devTool插件
@@ -79,7 +86,7 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 1150,
-    minWidth:900,
+    minWidth: 900,
     height: 800,
     minHeight: 600,
     autoHideMenuBar: true,
@@ -102,12 +109,14 @@ function createWindow() {
     icon: join(__dirname, '../../resources/icon.png'),
     titleBarStyle: 'hidden',
     alwaysOnTop: true,
+    transparent: true,
     webPreferences: {
       preload: join(__dirname, '../preload/lyric.js'),
       sandbox: false
     }
   })
   lyricWindow.setSkipTaskbar(true)
+  // lyricWindow.setIgnoreMouseEvents(true, { forward: true })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     lyricWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/desktopLyric.html')
   } else {

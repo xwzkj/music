@@ -320,7 +320,7 @@ export const usePlayStore = defineStore('play', () => {
                             lyricIndexNow.value = i;
                             if (window.$isElectron) {
                                 //如果是electron环境 就发送歌词给桌面歌词
-                                window?.lyric(JSON.stringify(currentMusic.value?.lyric?.[i]))
+                                window?.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[i]))
                             }
                         }
                         break;

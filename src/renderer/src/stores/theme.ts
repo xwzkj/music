@@ -41,11 +41,16 @@ export const useThemeStore = defineStore('theme', {
             this.update()
         },
         save() {
-            localStorage.setItem('theme', JSON.stringify({
+            let stringData = JSON.stringify({
                 version: 2,
                 mainColors: this.mainColors,
-                mainColor: this.mainColor
-            }))
+                mainColor: this.mainColor,
+                styleColors: this.styleColors
+            })
+            localStorage.setItem('theme', stringData);
+            if(window.isElectron){
+                window.sendThemeColor(stringData);
+            }
         }
     },
 })

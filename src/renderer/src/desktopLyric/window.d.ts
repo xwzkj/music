@@ -1,3 +1,4 @@
 interface Window {
-    lyric: (changeLyric: any) => void;
+    getLyric: (changeLyric: any) => void;
+    getThemeColors: (changeThemeColors: any) => void;
   }
