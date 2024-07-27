@@ -104,7 +104,7 @@ function createWindow() {
 
   lyricWindow = new BrowserWindow({
     width: 1000,
-    height: 200,
+    height: 160,
     autoHideMenuBar: true,
     icon: join(__dirname, '../../resources/icon.png'),
     titleBarStyle: 'hidden',

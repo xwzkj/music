@@ -6,8 +6,12 @@
 
                 <n-icon size="2rem"><i-hugeicons-square-lock-02 /></n-icon>
             </div>
-            <marqueePlus :html="lyric.lrc" :speed="160" :lyricMode="true" />
-            <marqueePlus :html="lyric.tran" :speed="160" :lyricMode="true" />
+            <div class="lyric-lrc marquee">
+                <marqueePlus :html="lyric.lrc" :speed="160" :lyricMode="true" />
+            </div>
+            <div class="lyric-sec marquee">
+                <marqueePlus :html="lyric.tran" :speed="140" :lyricMode="true" />
+            </div>
         </div>
     </div>
 </template>
@@ -82,13 +86,20 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     user-select: none;
-    font-size: 3rem;
-    font-weight: bolder;
     color: v-bind('mainColors[0]');
     text-shadow:
         v-bind('mainColors[5]') 0 0 0.3rem,
         v-bind('mainColors[5]') 0 0 0.3rem,
         v-bind('mainColors[5]') 0 0 0.3rem,
         v-bind('mainColors[5]') 0 0 0.3rem;
+}
+
+.lyric-lrc {
+    font-size: 3rem;
+    font-weight: bolder;
+}
+.lyric-sec {
+    font-size: 2rem;
+    font-weight: bold;
 }
 </style>

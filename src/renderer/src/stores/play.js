@@ -131,12 +131,14 @@ export const usePlayStore = defineStore('play', () => {
             let lyric = [];
             let lrc = apiResult.lrc.lyric.split('\n');
             for (let i = 0; i < lrc.length; i++) {
-                lyric.push({
-                    time: lrcToMS(lrc[i]),
-                    lrc: lrcToLyric(lrc[i]),
-                    roma: '',
-                    tran: ''
-                });
+                if (lrcToLyric(lrc[i])) {
+                    lyric.push({
+                        time: lrcToMS(lrc[i]),
+                        lrc: lrcToLyric(lrc[i]),
+                        roma: '',
+                        tran: ''
+                    });
+                }
             }
             try {
                 lrc = apiResult.romalrc.lyric.split('\n');

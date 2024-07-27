@@ -7,13 +7,13 @@
                 </div>
                 <div class="ctrl-info-box">
                     <div class="ctrl-info-title">
-                        <MarqueePlus :html="playStore.nameWithTns ?? '奶酪音乐'" :speed="40"/>
+                        <MarqueePlus :html="playStore.nameWithTns ?? '奶酪音乐'" :speed="40" />
                     </div>
                     <div class="ctrl-info-artist">
-                        <MarqueePlus :html="playStore.currentMusic.artist ?? ''" :speed="40"/>
+                        <MarqueePlus :html="playStore.currentMusic.artist ?? ''" :speed="40" />
                     </div>
                     <div class="ctrl-info-lyric">
-                        <marqueePlus :html="lyricNow" :speed="60" :lyricMode="true"/>
+                        <marqueePlus :html="lyricNow" :speed="60" :lyricMode="true" />
                     </div>
                 </div>
             </div>
@@ -44,12 +44,11 @@
                                 @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
                         </div>
                     </div>
-                    <svg t="1721825346602" class="icon" height="1.5rem" width="1.5rem" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="1884" viewBox="0 0 1024 1024">
-                        <path
-                            d="M947.272501 612.228749 825.290309 733.259266c-7.582699 7.520277-17.575284 11.282974-27.495214 11.282974-9.925047 0-19.97903-3.762697-27.561729-11.282974l-122.213459-121.030517c-15.193027-15.083533-15.770172-39.570227-0.624217-54.69674 15.145955-15.125489 38.659485-15.172561 53.862745-0.084934l53.514821 55.255465L754.773256 357.13591 413.993872 357.13591c-21.451568 0-38.845727-17.486256-38.845727-38.844703 0-21.357424 17.393135-38.844703 38.845727-38.844703l383.937322 0c21.452591 0 34.530444 16.276708 34.530444 37.634132l0 295.623951 57.83215-55.257511c15.198144-15.069207 41.948391-15.036461 57.098439 0.084934C962.53716 572.662615 962.466552 597.145216 947.272501 612.228749zM609.997941 667.890466 269.218558 667.890466 269.218558 410.253688l53.519937 55.257511c7.582699 7.525394 16.424064 11.282974 26.349111 11.282974 9.962909 0 19.382443-3.791349 26.973328-11.367909 15.145955-15.130605 14.838963-39.613206-0.354064-54.69674L253.623371 289.701055c-15.163351-15.040555-39.757492-15.040555-54.921867 0L76.719312 410.730549c-15.19405 15.083533-15.248286 39.566134-0.103354 54.69674 15.156188 15.125489 41.896202 15.159258 57.08923 0.084934l57.824987-55.257511 0 295.623951c0 21.357424 13.077853 39.702234 34.530444 39.702234l383.937322 0c21.451568 0 38.845727-17.48728 38.845727-38.844703C648.842645 685.377746 631.449509 667.890466 609.997941 667.890466z"
-                            p-id="1885"></path>
-                    </svg>
+                    <div class="btn-loop button">
+                        <n-icon size="1.5rem" class="icon">
+                            <i-hugeicons-exchange-01 />
+                        </n-icon>
+                    </div>
                 </div>
                 <div class="ctrl-progress-box">
                     <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
@@ -92,7 +91,6 @@ let lyricNow = computed(() => {
 </script>
 
 <style scoped>
-
 * {
     box-sizing: border-box;
 }
