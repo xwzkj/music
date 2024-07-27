@@ -318,7 +318,7 @@ export const usePlayStore = defineStore('play', () => {
                     if (currentMusic.value.lyric[i].time <= musicStatus.value.currentTime * 1000 && next == true) {
                         if (lyricIndexNow.value != i) {
                             lyricIndexNow.value = i;
-                            if (window.$isElectron) {
+                            if (window.isElectron) {
                                 //如果是electron环境 就发送歌词给桌面歌词
                                 window?.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[i]))
                             }

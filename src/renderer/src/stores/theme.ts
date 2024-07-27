@@ -49,7 +49,7 @@ export const useThemeStore = defineStore('theme', {
             })
             localStorage.setItem('theme', stringData);
             if(window.isElectron){
-                window.sendThemeColor(stringData);
+                window.sendThemeColors(stringData);
             }
         }
     },

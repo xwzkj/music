@@ -8,7 +8,7 @@ import Container from "./pages/container.vue";
 import emitter from "@/utils/mitt";
 import * as api from "@/modules/api";
 //判断环境是否是electron
-window.$isElectron = window.hasOwnProperty("netease");
+window.isElectron = window.hasOwnProperty("netease");
 
 let themeOverrides = ref({
   common: {

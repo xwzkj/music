@@ -1,6 +1,11 @@
 <template>
     <div class="outer">
         <div class="lyric">
+            <div class="ctrl">
+                <n-icon size="2rem" class="drag"><i-hugeicons-drag-drop /></n-icon>
+
+                <n-icon size="2rem"><i-hugeicons-square-lock-02 /></n-icon>
+            </div>
             <marqueePlus :html="lyric.lrc" :speed="160" :lyricMode="true" />
             <marqueePlus :html="lyric.tran" :speed="160" :lyricMode="true" />
         </div>
@@ -8,18 +13,14 @@
 </template>
 <script setup lang="ts">
 import MarqueePlus from '@/components/marqueePlus.vue';
-interface StyleColors {
-    text: string;
-    background: string;
-}
 interface Lyric {
     lrc?: string;
     tran?: string;
     time?: number;
     roma?: string;
 }
-let background = ref<string>('transparent');
-let styleColors = ref<StyleColors>({ text: '#000', background: '#fff' })
+let bgColor = ref<string>('rgba(255,255,255,0)');
+let mainColors = ref<Array<string>>(['#fff9db', '#fff3bf', '#ffec99', '#ffe066', '#ffd43b', '#fcc419', '#fab005', '#f59f00', '#f08c00', '#e67700'])
 let lyricText = ref<Lyric>({});
 let lyric = computed<Lyric>(() => {
     return {
@@ -38,53 +39,56 @@ function changeLyric(event: Event, lyric: string) {
 }
 function changeTheme(event: Event, theme: string) {
     console.log(theme);
-    styleColors.value = JSON.parse(theme)?.styleColors;
+    mainColors.value = JSON.parse(theme)?.mainColors;
 }
 onMounted(() => {
     let outer = document.querySelector('.outer') as HTMLElement;
     let lyricEle = document.querySelector('.lyric') as HTMLElement;
     outer.addEventListener("mousemove", event => {
-        let flag = event.target === outer;
-        if (flag) {
-            background.value = 'transparent';
-        } else {
-            background.value = styleColors.value.background;
-        }
-        console.log('outer',event);
-    })
-    lyricEle.addEventListener("mousemove", event => {
-        let flag = event.target === lyricEle;
-        if (flag) {
-            background.value = styleColors.value.background;
-        } else {
-            background.value = 'transparent';
-        }
-        console.log('lyric',event);
+        bgColor.value = 'rgba(255,255,255,0)';
     })
 })
 </script>
 <style>
 .outer {
-    padding: 5px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    border-radius: 1rem;
+    transition: all 0.5s;
+}
+
+.outer:hover {
+    background: v-bind('mainColors[0] + 80');
+    border: 1px solid v-bind('mainColors[7]');
+}
+
+.ctrl {
+    display: flex;
+    justify-content: space-around;
+    color: v-bind('mainColors[7]');
+}
+
+.drag {
+    cursor: move;
+    -webkit-app-region: drag;
 }
 
 .lyric {
-    -webkit-app-region: drag;
-
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+    height: 100%;
     user-select: none;
     font-size: 3rem;
     font-weight: bolder;
-    color: v-bind('styleColors.background');
+    color: v-bind('mainColors[0]');
     text-shadow:
-        v-bind('styleColors.text') 0 0 0.3rem,
-        v-bind('styleColors.text') 0 0 0.3rem,
-        v-bind('styleColors.text') 0 0 0.3rem,
-        v-bind('styleColors.text') 0 0 0.3rem;
-    background: v-bind('background');
-
-}
-
-.lyric:hover {
-    background: aliceblue;
+        v-bind('mainColors[5]') 0 0 0.3rem,
+        v-bind('mainColors[5]') 0 0 0.3rem,
+        v-bind('mainColors[5]') 0 0 0.3rem,
+        v-bind('mainColors[5]') 0 0 0.3rem;
 }
 </style>
