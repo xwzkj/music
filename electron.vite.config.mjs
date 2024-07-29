@@ -11,7 +11,7 @@ import IconsResolver from 'unplugin-icons/resolver'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
@@ -23,7 +23,8 @@ export default defineConfig({
           lyric: resolve(__dirname, 'src/preload/lyric.js')
         },
         output: {
-          entryFileNames: '[name].js'
+          entryFileNames: '[name].mjs',
+          chunkFileNames: '[name].mjs',
         }
       }
     }

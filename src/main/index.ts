@@ -1,6 +1,7 @@
-import { app, shell, BrowserWindow, ipcMain, net, session } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, net, session, screen } from 'electron'
 import { join, dirname } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import ElectronStore from 'electron-store'
 // const fs = require('fs')
 import * as fs from 'fs'
 import * as netease from 'NeteaseCloudMusicApi'
@@ -8,8 +9,10 @@ import * as netease from 'NeteaseCloudMusicApi'
 console.log('奶酪音乐 ©丸子');
 
 
-let mainWindow: BrowserWindow | null = null;
-let lyricWindow: BrowserWindow | null = null;
+let mainWindow: BrowserWindow;
+let lyricWindow: BrowserWindow;
+let store: ElectronStore<conf>;
+let primaryDisplay: Electron.Display;
 function mkdirIfUnexist(dir: string) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -25,8 +28,9 @@ if (is.dev) {
   app.setPath('userData', pathToAbsolute('./data/userData'));
   mkdirIfUnexist(pathToAbsolute('./data/sessionData'));
   app.setPath('sessionData', pathToAbsolute('./data/sessionData'));
+  console.log('调试模式 运行目录',app.getPath('exe'))
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////ready
 app.on('ready', () => {
   //防多开 主要是多开有问题
   let singleRunKey = { key: 'com.xwzkj.music' }
@@ -36,6 +40,15 @@ app.on('ready', () => {
   if (!app.requestSingleInstanceLock(singleRunKey)) {
     app.quit()
   }
+
+  primaryDisplay = screen.getPrimaryDisplay();
+  store = new ElectronStore<conf>({
+    defaults: {
+      lyricWindow: {
+        position: [0, primaryDisplay.workAreaSize.height-160]
+      }
+    }
+  })
 
   //往亦晕音乐api 本地处理
   ipcMain.handle('netease', async (_, path, data) => {
@@ -92,7 +105,7 @@ function createWindow() {
     autoHideMenuBar: true,
     icon: join(__dirname, '../../resources/icon.png'),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false
     }
   })
@@ -101,7 +114,9 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
-
+  if(is.dev){
+    mainWindow.webContents.openDevTools()
+  }
   lyricWindow = new BrowserWindow({
     width: 1000,
     height: 160,
@@ -111,18 +126,33 @@ function createWindow() {
     alwaysOnTop: true,
     transparent: true,
     webPreferences: {
-      preload: join(__dirname, '../preload/lyric.js'),
+      preload: join(__dirname, '../preload/lyric.mjs'),
       sandbox: false
     }
   })
-  lyricWindow.setSkipTaskbar(true)
-  // lyricWindow.setIgnoreMouseEvents(true, { forward: true })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     lyricWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/desktopLyric.html')
   } else {
     lyricWindow.loadFile(join(__dirname, '../renderer/desktopLyric.html'))
   }
+  if(is.dev){
+    lyricWindow.webContents.openDevTools()
+  }else{
+    lyricWindow.setSkipTaskbar(true)
+  }
+  lyricWindow.setAlwaysOnTop(true, 'screen-saver')
+  lyricWindow.setPosition(
+    store.get('lyricWindow.position')[0],
+    store.get('lyricWindow.position')[1]
+  )
+  console.log(lyricWindow.getPosition());
+  
+  // lyricWindow.setIgnoreMouseEvents(true, { forward: true })
 
+  // 歌词窗口 保存位置
+  lyricWindow.on('moved', () => {
+    store.set('lyricWindow.position',lyricWindow.getPosition())
+  })
 
   mainWindow.on('close', (e) => {
     if (lyricWindow) {

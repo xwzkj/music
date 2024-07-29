@@ -5,6 +5,7 @@
   "main": "./out/main/index.js",
   "author": "xwzkj",
   "homepage": "https://github.com/xwzkj/music",
+  "type": "module",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -26,6 +27,7 @@
     "axios": "^1.6.8",
     "colorthief": "^2.2.0",
     "crypto-js": "^4.2.0",
+    "electron-store": "^10.0.0",
     "mitt": "^3.0.1",
     "naive-ui": "^2.38.2",
     "path": "^0.12.7",
