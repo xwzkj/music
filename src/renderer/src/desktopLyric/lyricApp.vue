@@ -2,9 +2,11 @@
     <div class="outer">
         <div class="lyric">
             <div class="ctrl">
-                <n-icon size="2rem" class="drag none-after-lock"><i-hugeicons-drag-drop /></n-icon>
+                <div class="ctrl-box">
+                    <n-icon size="2rem" class="drag none-after-lock"><i-hugeicons-drag-drop /></n-icon>
 
-                <n-icon size="2rem" class="lock" @click="switchLock"><i-hugeicons-square-lock-02 /></n-icon>
+                    <n-icon size="2rem" class="lock" @click="switchLock"><i-hugeicons-square-lock-02 /></n-icon>
+                </div>
             </div>
             <div class="lyric-lrc marquee">
                 <marqueePlus :html="lyric.lrc" :speed="160" :lyricMode="true" />
@@ -24,7 +26,8 @@ interface Lyric {
     roma?: string;
 }
 let isLocked = ref<boolean>(false);
-let needLockWhenMouseLeave = false;
+let needLockWhenMouseLeave = false;//鼠标离开锁定按钮时是否需要锁定
+let displayCtrl = ref<boolean>(false);//是否显示控制按钮 当鼠标进入outer后显示
 let mainColors = ref<Array<string>>(['#fff9db', '#fff3bf', '#ffec99', '#ffe066', '#ffd43b', '#fcc419', '#fab005', '#f59f00', '#f08c00', '#e67700'])
 let lyricText = ref<Lyric>({});
 let lyric = computed<Lyric>(() => {
@@ -46,7 +49,7 @@ function changeTheme(event: Event, theme: string) {
     console.log(theme);
     mainColors.value = JSON.parse(theme)?.mainColors;
 }
-async function switchLock(){
+async function switchLock() {
     window.lyricWindowLock(!isLocked.value);
     needLockWhenMouseLeave = false;
     isLocked.value = await updateIsLocked();
@@ -73,9 +76,13 @@ onMounted(() => {
             updateIsLocked()
         }
     })
-    // setInterval(()=>{
-    //     updateIsLocked()
-    // },1000)
+
+    outer.addEventListener("mouseenter", async () => {
+        displayCtrl.value = true;
+    })
+    outer.addEventListener("mouseleave", async () => {
+        displayCtrl.value = false;
+    })
 })
 </script>
 <style>
@@ -100,9 +107,13 @@ onMounted(() => {
 }
 
 .ctrl {
-    display: flex;
-    justify-content: space-around;
+    height: 2.2rem;
     color: v-bind('mainColors[7]');
+}
+
+.ctrl-box {
+    display: v-bind('displayCtrl ? `flex` : `none`');
+    justify-content: space-around;
 }
 
 .drag {
@@ -110,13 +121,13 @@ onMounted(() => {
     -webkit-app-region: drag;
 }
 
-.lock{
+.lock {
     border-radius: 10%;
     cursor: pointer;
     transition: all 0.5s;
 }
 
-.lock:hover{
+.lock:hover {
     background-color: v-bind('isLocked ? mainColors[0] + `80` : `none`');
 }
 
