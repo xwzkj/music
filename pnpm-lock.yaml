@@ -9,26 +9,32 @@ importers:
   .:
     dependencies:
       '@ant-design/colors':
-        specifier: ^7.0.2
+        specifier: ^7.1.0
         version: 7.1.0
       '@electron-toolkit/preload':
         specifier: ^3.0.1
-        version: 3.0.1(electron@31.3.0)
+        version: 3.0.1(electron@31.3.1)
       '@electron-toolkit/utils':
         specifier: ^3.0.0
-        version: 3.0.0(electron@31.3.0)
+        version: 3.0.0(electron@31.3.1)
       NeteaseCloudMusicApi:
-        specifier: ^4.21.2
+        specifier: ^4.22.0
         version: 4.22.0
+      ajv:
+        specifier: ^8.17.1
+        version: 8.17.1
       animejs:
         specifier: ^3.2.2
         version: 3.2.2
       axios:
-        specifier: ^1.6.8
+        specifier: ^1.7.2
         version: 1.7.2
       colorthief:
-        specifier: ^2.2.0
+        specifier: ^2.4.0
         version: 2.4.0
+      conf:
+        specifier: ^13.0.1
+        version: 13.0.1
       crypto-js:
         specifier: ^4.2.0
         version: 4.2.0
@@ -39,19 +45,19 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1
       naive-ui:
-        specifier: ^2.38.2
+        specifier: ^2.39.0
         version: 2.39.0(vue@3.4.34(typescript@5.5.4))
       path:
         specifier: ^0.12.7
         version: 0.12.7
       pinia:
-        specifier: ^2.1.7
+        specifier: ^2.2.0
         version: 2.2.0(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4))
       vue:
-        specifier: ^3.4.21
+        specifier: ^3.4.34
         version: 3.4.34(typescript@5.5.4)
       vue-router:
-        specifier: ^4.3.2
+        specifier: ^4.4.0
         version: 4.4.0(vue@3.4.34(typescript@5.5.4))
     devDependencies:
       '@electron-toolkit/eslint-config':
@@ -61,23 +67,23 @@ importers:
         specifier: ^1.1.15
         version: 1.1.15
       '@iconify-json/mdi':
-        specifier: ^1.1.66
+        specifier: ^1.1.67
         version: 1.1.67
       '@iconify/json':
-        specifier: ^2.2.212
+        specifier: ^2.2.231
         version: 2.2.231
       '@rushstack/eslint-patch':
-        specifier: ^1.10.3
+        specifier: ^1.10.4
         version: 1.10.4
       '@vitejs/plugin-vue':
-        specifier: ^5.0.5
+        specifier: ^5.1.1
         version: 5.1.1(vite@5.3.5(@types/node@22.0.0))(vue@3.4.34(typescript@5.5.4))
       '@vue/eslint-config-prettier':
         specifier: ^9.0.0
         version: 9.0.0(eslint@8.57.0)(prettier@3.3.3)
       electron:
-        specifier: ^31.0.2
-        version: 31.3.0
+        specifier: ^31.3.1
+        version: 31.3.1
       electron-builder:
         specifier: ^24.13.3
         version: 24.13.3(electron-builder-squirrel-windows@24.13.3(dmg-builder@24.13.3))
@@ -88,22 +94,22 @@ importers:
         specifier: ^8.57.0
         version: 8.57.0
       eslint-plugin-vue:
-        specifier: ^9.26.0
+        specifier: ^9.27.0
         version: 9.27.0(eslint@8.57.0)
       prettier:
-        specifier: ^3.3.2
+        specifier: ^3.3.3
         version: 3.3.3
       unplugin-auto-import:
-        specifier: ^0.17.6
+        specifier: ^0.17.8
         version: 0.17.8(rollup@4.19.1)
       unplugin-icons:
         specifier: ^0.19.0
         version: 0.19.0(@vue/compiler-sfc@3.4.34)
       unplugin-vue-components:
-        specifier: ^0.27.0
+        specifier: ^0.27.3
         version: 0.27.3(@babel/parser@7.25.0)(rollup@4.19.1)(vue@3.4.34(typescript@5.5.4))
       vite:
-        specifier: ^5.3.1
+        specifier: ^5.3.5
         version: 5.3.5(@types/node@22.0.0)
 
 packages:
@@ -1294,8 +1300,8 @@ packages:
       '@swc/core':
         optional: true
 
-  electron@31.3.0:
-    resolution: {integrity: sha512-3LMRMmK4UK0A+jYSLGLYdfhc20TgY2v5jD3iGmhRZlDYj0gn7xBj/waRjlNalysZ0D2rgPvoes0wHuf5e/Bguw==}
+  electron@31.3.1:
+    resolution: {integrity: sha512-9fiuWlRhBfygtcT+auRd/WdBK/f8LZZcrpx0RjpXhH2DPTP/PfnkC4JB1PW55qCbGbh4wAgkYbf4ExIag8oGCA==}
     engines: {node: '>= 12.20.55'}
     hasBin: true
 
@@ -3201,13 +3207,13 @@ snapshots:
     dependencies:
       eslint: 8.57.0
 
-  '@electron-toolkit/preload@3.0.1(electron@31.3.0)':
+  '@electron-toolkit/preload@3.0.1(electron@31.3.1)':
     dependencies:
-      electron: 31.3.0
+      electron: 31.3.1
 
-  '@electron-toolkit/utils@3.0.0(electron@31.3.0)':
+  '@electron-toolkit/utils@3.0.0(electron@31.3.1)':
     dependencies:
-      electron: 31.3.0
+      electron: 31.3.1
 
   '@electron/asar@3.2.10':
     dependencies:
@@ -4348,7 +4354,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  electron@31.3.0:
+  electron@31.3.1:
     dependencies:
       '@electron/get': 2.0.3
       '@types/node': 20.14.13
