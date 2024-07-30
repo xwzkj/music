@@ -6,16 +6,16 @@
                     <img :src="result.coverImgUrl" />
                 </div>
                 <div class="playlistInfo">
-                    <div class="playlistName playlist-info-item">{{ result.name }}</div>
+                    <div class="playlistName playlist-info-item text1">{{ result.name }}</div>
                     <div class="playlistAuthor playlist-info-item" v-if="result.creator">
                         <img class="playlistAuthorAvatar" :src="result.creator.avatarUrl">
-                        <div class="playlistAuthorName">{{ result.creator.nickname }}</div>
+                        <div class="playlistAuthorName text2">{{ result.creator.nickname }}</div>
                         <span class="playlistTagContainer">
                             <n-tag v-for="item in result.tags" type="success" size="small" class="playlistTag">{{ item
                                 }}</n-tag>
                         </span>
                     </div>
-                    <div class="playlist-desc playlist-info-item">
+                    <div class="playlist-desc playlist-info-item text2">
                         <n-ellipsis style="max-width: 100%;" :line-clamp="3">{{ result.description }}</n-ellipsis>
                     </div>
                     <div class="playlistControler playlist-info-item">
@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </div>
-            <div id="playlistMusicList">
+            <div class="playlist-musiclist">
                 <musicList :value="result.tracks" :nameOnClick="play" />
             </div>
         </div>
@@ -161,11 +161,8 @@ async function play(id) {
     /* display: none; */
 }
 
-.playlist-desc {
-    color: gray;
-    /* word-break: break-all;
-    overflow-wrap: break-word;
-    white-space: inherit; */
+.playlist-musiclist{
+    max-width: 100%;
 }
 
 @media (min-width:620px) {

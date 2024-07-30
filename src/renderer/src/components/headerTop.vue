@@ -5,7 +5,7 @@
                 @click="api.windowBack"><i-hugeicons-arrow-up-01 /></n-icon>
             <n-input v-model:value="value" type="text" placeholder="搜索..." @keyup="search" :clearable="true" />
         </span>
-        <n-avatar class="header-user" v-if="!userStore.isLogin" round
+        <n-avatar class="header-user text2" v-if="!userStore.isLogin" round
             @click="router.push({ name: 'login' })">登录</n-avatar>
         <n-avatar class="header-user" v-if="userStore.isLogin" round :src="userStore.avatar"
             @click="router.push({ name: 'account' })" />

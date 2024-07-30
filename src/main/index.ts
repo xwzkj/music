@@ -13,6 +13,7 @@ let mainWindow: BrowserWindow;
 let lyricWindow: BrowserWindow;
 let store: ElectronStore<conf>;
 let primaryDisplay: Electron.Display;
+let lyricWindowLocked: boolean;
 function mkdirIfUnexist(dir: string) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -21,6 +22,16 @@ function mkdirIfUnexist(dir: string) {
 function pathToAbsolute(filePath: string) {
   return join(dirname(app.getPath('exe')), filePath);
 }
+function lockLyricWindow(isLock: boolean) {
+  if (isLock) {
+    lyricWindow.setIgnoreMouseEvents(true, { forward: true })
+    lyricWindowLocked = true
+  } else {
+    lyricWindow.setIgnoreMouseEvents(false)
+    lyricWindowLocked = false
+  }
+  store.set('lyricWindow.locked', lyricWindowLocked)
+}
 
 if (is.dev) {
   //更改数据目录到程序文件夹内
@@ -28,7 +39,7 @@ if (is.dev) {
   app.setPath('userData', pathToAbsolute('./data/userData'));
   mkdirIfUnexist(pathToAbsolute('./data/sessionData'));
   app.setPath('sessionData', pathToAbsolute('./data/sessionData'));
-  console.log('调试模式 运行目录',app.getPath('exe'))
+  console.log('调试模式 运行目录', app.getPath('exe'))
 }
 //////////////////////////////////////////////////////////////////////////////////////////////ready
 app.on('ready', () => {
@@ -42,15 +53,8 @@ app.on('ready', () => {
   }
 
   primaryDisplay = screen.getPrimaryDisplay();
-  store = new ElectronStore<conf>({
-    defaults: {
-      lyricWindow: {
-        position: [0, primaryDisplay.workAreaSize.height-160]
-      }
-    }
-  })
-
-  //往亦晕音乐api 本地处理
+  store = new ElectronStore<conf>()
+  // 往亦晕音乐api 本地处理
   ipcMain.handle('netease', async (_, path, data) => {
     try {
       let func = netease[path as keyof typeof netease] as Function
@@ -60,7 +64,7 @@ app.on('ready', () => {
       return e
     }
   })
-  //桌面歌词传递
+  // 桌面歌词传递
   ipcMain.on('lyric', (_, data) => {
     console.log('lyric: ', data);
 
@@ -68,12 +72,31 @@ app.on('ready', () => {
       lyricWindow.webContents.send('lyric', data)
     }
   })
-  //主题色传递
+  // 主题色传递
   ipcMain.on('themeColors', (_, data) => {
     console.log('theme: ', data);
     if (lyricWindow) {
       lyricWindow.webContents.send('themeColors', data)
     }
+  })
+  // 桌面歌词窗口打开关闭
+  ipcMain.on('lyricWindowShow', (_, data) => {
+    console.log('lyricWindowShow: ', data);
+    if (data) {
+      lyricWindow.show()
+    } else {
+      lyricWindow.hide()
+    }
+  })
+  // 桌面歌词窗口锁定（鼠标穿透
+  lyricWindowLocked = store.get('lyricWindow.locked')
+  ipcMain.on('lyricWindowLock', (_, islock) => {
+    console.log('lyricWindowLock:', islock);
+    lockLyricWindow(islock)
+  })
+  ipcMain.handle('isLyricWindowLocked', () => {
+    console.log('isLyricWindowLocked:', lyricWindowLocked);
+    return lyricWindowLocked
   })
   //加载devTool插件
   session.defaultSession.loadExtension(join(__dirname, '../../resources/devTool/6.6.3_0'))
@@ -114,7 +137,7 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
-  if(is.dev){
+  if (is.dev) {
     mainWindow.webContents.openDevTools()
   }
   lyricWindow = new BrowserWindow({
@@ -130,30 +153,40 @@ function createWindow() {
       sandbox: false
     }
   })
+  lyricWindow.setAlwaysOnTop(true, 'screen-saver')
+  //开始读取配置
+  console.log(store.get('lyricWindow'));
+  // 设置位置
+  let temp: any = store.get('lyricWindow.position', [0, primaryDisplay.workAreaSize.height - 160])
+  lyricWindow.setPosition(temp[0], temp[1])
+  // 设置窗口大小
+  temp = store.get('lyricWindow.size', [1000, 160])
+  lyricWindow.setSize(temp[0], temp[1])
+  //设置锁定
+  temp = store.get('lyricWindow.locked', false)
+  lockLyricWindow(temp)
+
+  //加载页面
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     lyricWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] + '/desktopLyric.html')
   } else {
     lyricWindow.loadFile(join(__dirname, '../renderer/desktopLyric.html'))
   }
-  if(is.dev){
+  if (is.dev) {
     lyricWindow.webContents.openDevTools()
-  }else{
+  } else {
     lyricWindow.setSkipTaskbar(true)
   }
-  lyricWindow.setAlwaysOnTop(true, 'screen-saver')
-  lyricWindow.setPosition(
-    store.get('lyricWindow.position')[0],
-    store.get('lyricWindow.position')[1]
-  )
-  console.log(lyricWindow.getPosition());
-  
-  // lyricWindow.setIgnoreMouseEvents(true, { forward: true })
 
+  // 窗口事件
   // 歌词窗口 保存位置
   lyricWindow.on('moved', () => {
-    store.set('lyricWindow.position',lyricWindow.getPosition())
+    store.set('lyricWindow.position', lyricWindow.getPosition())
   })
-
+  // 歌词窗口 保存大小
+  lyricWindow.on('resized', () => {
+    store.set('lyricWindow.size', lyricWindow.getSize())
+  })
   mainWindow.on('close', (e) => {
     if (lyricWindow) {
       lyricWindow.close()

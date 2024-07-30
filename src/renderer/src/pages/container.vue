@@ -34,6 +34,7 @@ import MusicController from '@/components/musicController.vue';
 .container {
   height: calc(var(--vh, 1vh) * 100);
   width: calc(var(--vw, 1vw) * 100);
+  max-width: calc(var(--vw, 1vw) * 100);
   overflow: hidden;
 }
 
@@ -49,11 +50,13 @@ import MusicController from '@/components/musicController.vue';
 
 .container-content {
   flex: 1;
+  max-width: calc(var(--vw, 1vw) * 100 - 12rem);
   display: flex;
   flex-direction: column;
 }
 
 .container-router-view {
+  max-width: 100%;
   overflow-y: scroll;
   flex: 1;
 }

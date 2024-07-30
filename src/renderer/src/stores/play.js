@@ -34,7 +34,7 @@ export const usePlayStore = defineStore('play', () => {
         let tns = currentMusic.value.tns;
         let name = currentMusic.value.name;
         if (tns) {
-            return name + `<span style="color:grey">&nbsp;&nbsp;&nbsp;(${tns})</span>`
+            return `<span class="text1">${name}</span><span class="text2">&nbsp;&nbsp;&nbsp;(${tns})</span>`
         } else {
             return name;
         }

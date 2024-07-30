@@ -1,6 +1,8 @@
 type conf = {
     lyricWindow: {
-      position: number[]
+      position: number[],
+      size: number[],
+      locked: boolean
     }
   }
   

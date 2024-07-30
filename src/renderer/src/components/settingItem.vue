@@ -3,10 +3,10 @@
         <n-card>
             <div class="setting-item">
                 <div class="title">
-                    <div class="t1">
+                    <div class="t1 text1">
                         <slot name="t1"></slot>
                     </div>
-                    <div class="t2">
+                    <div class="t2 text2">
                         <slot name="t2"></slot>
                     </div>
                 </div>
@@ -53,7 +53,7 @@ let props = defineProps(['actionOnClick'])
 
 .t2 {
     font-size: 0.8rem;
-    color: #666;
+    /* color: #666; */
 }
 
 .action {

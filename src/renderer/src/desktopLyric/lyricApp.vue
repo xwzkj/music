@@ -2,9 +2,9 @@
     <div class="outer">
         <div class="lyric">
             <div class="ctrl">
-                <n-icon size="2rem" class="drag"><i-hugeicons-drag-drop /></n-icon>
+                <n-icon size="2rem" class="drag none-after-lock"><i-hugeicons-drag-drop /></n-icon>
 
-                <n-icon size="2rem"><i-hugeicons-square-lock-02 /></n-icon>
+                <n-icon size="2rem" class="lock" @click="switchLock"><i-hugeicons-square-lock-02 /></n-icon>
             </div>
             <div class="lyric-lrc marquee">
                 <marqueePlus :html="lyric.lrc" :speed="160" :lyricMode="true" />
@@ -23,7 +23,8 @@ interface Lyric {
     time?: number;
     roma?: string;
 }
-let bgColor = ref<string>('rgba(255,255,255,0)');
+let isLocked = ref<boolean>(false);
+let needLockWhenMouseLeave = false;
 let mainColors = ref<Array<string>>(['#fff9db', '#fff3bf', '#ffec99', '#ffe066', '#ffd43b', '#fcc419', '#fab005', '#f59f00', '#f08c00', '#e67700'])
 let lyricText = ref<Lyric>({});
 let lyric = computed<Lyric>(() => {
@@ -45,12 +46,36 @@ function changeTheme(event: Event, theme: string) {
     console.log(theme);
     mainColors.value = JSON.parse(theme)?.mainColors;
 }
+async function switchLock(){
+    window.lyricWindowLock(!isLocked.value);
+    needLockWhenMouseLeave = false;
+    isLocked.value = await updateIsLocked();
+}
+async function updateIsLocked() {
+    isLocked.value = await window.isLyricWindowLocked()
+    return isLocked.value;
+}
 onMounted(() => {
+    updateIsLocked();
     let outer = document.querySelector('.outer') as HTMLElement;
-    let lyricEle = document.querySelector('.lyric') as HTMLElement;
-    outer.addEventListener("mousemove", event => {
-        bgColor.value = 'rgba(255,255,255,0)';
+    let lockEle = document.querySelector('.lock') as HTMLElement;
+    lockEle.addEventListener("mouseenter", async () => {
+        // console.log('mouse enter');
+        if (await updateIsLocked()) {
+            window.lyricWindowLock(false)
+            needLockWhenMouseLeave = true;
+        }
     })
+    lockEle.addEventListener("mouseleave", async () => {
+        // console.log('mouse leave');
+        if (needLockWhenMouseLeave) {
+            window.lyricWindowLock(true)
+            updateIsLocked()
+        }
+    })
+    // setInterval(()=>{
+    //     updateIsLocked()
+    // },1000)
 })
 </script>
 <style>
@@ -62,11 +87,16 @@ onMounted(() => {
     width: 100vw;
     border-radius: 1rem;
     transition: all 0.5s;
+    border: 1px solid transparent;
 }
 
 .outer:hover {
-    background: v-bind('mainColors[0] + 80');
-    border: 1px solid v-bind('mainColors[7]');
+    background: v-bind('!isLocked ? mainColors[0] + `80` : `transparent`');
+    border: 1px solid v-bind('!isLocked ? mainColors[7] : `transparent`');
+}
+
+.none-after-lock {
+    display: v-bind('isLocked ? `none` : `block`');
 }
 
 .ctrl {
@@ -78,6 +108,16 @@ onMounted(() => {
 .drag {
     cursor: move;
     -webkit-app-region: drag;
+}
+
+.lock{
+    border-radius: 10%;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+.lock:hover{
+    background-color: v-bind('isLocked ? mainColors[0] + `80` : `none`');
 }
 
 .lyric {
@@ -98,6 +138,7 @@ onMounted(() => {
     font-size: 3rem;
     font-weight: bolder;
 }
+
 .lyric-sec {
     font-size: 2rem;
     font-weight: bold;

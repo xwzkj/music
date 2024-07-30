@@ -2,7 +2,7 @@
     <div @click="props.click" class="item-card-outer" v-if="!props.isDailySongs">
         <img class="item-card-img" :src="props.imgurl + '?param=200y200'" crossorigin="anonymous" ref="itemCardImg"
             @load="getImgMainColor">
-        <div class="item-card-name">
+        <div class="item-card-name text1">
             <n-ellipsis :line-clamp="2">{{ props.text }}</n-ellipsis>
         </div>
     </div>
@@ -11,13 +11,13 @@
     @click="router.push({ name: 'playlist', query: { isDailySongs: true } })"
     :style="{ backgroundColor: themeStore.mainColors?.[1] }"
     >
-        <div class="item-card-date-box">
+        <div class="item-card-date-box text2">
             <n-icon size="11rem" class="item-card-icon"><i-ic-twotone-calendar-today />
                 <div class="item-card-date">{{ date }}</div>
             </n-icon>
 
         </div>
-        <div class="item-card-name">每日推荐</div>
+        <div class="item-card-name text1">每日推荐</div>
     </div>
 </template>
 
@@ -64,7 +64,6 @@ const router = useRouter();
     padding: 0.3rem;
     width: 100%;
     height: 3.5rem;
-    color: rgb(0, 0, 0);
     overflow: hidden;
 }
 

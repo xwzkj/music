@@ -12,7 +12,6 @@ import type { Component } from 'vue';
 import type { MenuOption } from 'naive-ui';
 import { NIcon } from 'naive-ui';
 import { useUserStore } from '@/stores/user.js'
-
 //图标引入 用于jsx
 import HugeiconsHome06 from '~icons/hugeicons/home-06';
 import HugeiconsUserAccount from '~icons/hugeicons/user-account';
@@ -80,6 +79,11 @@ let menuData = computed<MenuOption[]>(() => {
 );
 </script>
 <style scoped>
+.nav-outer {
+    width: 100%;
+    height: 100%;
+}
+
 .header-title {
     font-size: 1.5rem;
     cursor: pointer;

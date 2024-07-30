@@ -6,13 +6,13 @@
                     <img class="ctrl-img" :src="playStore.currentMusic.picurl ?? '/icon.png'"></img>
                 </div>
                 <div class="ctrl-info-box">
-                    <div class="ctrl-info-title">
+                    <div class="ctrl-info-title text1">
                         <MarqueePlus :html="playStore.nameWithTns ?? '奶酪音乐'" :speed="40" />
                     </div>
-                    <div class="ctrl-info-artist">
+                    <div class="ctrl-info-artist text2">
                         <MarqueePlus :html="playStore.currentMusic.artist ?? ''" :speed="40" />
                     </div>
-                    <div class="ctrl-info-lyric">
+                    <div class="ctrl-info-lyric text3">
                         <marqueePlus :html="lyricNow" :speed="60" :lyricMode="true" />
                     </div>
                 </div>

@@ -9,7 +9,6 @@
             </li>
         </ul>
         <div>登录页面<a href="#/login">点我</a></div>
-        <div>设置<a href="#/setting">点我</a></div>
     </div>
 </template>
 

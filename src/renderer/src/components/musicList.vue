@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <div class="music-list">
         <div class="list-head-div">
             <n-card class="list-head-card" content-style="padding-top:0;padding-bottom:0;">
                 <div class="list-head-card-content">
-                    <div class="head-num">#</div>
-                    <div class="head-music">歌曲</div>
-                    <div class="head-action">&nbsp;</div>
-                    <div class="head-album">专辑</div>
+                    <div class="head-num text2">#</div>
+                    <div class="head-music text2">歌曲</div>
+                    <div class="head-action text2">&nbsp;</div>
+                    <div class="head-album text2">专辑</div>
                 </div>
             </n-card>
         </div>
@@ -16,24 +16,22 @@
                 <n-card class="list-item-card">
                     <div class="list-item-card-content">
                         <!-- 序号 -->
-                        <div class="item-num">{{ index + 1 }}</div>
+                        <div class="item-num text2">{{ index + 1 }}</div>
                         <!-- 音乐图片 名称 翻译名 艺术家 -->
                         <div class="item-music" @click="props.nameOnClick(item.id)">
                             <img class="item-music-img" :src="item.al.picUrl + '?param=80y80'" :alt="item.al.name"
                                 loading="lazy" />
                             <div class="item-music-detail">
                                 <div class="item-music-name">
-                                    <span class="item-music-text">{{ item.name }}</span>
-                                    <span class="item-music-text" style="color: #b3b3b3;"
-                                        v-if="api.parseArray(item.tns) != ''">&nbsp;({{ api.parseArray(item.tns)
-                                        }})</span>
+                                    <span class="item-music-text text1">{{ item.name }}</span>
+                                    <span class="item-music-text text2" v-if="api.parseArray(item.tns) != ''">&nbsp;({{api.parseArray(item.tns)}})</span>
                                 </div>
 
                                 <div class="item-music-ar">
                                     <n-tag v-if="item.fee == 1" type="warning" size="small"
                                         :bordered="false">VIP</n-tag>
                                     <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
-                                    <span class="item-music-text" style="color: #8b968d;">{{ api.parseArtist(item.ar)
+                                    <span class="item-music-text text2" >{{ api.parseArtist(item.ar)
                                         }}</span>
                                 </div>
                             </div>
@@ -49,7 +47,7 @@
                         </div>
                         <!-- 专辑 -->
                         <div class="item-album">
-                            <span class="item-album-al">
+                            <span class="item-album-al text2">
                                 <span>{{ item.al.name }}</span>
                             </span>
                         </div>
@@ -82,6 +80,11 @@ let isLiked = computed(() => {
 </script>
 
 <style scoped>
+.music-list {
+    width: 100%;
+    max-width: 100%;
+}
+
 .head-num,
 .item-num {
     width: 2rem;
@@ -134,7 +137,7 @@ let isLiked = computed(() => {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    width:calc(100% - 6rem);
+    width: calc(100% - 6rem);
 }
 
 .item-music {
@@ -155,8 +158,9 @@ let isLiked = computed(() => {
 }
 
 @media (max-width: 700px) {
+
     .item-album,
-    .head-album{
+    .head-album {
         display: none;
     }
 }

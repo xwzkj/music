@@ -18,9 +18,6 @@ let displayList = ref(false);
 let playingListTop = computed(() => {
   return displayList.value ? '0%' : '100%';
 })
-let bgMask = computed(() => {
-  return themeStore.styleColors.background + '90';
-})
 
 //挂载
 onMounted(async () => {
@@ -57,9 +54,9 @@ function getImgMainColor() {
         <div class="column" id="column-player">
           <div id="container-player">
             <div id="music-name">
-              <MarqueePlus :html="playStore.nameWithTns" />
+              <MarqueePlus :html="playStore.nameWithTns ?? `暂未播放~~`" />
             </div>
-            <div id="music-artist">{{ currentMusic.artist }}</div>
+            <div id="music-artist" class="text2">{{ currentMusic.artist ?? ``}}</div>
             <div id="player-centerblock">
               <div id="music-img-container">
                 <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img"
@@ -165,7 +162,7 @@ function getImgMainColor() {
   width: 100%;
   top: 0;
   left: 0;
-  background-color: v-bind(bgMask);
+  background-color: v-bind('themeStore.mainColors[0] + `90`');
 
 }
 

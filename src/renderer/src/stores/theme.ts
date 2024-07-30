@@ -1,19 +1,14 @@
 import { defineStore } from 'pinia'
 import { generate } from '@ant-design/colors'
 import emitter from '@/utils/mitt';
+import type { GlobalThemeOverrides } from 'naive-ui';
 
 
 export const useThemeStore = defineStore('theme', {
     state: () => ({
         mainColor: '',
         mainColors: [''],
-        
     }),
-    getters: {
-        styleColors: (state)=>{
-            return {text:state.mainColors[8],background:state.mainColors[0]}
-        }
-    },
     actions: {
         initByLocalStorage() {
             let { version, mainColors } = JSON.parse(localStorage.getItem('theme') ?? '{"version":0}')
@@ -25,14 +20,16 @@ export const useThemeStore = defineStore('theme', {
             this.update()
         },
         update() {//把store的数据同步到naive-ui
-            emitter.emit('changeTheme', {
+            let obj:GlobalThemeOverrides = {
                 common: {
                     primaryColor: this.mainColors[5],
                     primaryColorHover: this.mainColors[4],
                     primaryColorSuppl: this.mainColors[4],
-                    primaryColorPressed: this.mainColors[6]
+                    primaryColorPressed: this.mainColors[6],
+                    textColorBase: this.mainColors[8],
                 }
-            })
+            }
+            emitter.emit('changeTheme', obj)
             this.save()
         },
         setMainColor(color: string) {
@@ -45,7 +42,6 @@ export const useThemeStore = defineStore('theme', {
                 version: 2,
                 mainColors: this.mainColors,
                 mainColor: this.mainColor,
-                styleColors: this.styleColors
             })
             localStorage.setItem('theme', stringData);
             if(window.isElectron){

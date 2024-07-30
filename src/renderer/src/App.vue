@@ -19,12 +19,6 @@ let themeOverrides = ref({
 let userStore = useUserStore();
 let playStore = usePlayStore();
 let themeStore = useThemeStore();
-let textColor = computed(() => {
-  return themeStore.styleColors.text
-})
-let bgcolor = computed(() => {
-  return themeStore.styleColors.background
-})
 
 userStore.updateByStorage();
 onMounted(() => {
@@ -60,13 +54,57 @@ emitter.on('changeTheme', (theme) => {
 
 <style>
 .app{
-  background-color: v-bind(bgcolor);
+  background-color: v-bind('themeStore.mainColors[0]');
 }
+
+
 .icon,
 .n-icon{
-  color: v-bind(textColor);
+  color: v-bind('themeStore.mainColors[8]');
 }
-div{
-  color: v-bind(textColor);
+
+.text1{
+  color: v-bind('themeStore.mainColors[9]');
+}
+
+.text2{
+  color: v-bind('themeStore.mainColors[7]');
+}
+
+.text3{
+  color: v-bind('themeStore.mainColors[6]');
+}
+
+
+/* 主题色 */
+.color0{
+  color: v-bind('themeStore.mainColors[0]');
+}
+.color1{
+  color: v-bind('themeStore.mainColors[1]');
+}
+.color2{
+  color: v-bind('themeStore.mainColors[2]');
+}
+.color3{
+  color: v-bind('themeStore.mainColors[3]');
+}
+.color4{
+  color: v-bind('themeStore.mainColors[4]');
+}
+.color5{
+  color: v-bind('themeStore.mainColors[5]');
+}
+.color6{
+  color: v-bind('themeStore.mainColors[6]');
+}
+.color7{
+  color: v-bind('themeStore.mainColors[7]');
+}
+.color8{
+  color: v-bind('themeStore.mainColors[8]');
+}
+.color9{
+  color: v-bind('themeStore.mainColors[9]');
 }
 </style>
