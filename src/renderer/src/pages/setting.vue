@@ -15,7 +15,7 @@
             </settingItem>
             <settingItem>
                 <template #t1>主题色</template>
-                <template #t2>自定义！好耶</template>
+                <template #t2>默认是c49526</template>
                 <template #action>
                     <n-color-picker class="color-picker" v-model:value="primaryColor" :show-alpha="false"
                         :modes="['hex']" />
