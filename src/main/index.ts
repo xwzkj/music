@@ -129,7 +129,8 @@ function createWindow() {
     icon: join(__dirname, '../../resources/icon.png'),
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
-      sandbox: false
+      sandbox: false,
+      webSecurity: false
     }
   })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {

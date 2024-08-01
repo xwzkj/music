@@ -124,7 +124,11 @@ export function songDetail(ids) {
  */
 export function songUrlV1(id, level, specialApi = null, cookie = null) {
     if (specialApi) {
-        return axios.get(`${specialApi}?id=${id}&level=${level}${cookie ? `&cookie=${cookie}` : ''}`)
+        return axios.get(specialApi, {
+            params: {
+                id, level, cookie
+            }
+        })
     } else {
         return request({
             url: '/song/url/v1',
