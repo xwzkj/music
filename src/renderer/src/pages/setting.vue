@@ -1,9 +1,13 @@
 <template>
     <div>
         <div class="setting">
-            <settingItem :actionOnClick="loginByCookie">
+            <settingItem :actionOnClick="loginByCookie" v-show="!isElectron">
                 <template #t1>手动输入cookie来登录</template>
-                <template #t2>奇奇怪怪的登录方式</template>
+                <template #t2>奇奇怪怪的登录方式 仅网页端可用</template>
+            </settingItem>
+            <settingItem :needInput="true" :actionOnClick="updateSpecialApi" :defaultValue="defaultSpecialApi">
+                <template #t1>设置专用api</template>
+                <template #t2>用于获取歌曲的url</template>
             </settingItem>
             <settingItem :actionOnClick="update">
                 <template #t1>马上更新用户信息！</template>
@@ -15,7 +19,7 @@
             </settingItem>
             <settingItem>
                 <template #t1>主题色</template>
-                <template #t2>默认是c49526</template>
+                <template #t2>默认是#c49526</template>
                 <template #action>
                     <n-color-picker class="color-picker" v-model:value="primaryColor" :show-alpha="false"
                         :modes="['hex']" />
@@ -40,12 +44,20 @@ import settingItem from '@/components/settingItem.vue'
 let userStore = useUserStore()
 let themeStore = useThemeStore()
 let primaryColor = ref(themeStore.mainColor);
+const isElectron = ref(window.isElectron)
+let defaultSpecialApi = ref(localStorage.getItem('specialApi') ?? '')
 onMounted(() => {
     primaryColor.value = themeStore.mainColor;
     watch(primaryColor, (value) => {
         themeStore.setMainColor(value)
     })
 })
+
+function updateSpecialApi(value){
+    localStorage.setItem('specialApi', value);
+    api.success('已设置~')
+}
+
 function logout() {
     userStore.logout();
     api.success('退出登录~')

@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import ElectronStore from 'electron-store'
 // const fs = require('fs')
 import * as fs from 'fs'
-import * as netease from 'NeteaseCloudMusicApi'
+import netease from 'NeteaseCloudMusicApi'
 
 console.log('奶酪音乐 ©丸子');
 
@@ -172,11 +172,9 @@ function createWindow() {
   } else {
     lyricWindow.loadFile(join(__dirname, '../renderer/desktopLyric.html'))
   }
-  if (is.dev) {
-    lyricWindow.webContents.openDevTools()
-  } else {
-    lyricWindow.setSkipTaskbar(true)
-  }
+
+  lyricWindow.setSkipTaskbar(true)
+
 
   // 窗口事件
   // 歌词窗口 保存位置

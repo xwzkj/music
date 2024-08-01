@@ -7,8 +7,10 @@ import MessageApi from "@/modules/messageApi.vue";
 import Container from "./pages/container.vue";
 import emitter from "@/utils/mitt";
 import * as api from "@/modules/api";
-//判断环境是否是electron
-window.isElectron = window.hasOwnProperty("netease");
+
+if(!window.hasOwnProperty('isElectron')){
+  window.isElectron = false
+}
 
 let themeOverrides = ref({
   common: {
@@ -35,7 +37,7 @@ onMounted(() => {
 })
 emitter.on('changeTheme', (theme) => {
   api.objDeepMerge(themeOverrides.value, theme)
-  console.log(themeOverrides.value);
+  // console.log(themeOverrides.value);
 })
 
 
@@ -53,58 +55,67 @@ emitter.on('changeTheme', (theme) => {
 </template>
 
 <style>
-.app{
+.app {
   background-color: v-bind('themeStore.mainColors[0]');
 }
 
 
 .icon,
-.n-icon{
+.n-icon {
   color: v-bind('themeStore.mainColors[8]');
 }
 
-.text1{
+.text1 {
   color: v-bind('themeStore.mainColors[9]');
 }
 
-.text2{
+.text2 {
   color: v-bind('themeStore.mainColors[7]');
 }
 
-.text3{
+.text3 {
   color: v-bind('themeStore.mainColors[6]');
 }
 
 
 /* 主题色 */
-.color0{
+.color0 {
   color: v-bind('themeStore.mainColors[0]');
 }
-.color1{
+
+.color1 {
   color: v-bind('themeStore.mainColors[1]');
 }
-.color2{
+
+.color2 {
   color: v-bind('themeStore.mainColors[2]');
 }
-.color3{
+
+.color3 {
   color: v-bind('themeStore.mainColors[3]');
 }
-.color4{
+
+.color4 {
   color: v-bind('themeStore.mainColors[4]');
 }
-.color5{
+
+.color5 {
   color: v-bind('themeStore.mainColors[5]');
 }
-.color6{
+
+.color6 {
   color: v-bind('themeStore.mainColors[6]');
 }
-.color7{
+
+.color7 {
   color: v-bind('themeStore.mainColors[7]');
 }
-.color8{
+
+.color8 {
   color: v-bind('themeStore.mainColors[8]');
 }
-.color9{
+
+.color9 {
   color: v-bind('themeStore.mainColors[9]');
 }
 </style>

@@ -13,6 +13,7 @@ declare module 'vue' {
     IHugeiconsArrowLeft01: typeof import('~icons/hugeicons/arrow-left01')['default']
     IHugeiconsArrowRight01: typeof import('~icons/hugeicons/arrow-right01')['default']
     IHugeiconsArrowUp01: typeof import('~icons/hugeicons/arrow-up01')['default']
+    IHugeiconsCheckmarkSquare01: typeof import('~icons/hugeicons/checkmark-square01')['default']
     IHugeiconsDragDrop: typeof import('~icons/hugeicons/drag-drop')['default']
     IHugeiconsExchange01: typeof import('~icons/hugeicons/exchange01')['default']
     IHugeiconsLinkSquare01: typeof import('~icons/hugeicons/link-square01')['default']

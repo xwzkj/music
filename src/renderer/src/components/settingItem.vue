@@ -12,9 +12,13 @@
                 </div>
                 <div class="action">
                     <slot name="action">
-                        <n-button class="button" secondary circle type="primary" @click="props.actionOnClick">
+                        <n-input v-model:value="inputValue" v-if="props.needInput" placeholder="请输入" />
+                        <n-button class="button" secondary circle type="primary">
                             <template #icon>
-                                <n-icon><i-hugeicons-link-square-01 /></n-icon>
+                                <n-icon>
+                                    <i-hugeicons-link-square-01 @click="props.actionOnClick" v-if="!props.needInput" />
+                                    <i-hugeicons-checkmark-square-01 @click="() => props.actionOnClick(inputValue)" v-else/>
+                                </n-icon>
                             </template>
                         </n-button>
                     </slot>
@@ -25,8 +29,9 @@
 </template>
 
 <script setup name="settingItem">
-//仅当action插槽为默认值时生效
-let props = defineProps(['actionOnClick'])
+//参数一仅当action插槽为默认值时生效 参数二是Boolean
+let props = defineProps(['actionOnClick', 'needInput', 'defaultValue'])
+let inputValue = ref(props.defaultValue)
 </script>
 
 <style scoped>

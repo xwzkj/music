@@ -22,6 +22,7 @@ let musicApi = axios.create({
  * @returns 
 */
 let request = async (params, realTimeSync = true) => {
+    // 浏览器环境
     try {
         const userStore = useUserStore(pinia);
         //加时间戳避免缓存
@@ -44,16 +45,21 @@ let request = async (params, realTimeSync = true) => {
     }
 }
 
-if (window.$isElectron) {
+if (window.isElectron) {
+    console.log('当前是electron环境！');
     request = async (param, _) => {
-        let { url, method, params, data } = param;
-        if (localStorage.getItem('cookie')) {
-            data = { ...data, cookie: localStorage.getItem('cookie') }
+        console.log(param);
+        try {
+            let { url, method, params, data } = param;
+            if (localStorage.getItem('cookie')) {
+                data = { ...data, cookie: localStorage.getItem('cookie') }
+            }
+            return await window.netease(url, { ...data, ...params });
+        } catch (e) {
+            error(`本地版 api请求错误！\napiURL：${apiurl} \n参数：${JSON.stringify(param)} \n\n返回信息：\n${JSON.stringify(e.response)}`)
         }
-        return await window.netease(url, { ...data, ...params });
     }
 }
-
 export function loginStatus() {
     return request({
         url: '/login/status',
@@ -108,12 +114,24 @@ export function songDetail(ids) {
         data: { ids }
     })
 }
-export function songUrlV1(id, level) {
-    return request({
-        url: '/song/url/v1',
-        method: 'post',
-        data: { id, level }
-    })
+/**
+ * 参数四只有在参数三有值才生效
+ * @param {string | number} id 
+ * @param {string} level 
+ * @param {string} specialApi 
+ * @param {string} cookie 
+ * @returns {Promise}
+ */
+export function songUrlV1(id, level, specialApi = null, cookie = null) {
+    if (specialApi) {
+        return axios.get(`${specialApi}?id=${id}&level=${level}${cookie ? `&cookie=${cookie}` : ''}`)
+    } else {
+        return request({
+            url: '/song/url/v1',
+            method: 'post',
+            data: { id, level }
+        })
+    }
 }
 export function lyricNew(id) {
     return request({

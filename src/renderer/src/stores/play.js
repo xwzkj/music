@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import * as api from '@/modules/api'
+import emitter from '@/utils/mitt';
 import { ref, computed } from 'vue'
 import { useUserStore } from "./user";
 
@@ -169,7 +170,7 @@ export const usePlayStore = defineStore('play', () => {
     }
     //获取并应用歌曲url
     async function getAudioUrl(id) {
-        let res = await api.songUrlV1(id, 'jymaster');
+        let res = await api.songUrlV1(id, 'jymaster', localStorage.getItem('specialApi'), localStorage.getItem('cookie'));
         res = res.data.data[0].url;
         player.value.src = res;
         return res;
@@ -340,7 +341,7 @@ export const usePlayStore = defineStore('play', () => {
 @return {number}
 */
     function lrcToMS(lyricLine) {
-        let express = /\[(\d+):(\d+)[:.](\d+)\]/
+        let express = /\[(\d+)[:.](\d+)[:.](\d+)\]/
         let lineTime = express.exec(lyricLine);
         if (lineTime == null) {
             return 0;
@@ -356,7 +357,7 @@ export const usePlayStore = defineStore('play', () => {
      * @return {string} 歌词文本
      */
     function lrcToLyric(lyricLine) {
-        let express = /\[\d+:\d+[:.]\d+\](.*)/
+        let express = /\[\d+[:.]\d+[:.]\d+\](.*)/
         let lineTime = express.exec(lyricLine);
         if (lineTime == null) {
             return '';
