@@ -34,15 +34,15 @@ function play(index) {
     playStore.play(true);
 }
 onMounted(() => {
-    scrollToCurrent();
+    scrollToCurrent(false);
 })
 
 watch(() => playStore.playlistIndex, (value) => {
     scrollToCurrent();
 })
 
-function scrollToCurrent() {
-    playinglistScrollbarRef.value.scrollTo({ top: playinglistItemRef.value?.[playStore.playlistIndex]?.offsetTop - 80, behavior: 'smooth' });
+function scrollToCurrent(smooth = true) {
+    playinglistScrollbarRef.value.scrollTo({ top: playinglistItemRef.value?.[playStore.playlistIndex]?.offsetTop - 80, behavior: smooth ? 'smooth' : 'auto' });
 }
 </script>
 
