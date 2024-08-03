@@ -1,6 +1,7 @@
 <template>
     <div class="header">
-        <n-icon class="header-menu" size="2rem" @click="showNav = true"><i-hugeicons-right-to-left-list-dash /></n-icon>
+        <n-icon class="header-menu" size="2rem"
+            @click="switchNavShow(true)"><i-hugeicons-right-to-left-list-dash /></n-icon>
         <span class="header-search">
             <n-icon size="2rem" style="transform: rotate(-90deg);"
                 @click="api.windowBack"><i-hugeicons-arrow-up-01 /></n-icon>
@@ -11,25 +12,52 @@
         <n-avatar class="header-user" v-if="userStore.isLogin" round :src="userStore.avatar"
             @click="router.push({ name: 'account' })" />
 
-        <div class="header-nav bg" v-if="showNav" @click="showNav = false">
-            <navigation />
+        <div class="header-nav bg" @click="switchNavShow(false)">
+            <navigation v-if="showNavVIf" />
         </div>
     </div>
 </template>
 <script setup>
 import { useRouter } from 'vue-router';
+import anime from 'animejs';
 import { ref } from 'vue';
 import { useUserStore } from '@/stores/user.js'
 import * as api from '@/modules/api.js';
 import navigation from './navigation.vue';
 const userStore = useUserStore();
 let value = ref('');
-let showNav = ref(false);
+let showNav = false;
+let showNavVIf = ref(false);
 const router = useRouter();
 function search(event) {
     if (event.keyCode == 13) {
         router.push({ name: 'search', query: { keyword: value.value } })
     }
+}
+
+function switchNavShow(isShow = 'auto') {
+    if (isShow === 'auto') {
+        showNav = !showNav;
+    } else if (typeof isShow === 'boolean') {
+        showNav = isShow;
+    } else {
+        throw new Error('nav动画 参数错误');
+    }
+    console.log(showNav);
+    anime({
+        targets: '.header-nav',
+        translateX: showNav ? '100%' : '0%',
+        duration: 500,
+        easing: 'easeInOutQuad',
+        begin: () => {
+            if (showNav == true) {
+                showNavVIf.value = showNav;
+            }
+        },
+        complete: () => {
+            showNavVIf.value = showNav;
+        }
+    })
 }
 </script>
 <style>
@@ -58,7 +86,7 @@ span {
 .header-nav {
     position: fixed;
     top: 0;
-    left: 0;
+    left: -100%;
     width: 100vw;
     height: calc(var(--vh, 1vh) * 100);
     z-index: 10;
@@ -74,7 +102,8 @@ span {
     .header-user {
         margin-right: 0;
     }
-    .header-search{
+
+    .header-search {
         margin-left: 0;
     }
 }
