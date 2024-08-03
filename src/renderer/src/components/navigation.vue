@@ -1,6 +1,6 @@
 <template>
     <div class="nav-outer">
-        <div class="header-title" @click="router.push({ name: 'home' })">奶酪音乐</div>
+        <div class="header-title text1">奶酪音乐</div>
         <div>
             <n-menu :options="menuData" v-model:value="activeNow" />
         </div>
@@ -39,7 +39,7 @@ watch(
 onMounted(() => {
     updateActiveItem(route.name, route.query);
 });
-    function updateActiveItem(key: any, query: any) {
+function updateActiveItem(key: any, query: any) {
     if (key == 'playlist' && query.id == userStore.playlists?.[0]?.id) {
         //喜欢的歌单
         activeNow.value = 'likedList';
