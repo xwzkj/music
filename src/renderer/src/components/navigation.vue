@@ -35,7 +35,11 @@ watch(
         updateActiveItem(val.name, val.query);
     },
     { deep: true });
-function updateActiveItem(key: any, query: any) {
+
+onMounted(() => {
+    updateActiveItem(route.name, route.query);
+});
+    function updateActiveItem(key: any, query: any) {
     if (key == 'playlist' && query.id == userStore.playlists?.[0]?.id) {
         //喜欢的歌单
         activeNow.value = 'likedList';

@@ -50,7 +50,6 @@ import MusicController from '@/components/musicController.vue';
 
 .container-content {
   flex: 1;
-  max-width: calc(var(--vw, 1vw) * 100 - 12rem);
   display: flex;
   flex-direction: column;
 }
@@ -59,5 +58,19 @@ import MusicController from '@/components/musicController.vue';
   max-width: 100%;
   overflow-y: scroll;
   flex: 1;
+}
+
+@media screen and (min-width: 600px) {
+  .container-content{
+  max-width: calc(var(--vw, 1vw) * 100 - 12rem);
+  }
+}
+@media screen and (max-width: 600px) {
+  .container-content{
+  max-width: calc(var(--vw, 1vw) * 100);
+  }
+  .container-nav{
+    display: none;
+  }
 }
 </style>

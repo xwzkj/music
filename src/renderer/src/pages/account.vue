@@ -92,7 +92,7 @@ async function getArea(province, city) {
 
 .account-user-playlists-ul {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
 }
 
 li {

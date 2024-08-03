@@ -21,6 +21,7 @@ declare module 'vue' {
     IHugeiconsPause: typeof import('~icons/hugeicons/pause')['default']
     IHugeiconsPlay: typeof import('~icons/hugeicons/play')['default']
     IHugeiconsPlaylist03: typeof import('~icons/hugeicons/playlist03')['default']
+    IHugeiconsRightToLeftListDash: typeof import('~icons/hugeicons/right-to-left-list-dash')['default']
     IHugeiconsSmartPhone01: typeof import('~icons/hugeicons/smart-phone01')['default']
     IHugeiconsSquareLock02: typeof import('~icons/hugeicons/square-lock02')['default']
     IHugeiconsSquareLockPassword: typeof import('~icons/hugeicons/square-lock-password')['default']

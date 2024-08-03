@@ -130,8 +130,9 @@ function switchShow() {
 }
 
 .ctrl-left {
+    flex:1;
     display: flex;
-    width: calc(100% / 3.5);
+    max-width: calc(100% / 3.5);
     cursor: pointer;
 }
 
@@ -169,8 +170,9 @@ function switchShow() {
 center--------------------------------------------------------
  */
 .ctrl-center {
+    flex:1;
     padding-top: 0.8rem;
-    width: calc(100% / 3.5);
+    max-width: calc(100% / 3.5);
 }
 
 .button {
@@ -193,7 +195,8 @@ center--------------------------------------------------------
 right---------------------------------------------------------
 */
 .ctrl-right {
-    width: calc(100% / 3.5);
+    flex:1;
+    max-width: calc(100% / 3.5);
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -208,5 +211,15 @@ right---------------------------------------------------------
     width: 100%;
     height: calc(var(--vh, 1vh) * 100 - v-bind('ctrlHeight + `rem`'));
     flex: 1;
+}
+
+@media screen and (max-width: 600px) {
+    .ctrl-info-box{
+        display: none;
+    }
+    .btn-like,
+    .btn-loop{
+        display: none;
+    }
 }
 </style>

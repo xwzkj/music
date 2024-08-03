@@ -15,8 +15,8 @@ let lyricScrollbarRef = ref();
 let background = ref('');//背景渐变色数据
 let id_clock1 = NaN;//定时器id
 let displayList = ref(false);
-let playingListTop = computed(() => {
-  return displayList.value ? '0%' : '100%';
+let playingListTran = computed(() => {
+  return displayList.value ? '-100%' : '0%';
 })
 
 //挂载
@@ -56,7 +56,7 @@ function getImgMainColor() {
             <div id="music-name">
               <MarqueePlus :html="playStore.nameWithTns ?? `暂未播放~~`" />
             </div>
-            <div id="music-artist" class="text2">{{ currentMusic.artist ?? ``}}</div>
+            <div id="music-artist" class="text2">{{ currentMusic.artist ?? `` }}</div>
             <div id="player-centerblock">
               <div id="music-img-container">
                 <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img"
@@ -304,7 +304,8 @@ ul {
 .player-playinglist-box {
   position: fixed;
   left: 0;
-  top: v-bind(playingListTop);
+  top: 100%;
+  transform: translateY(v-bind(playingListTran));
   height: 100%;
   width: 100%;
   background: none;

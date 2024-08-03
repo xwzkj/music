@@ -55,7 +55,8 @@ emitter.on('changeTheme', (theme) => {
 </template>
 
 <style>
-.app {
+.app,
+.bg {
   background-color: v-bind('themeStore.mainColors[0]');
 }
 
