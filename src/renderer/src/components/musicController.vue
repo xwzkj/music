@@ -62,7 +62,7 @@
             </div>
         </div>
 
-        <div class="ctrl-playinglist" @click.stop>
+        <div class="ctrl-playinglist" @click.stop v-if="showPlayingListVIf">
             <playinglist />
         </div>
     </div>
@@ -78,7 +78,8 @@ import anime from 'animejs';
 let router = useRouter();
 let playStore = usePlayStore();
 let outerEle = ref(null);
-let showPlayingList = ref(false);
+let showPlayingList = false;
+let showPlayingListVIf = ref(false);
 let ctrlHeight = ref(7)
 let lyricNow = computed(() => {
     if (!Array.isArray(playStore.currentMusic.lyric) || playStore.currentMusic?.lyric.length < playStore.currentMusic.currentLyricIndex) {
@@ -88,14 +89,22 @@ let lyricNow = computed(() => {
 })
 
 function switchShow() {
-    showPlayingList.value = !showPlayingList.value
-    console.log(showPlayingList.value);
+    showPlayingList = !showPlayingList
+    // console.log(showPlayingList);
     let a = -window.innerHeight + ctrlHeight.value * 16
     anime({
         targets: outerEle.value,
-        translateY: showPlayingList.value ? `${a}px` : '0px',
+        translateY: showPlayingList ? `${a}px` : '0px',
         duration: 500,
         easing: 'easeInOutCubic',
+        begin: () => {
+            if (showPlayingList == true) {
+                showPlayingListVIf.value = showPlayingList
+            }
+        },
+        complete: () => {
+            showPlayingListVIf.value = showPlayingList
+        }
     })
 }
 </script>
@@ -130,7 +139,7 @@ function switchShow() {
 }
 
 .ctrl-left {
-    flex:1;
+    flex: 1;
     display: flex;
     max-width: calc(100% / 3.5);
     cursor: pointer;
@@ -170,7 +179,7 @@ function switchShow() {
 center--------------------------------------------------------
  */
 .ctrl-center {
-    flex:1;
+    flex: 1;
     padding-top: 0.8rem;
     max-width: calc(100% / 3.5);
 }
@@ -195,7 +204,7 @@ center--------------------------------------------------------
 right---------------------------------------------------------
 */
 .ctrl-right {
-    flex:1;
+    flex: 1;
     max-width: calc(100% / 3.5);
     display: flex;
     justify-content: flex-end;
@@ -214,11 +223,12 @@ right---------------------------------------------------------
 }
 
 @media screen and (max-width: 600px) {
-    .ctrl-info-box{
+    .ctrl-info-box {
         display: none;
     }
+
     .btn-like,
-    .btn-loop{
+    .btn-loop {
         display: none;
     }
 }
