@@ -1,5 +1,5 @@
 <template>
-    <div class="ctrl-outer">
+    <div class="ctrl-outer" ref="outerEle">
         <div class="ctrl-box">
             <div class="ctrl-left" @click="() => router.push({ name: 'player' })">
                 <div class="ctrl-img-box">
@@ -57,8 +57,7 @@
             </div>
             <div class="ctrl-right">
                 <div class="btn-list button">
-                    <n-icon size="1.5rem" class="icon"
-                        @click="() => { showPlayingList = !showPlayingList }"><i-hugeicons-playlist-03 /></n-icon>
+                    <n-icon size="1.5rem" class="icon" @click="switchShow"><i-hugeicons-playlist-03 /></n-icon>
                 </div>
             </div>
         </div>
@@ -75,19 +74,30 @@ import { usePlayStore } from '@/stores/play';
 import * as api from '@/modules/api.js'
 import { useRouter } from 'vue-router';
 import playinglist from './playinglist.vue';
+import anime from 'animejs';
 let router = useRouter();
 let playStore = usePlayStore();
+let outerEle = ref(null);
 let showPlayingList = ref(false);
-let ctrlTop = computed(() => {
-    return showPlayingList.value ? '0vh' : `calc(var(--vh,1vh) * 100 - ${ctrlHeight.value})`;
-})
-let ctrlHeight = ref('7rem')
+let ctrlHeight = ref(7)
 let lyricNow = computed(() => {
     if (!Array.isArray(playStore.currentMusic.lyric) || playStore.currentMusic?.lyric.length < playStore.currentMusic.currentLyricIndex) {
         return ''
     }
     return playStore.currentMusic?.lyric[playStore.currentMusic.currentLyricIndex]?.lrc
 })
+
+function switchShow() {
+    showPlayingList.value = !showPlayingList.value
+    console.log(showPlayingList.value);
+    let a = -window.innerHeight + ctrlHeight.value * 16
+    anime({
+        targets: outerEle.value,
+        translateY: showPlayingList.value ? `${a}px` : '0px',
+        duration: 500,
+        easing: 'easeInOutCubic',
+    })
+}
 </script>
 
 <style scoped>
@@ -98,7 +108,7 @@ let lyricNow = computed(() => {
 .ctrl-outer {
     position: fixed;
     z-index: 1;
-    top: v-bind(ctrlTop);
+    top: calc(var(--vh, 1vh) * 100 - v-bind('ctrlHeight + `rem`'));
     width: 100%;
     height: calc(var(--vh, 1vh) * 100);
     overflow: hidden;
@@ -110,7 +120,7 @@ let lyricNow = computed(() => {
     flex-direction: column;
     background-color: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(20px);
-    transition: all 0.5s ease-in-out;
+    /* transition: all 0.5s ease-in-out; */
 }
 
 .ctrl-box {
@@ -196,7 +206,7 @@ right---------------------------------------------------------
 .ctrl-playinglist {
     margin-top: 1rem;
     width: 100%;
-    height: calc(var(--vh, 1vh) * 100 - v-bind(ctrlHeight));
+    height: calc(var(--vh, 1vh) * 100 - v-bind('ctrlHeight + `rem`'));
     flex: 1;
 }
 </style>
