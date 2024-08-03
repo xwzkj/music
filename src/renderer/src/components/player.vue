@@ -1,6 +1,7 @@
 <script setup lang="js" name="player">
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import emitter from "@/utils/mitt";
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
@@ -32,6 +33,9 @@ onBeforeUnmount(() => {
   clearInterval(id_clock1);
 })
 
+function switchShowPlayer(){
+  emitter.emit('switchShowPlayer');
+}
 
 //获取图片主色
 function getImgMainColor() {
@@ -47,7 +51,7 @@ function getImgMainColor() {
       <div id="playerBackground"></div>
       <div id="playerContent">
         <div style="position:absolute;top:1rem;left:1rem;z-index: 1000;">
-          <n-icon size="2rem" style="transform: rotate(-90deg);" @click="api.windowBack">
+          <n-icon size="2rem" style="transform: rotate(-180deg);" @click="switchShowPlayer">
             <i-hugeicons-arrow-up-01 />
           </n-icon>
         </div>
@@ -128,14 +132,15 @@ function getImgMainColor() {
 }
 
 #playerOuter {
-  position: fixed;
-  /* 覆盖下层元素 */
+  
+  position: absolute;
   z-index: 10;
 
   left: 0;
   top: 0;
-  width: calc(var(--vw, 1vw) * 100);
-  height: calc(var(--vh, 1vh) * 100);
+  width: 100%;
+  height: 100%; 
+ 
 
   display: flex;
 

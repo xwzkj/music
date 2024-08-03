@@ -23,41 +23,33 @@ let musicApi = axios.create({
 */
 let request = async (params, realTimeSync = true) => {
     // 浏览器环境
-    try {
-        const userStore = useUserStore(pinia);
-        //加时间戳避免缓存
-        if (realTimeSync) {
-            params.params = { ...params.params, timestamp: Date.now() }
-        }
-        params.params = { ...params.params, realIP: userStore.ip }
-        //判断如果跨域就尝试手动传递cookie
-        if (localStorage.getItem('cookie') != null && apiurl.slice(0, 4) == 'http') {
-            if (params.method == 'post') {
-                params.data = { ...params.data, cookie: userStore.cookie }
-            } else if (params.method == 'get') {
-                params.params = { ...params.params, cookie: userStore.cookie }
-            }
-        }
-        let req = await musicApi.request(params);
-        return req;
-    } catch (e) {
-        error(`api请求错误！\napiURL：${apiurl} \n参数：${JSON.stringify(params)} \n\n返回信息：\n${JSON.stringify(e.response)}`)
+    const userStore = useUserStore(pinia);
+    //加时间戳避免缓存
+    if (realTimeSync) {
+        params.params = { ...params.params, timestamp: Date.now() }
     }
+    params.params = { ...params.params, realIP: userStore.ip }
+    //判断如果跨域就尝试手动传递cookie
+    if (localStorage.getItem('cookie') != null && apiurl.slice(0, 4) == 'http') {
+        if (params.method == 'post') {
+            params.data = { ...params.data, cookie: userStore.cookie }
+        } else if (params.method == 'get') {
+            params.params = { ...params.params, cookie: userStore.cookie }
+        }
+    }
+    let req = await musicApi.request(params);
+    return req;
 }
 
 if (window.isElectron) {
     console.log('当前是electron环境！');
     request = async (param, _) => {
         console.log(param);
-        try {
-            let { url, method, params, data } = param;
-            if (localStorage.getItem('cookie')) {
-                data = { ...data, cookie: localStorage.getItem('cookie') }
-            }
-            return await window.netease(url, { ...data, ...params });
-        } catch (e) {
-            error(`本地版 api请求错误！\napiURL：${apiurl} \n参数：${JSON.stringify(param)} \n\n返回信息：\n${JSON.stringify(e.response)}`)
+        let { url, method, params, data } = param;
+        if (localStorage.getItem('cookie')) {
+            data = { ...data, cookie: localStorage.getItem('cookie') }
         }
+        return await window.netease(url, { ...data, ...params });
     }
 }
 export function loginStatus() {

@@ -3,17 +3,6 @@ const router = createRouter({
     history: createWebHashHistory(),
     routes: [
         {
-            name: 'player',
-            path: '/player',
-            component: () => import('@/pages/player.vue'),
-            props: (route) => {
-                return route.query
-            },
-            meta: {
-                keepAlive: true
-            }
-        },
-        {
             name: 'home',
             path: '/',
             component: () => import('@/pages/home.vue'),
