@@ -3,16 +3,17 @@
         <div class="login">
             <div class="login-row-qr">
                 <div class="login-qr">
-                    <n-qr-code :value="qrcode" :size="200" background-color="rgba(255,255,255,0)" v-if="qrcode != ''" />
-                    <span v-if="qrcode == ''" style="text-align: center;color:lightgray">等待生成二维码<br />若长时间未生成
+                    <n-qr-code :value="qrcode" :size="200" background-color="rgba(255,255,255,0)" :color="themeStore.mainColors[9]" v-if="qrcode != ''" />
+                    <span v-if="qrcode == ''" style="text-align: center;" class="text3">等待生成二维码<br />若长时间未生成
                         大概是炸了</span>
-                    <span v-if="qrcode != ''">{{ qrStatus }}</span>
+                    <span v-if="qrcode != ''" class="text2">{{ qrStatus }}</span>
                 </div>
             </div>
             <div class="login-row-passwd">
                 <div class="login-passwd">
                     <div style="width: 100%;">
-                        <div style="font-size:1.5rem">登录</div>
+                        <div style="font-size:1.5rem" class="text1">登录</div>
+                        <div style="font-size:1rem;" class="text2">使用云音乐账号</div>
                     </div>
                     <div class="login-input-container">
                         <!-- 手机号 -->
@@ -63,6 +64,8 @@ import { useRouter } from 'vue-router';
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import { useUserStore } from "@/stores/user.js";
 import { NQrCode } from 'naive-ui';
+import { useThemeStore } from '@/stores/theme';
+let themeStore = useThemeStore();
 let userStore = useUserStore();
 let router = useRouter()
 let qrcode = ref('');
