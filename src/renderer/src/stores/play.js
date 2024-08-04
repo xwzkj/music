@@ -15,7 +15,7 @@ export const usePlayStore = defineStore('play', () => {
      * @type {AudioElementWithValue}
      */
     let player = ref(new Audio());
-    let lyricIndexNow = ref(0);//内部变量 供给下面的计算属性使用
+    let lyricIndexNow = ref(-1);//内部变量 供给下面的计算属性使用
     let currentMusic = computed(() => {
         let userStore = useUserStore();
         return {
@@ -109,8 +109,18 @@ export const usePlayStore = defineStore('play', () => {
         if (playlist.value.length == 0) {
             return;
         }
+        lyricIndexNow.value = -1;
         let value = currentMusic.value
         parseLyric()
+        if (window.isElectron) {            
+            //如果是electron环境 就发送歌名给桌面歌词
+            window.sendLyric(JSON.stringify({
+                time: 0,
+                lrc: nameWithTns.value,
+                roma: value?.artist,
+                tran: value?.artist
+            }))
+        }
         if ("mediaSession" in navigator) {//更新session元数据信息
             navigator.mediaSession.metadata = null
             navigator.mediaSession.metadata = new MediaMetadata({
@@ -309,16 +319,16 @@ export const usePlayStore = defineStore('play', () => {
     })
     function updateLyric() {
         try {
-            if (musicStatus.value.paused == false && 'lyric' in currentMusic.value) {
+            if (musicStatus.value.paused == false && 'lyric' in currentMusic.value) {//正在播放 并且有歌词
                 //歌词滚动
-                for (let i = 0; i < currentMusic.value.lyric.length; i++) {
+                for (let i = 0; i < currentMusic.value.lyric.length; i++) {//遍历歌词
                     let next = false;
-                    if (i == currentMusic.value.lyric.length - 1) {
+                    if (i == currentMusic.value.lyric.length - 1) {//如果是最后一句
                         next = true;
-                    } else if (currentMusic.value.lyric[i + 1].time > musicStatus.value.currentTime * 1000) {
+                    } else if (currentMusic.value.lyric[i + 1].time > musicStatus.value.currentTime * 1000) {//下一句的时间是否大于现在
                         next = true;
                     }
-                    if (currentMusic.value.lyric[i].time <= musicStatus.value.currentTime * 1000 && next == true) {
+                    if (currentMusic.value.lyric[i].time <= musicStatus.value.currentTime * 1000 && next == true) {//这一句的时间是否小于现在
                         if (lyricIndexNow.value != i) {
                             lyricIndexNow.value = i;
                             if (window.isElectron) {

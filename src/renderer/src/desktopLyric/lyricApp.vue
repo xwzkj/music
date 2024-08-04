@@ -41,7 +41,7 @@ let lyric = computed<Lyric>(() => {
 window?.getLyric(changeLyric);
 window?.getThemeColors(changeTheme);
 function changeLyric(event: Event, lyric: string) {
-    // console.log(lyric);
+    console.log(lyric);
     let lyricObj = JSON.parse(lyric) as Lyric;
     lyricText.value = lyricObj
     updateIsLocked();
