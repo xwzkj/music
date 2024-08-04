@@ -13,7 +13,7 @@ let { currentMusic } = storeToRefs(playStore);
 let lyricScrollbarRef = ref();
 // let showPlayingList = ref(false);//是否展示播放列表
 // let lyricActive = ref();//当前的歌词序号 现在用playstore里的currentMusic中的currentLyricIndex
-let background = ref('');//背景渐变色数据
+let background = ref('rgb(255,255,255)');//背景渐变色数据
 let id_clock1 = NaN;//定时器id
 let displayList = ref(false);
 let playingListTran = computed(() => {
@@ -63,7 +63,7 @@ function getImgMainColor() {
             <div id="music-artist" class="text2">{{ currentMusic.artist ?? `` }}</div>
             <div id="player-centerblock">
               <div id="music-img-container">
-                <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl" id="music-img"
+                <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl ?? '/icon.png'" id="music-img"
                   @load="getImgMainColor" crossorigin="anonymous">
               </div>
               <!-- 进度条 -->

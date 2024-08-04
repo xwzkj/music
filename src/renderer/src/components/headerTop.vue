@@ -13,7 +13,7 @@
             @click="router.push({ name: 'account' })" />
 
         <div class="header-nav bg" @click="switchNavShow(false)">
-            <navigation v-if="showNavVIf" />
+            <navigation v-show="showNavVIf" />
         </div>
     </div>
 </template>

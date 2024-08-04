@@ -2,7 +2,7 @@
     <div class="playinglist">
         <n-scrollbar class="playinglist-scrollbar" ref="playinglistScrollbarRef">
             <ul>
-                <li v-for="(item, index) in playStore.playlist" :key="item.id" @click="play(index)"
+                <li v-for="(item, index) in playStore.playlist" :key="index" @click="play(index)"
                     class="playinglist-item" ref="playinglistItemRef">
                     <img class="playinglist-img" :src="item.picurl + '?param=80y80'" :alt="item.name" loading="lazy" />
                     <div class="text">
