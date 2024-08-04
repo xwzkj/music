@@ -30,8 +30,7 @@ const themeStore = useThemeStore();
 let playinglistScrollbarRef = ref(null);
 let playinglistItemRef = ref([]);
 function play(index) {
-    playStore.playlistIndex = index;
-    playStore.play(true);
+    playStore.playWithPlaylistIndex(index);
 }
 onMounted(() => {
     scrollToCurrent(false);

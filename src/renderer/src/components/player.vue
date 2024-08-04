@@ -95,7 +95,8 @@ function getImgMainColor() {
                 <div class="btn-control">
                   <div class="btn-loop button">
                     <n-icon size="2.5rem" class="icon">
-                      <i-hugeicons-exchange-01 />
+                      <i-hugeicons-exchange-01 v-if="playStore.playMode == 0" @click="() => playStore.setPlayMode(1)" />
+                      <i-hugeicons-magic-wand-01 v-else @click="() => playStore.setPlayMode(0)" />
                     </n-icon>
                   </div>
                   <div class="btn-play-control">

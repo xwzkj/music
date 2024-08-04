@@ -7,12 +7,10 @@
 </template>
 <script setup name="search">
 import * as api from '@/modules/api.js'
-import { useRouter } from 'vue-router'
 import { ref, onMounted, watch } from 'vue'
 import musicList from '@/components/musicList.vue'
 import { usePlayStore } from '@/stores/play'
 let playStore = usePlayStore();
-let router = useRouter();
 let props = defineProps(['keyword']);
 let result = ref('');
 watch(props, (value) => {
@@ -35,7 +33,6 @@ async function search() {
 async function play(id) {
     await playStore.addMusic([id], 0, true);
     playStore.play(true);
-    router.push({ name: 'player' })
 }
 </script>
 <style scoped>

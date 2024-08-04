@@ -47,7 +47,9 @@
                         </div>
                         <div class="btn-loop button">
                             <n-icon size="1.5rem" class="icon">
-                                <i-hugeicons-exchange-01 />
+                                <i-hugeicons-exchange-01 v-if="playStore.playMode == 0"
+                                    @click="() => playStore.setPlayMode(1)" />
+                                <i-hugeicons-magic-wand-01 v-else @click="() => playStore.setPlayMode(0)" />
                             </n-icon>
                         </div>
                     </div>
@@ -59,7 +61,8 @@
                 </div>
                 <div class="ctrl-right">
                     <div class="btn-list button">
-                        <n-icon size="1.5rem" class="icon" @click="switchShowPlaylist"><i-hugeicons-playlist-03 /></n-icon>
+                        <n-icon size="1.5rem" class="icon"
+                            @click="switchShowPlaylist"><i-hugeicons-playlist-03 /></n-icon>
                     </div>
                 </div>
             </div>
@@ -70,7 +73,7 @@
         </div>
         <!-- 播放器 -->
         <div class="ctrl-player">
-            <player v-show="showPlayerVIf"/>
+            <player v-show="showPlayerVIf" />
         </div>
     </div>
 </template>
@@ -85,7 +88,7 @@ import player from './player.vue';
 import anime from 'animejs';
 import emitter from '@/utils/mitt'
 // 接收从player发出的隐藏player事件
-emitter.on('switchShowPlayer',()=>{
+emitter.on('switchShowPlayer', () => {
     // console.log('switchShowPlayer emit消息');
     switchShowPlayer()
 });
@@ -132,14 +135,14 @@ function switchShowPlayer() {
         translateY: showPlayer ? `-100%` : '0%',
         duration: 500,
         easing: 'easeInOutCubic',
-       begin: () => {
-           if (showPlayer == true) {
-               showPlayerVIf.value = showPlayer
-           }
-       },
-       complete: () => {
-           showPlayerVIf.value = showPlayer
-       }
+        begin: () => {
+            if (showPlayer == true) {
+                showPlayerVIf.value = showPlayer
+            }
+        },
+        complete: () => {
+            showPlayerVIf.value = showPlayer
+        }
     })
 }
 </script>

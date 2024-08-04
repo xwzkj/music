@@ -83,7 +83,7 @@ async function playAll() {
 }
 async function play(id) {
     loading.value = true;
-    await playStore.addMusic([id], 0, true);
+    await playStore.addMusic([id], "now", true);
     playStore.play(true);
     loading.value = false;
 }
