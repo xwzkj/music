@@ -19,6 +19,7 @@ let displayList = ref(false);
 let playingListTran = computed(() => {
   return displayList.value ? '-100%' : '0%';
 })
+let displayLyricWhenScreenIsNotWide = ref(false);
 
 //挂载
 onMounted(async () => {
@@ -66,21 +67,24 @@ function getImgMainColor() {
               <div class="music-artist text2">{{ currentMusic.artist ?? `` }}</div>
             </div>
             <div class="player-centerblock">
-              <div class="music-img-container">
+              <div class="music-img-container" @click="displayLyricWhenScreenIsNotWide = true">
                 <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl ?? '/icon.png'" class="music-img"
                   @load="getImgMainColor" crossorigin="anonymous">
               </div>
               <!-- 图片之下的内容 控制部分 -->
               <div class="player-ctrl">
                 <div class="player-ctrl-top">
-                <div class="btn-like button">
-                  <n-icon size="2.5rem" class="icon">
-                    <i-ant-design-heart-outlined v-if="!currentMusic?.isLiked"
-                      @click="api.likeAndUpdateLikelist(currentMusic.id, true)" />
-                    <i-ant-design-heart-filled v-if="currentMusic?.isLiked"
-                      @click="api.likeAndUpdateLikelist(currentMusic.id, false)" />
-                  </n-icon>
-                </div>
+                  <div class="btn-like button">
+                    <n-icon size="2.5rem" class="icon">
+                      <i-ant-design-heart-outlined v-if="!currentMusic?.isLiked"
+                        @click="api.likeAndUpdateLikelist(currentMusic.id, true)" />
+                      <i-ant-design-heart-filled v-if="currentMusic?.isLiked"
+                        @click="api.likeAndUpdateLikelist(currentMusic.id, false)" />
+                    </n-icon>
+                  </div>
+                  <div class="btn-comment button">
+                    <n-icon size="2.5rem" class="icon"><i-hugeicons-message-01 /></n-icon>
+                  </div>
                 </div>
                 <!-- 进度条 -->
                 <div class="music-progress">
@@ -89,6 +93,11 @@ function getImgMainColor() {
                 </div>
                 <!-- 播放控制按钮 -->
                 <div class="btn-control">
+                  <div class="btn-loop button">
+                    <n-icon size="2.5rem" class="icon">
+                      <i-hugeicons-exchange-01 />
+                    </n-icon>
+                  </div>
                   <div class="btn-play-control">
                     <div class="btn-prev button">
                       <n-icon size="4rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
@@ -113,7 +122,7 @@ function getImgMainColor() {
           </div>
         </div>
 
-        <div class="column column-lyric">
+        <div class="column column-lyric" @click="displayLyricWhenScreenIsNotWide = false">
           <n-scrollbar class="container-lyric" ref="lyricScrollbarRef">
             <ul class="lyric-list">
               <div v-for="(item, index) in currentMusic.lyric" :key="index"
@@ -228,7 +237,7 @@ function getImgMainColor() {
   display: flex;
   flex: 50%;
   height: 100%;
-  padding: 2em 0 2em 1em;
+  padding: 2rem;
 }
 
 .container-lyric {
@@ -259,6 +268,17 @@ function getImgMainColor() {
 
 .button {
   cursor: pointer;
+}
+
+.player-ctrl-top {
+  display: flex;
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-like,
+.btn-comment {
+  margin-left: 0.5rem;
 }
 
 .btn-control {
@@ -317,6 +337,7 @@ function getImgMainColor() {
 
 ul {
   list-style: none;
+  padding: 0;
 }
 
 .player-playinglist-box {
@@ -348,11 +369,13 @@ ul {
 
   /* 0-500px 竖屏设备 */
   .column-lyric {
-    display: none;
+    display: v-bind('displayLyricWhenScreenIsNotWide ? `flex` : `none`');
+    transition: all 0.7s ease-in-out;
   }
 
   .column-player {
-    flex: 100%;
+    display: v-bind('displayLyricWhenScreenIsNotWide ? `none` : `flex`');
+    transition: all 0.7s ease-in-out;
   }
 
   .container-player {
@@ -366,6 +389,10 @@ ul {
   .player-centerblock {
     flex: 1;
     justify-content: space-around;
+  }
+
+  .player-ctrl-top {
+    margin-top: 0;
   }
 }
 </style>
