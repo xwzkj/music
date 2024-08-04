@@ -33,47 +33,47 @@ onBeforeUnmount(() => {
   clearInterval(id_clock1);
 })
 
-function switchShowPlayer(){
+function switchShowPlayer() {
   emitter.emit('switchShowPlayer');
 }
 
 //获取图片主色
 function getImgMainColor() {
-  let color = api.getColorsFromImg(document.getElementById('music-img'), 2);
+  let color = api.getColorsFromImg(document.querySelector('.music-img'), 2);
   background.value = `linear-gradient(${color[0]}, ${color[1]})`;
 }
 </script>
 
 
 <template>
-  <div id="playerOoouter">
-    <div id="playerOuter">
-      <div id="playerBackground"></div>
-      <div id="playerContent">
-        <div style="position:absolute;top:1rem;left:1rem;z-index: 1000;">
+  <div class="player-outer-outer">
+    <div class="player-outer">
+      <div class="player-background"></div>
+      <div class="player-content">
+        <!-- 关闭按钮 -->
+        <div style="position:absolute;top:1rem;left:calc(100vw - 1rem - 2rem);z-index: 1000;">
           <n-icon size="2rem" style="transform: rotate(-180deg);" @click="switchShowPlayer">
             <i-hugeicons-arrow-up-01 />
           </n-icon>
         </div>
-        <div class="column" id="column-player">
-          <div id="container-player">
-            <div id="music-name">
-              <MarqueePlus :html="playStore.nameWithTns ?? `暂未播放~~`" />
+        <div class="column column-player">
+          <div class="container-player">
+            <!-- 标题部分 -->
+            <div>
+              <div class="music-name">
+                <MarqueePlus :html="playStore.nameWithTns ?? `暂未播放~~`" />
+              </div>
+              <div class="music-artist text2">{{ currentMusic.artist ?? `` }}</div>
             </div>
-            <div id="music-artist" class="text2">{{ currentMusic.artist ?? `` }}</div>
-            <div id="player-centerblock">
-              <div id="music-img-container">
-                <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl ?? '/icon.png'" id="music-img"
+            <div class="player-centerblock">
+              <div class="music-img-container">
+                <img :alt="'专辑图片-' + currentMusic.name" :src="currentMusic.picurl ?? '/icon.png'" class="music-img"
                   @load="getImgMainColor" crossorigin="anonymous">
               </div>
-              <!-- 进度条 -->
-              <div id="music-progress">
-                <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
-                  :tooltip="false" :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
-              </div>
-              <!-- 播放控制按钮 -->
-              <div id="btn-control">
-                <div id="btn-like" class="button">
+              <!-- 图片之下的内容 控制部分 -->
+              <div class="player-ctrl">
+                <div class="player-ctrl-top">
+                <div class="btn-like button">
                   <n-icon size="2.5rem" class="icon">
                     <i-ant-design-heart-outlined v-if="!currentMusic?.isLiked"
                       @click="api.likeAndUpdateLikelist(currentMusic.id, true)" />
@@ -81,31 +81,40 @@ function getImgMainColor() {
                       @click="api.likeAndUpdateLikelist(currentMusic.id, false)" />
                   </n-icon>
                 </div>
-                <div id="btn-play-control">
-                  <div id="btn-prev" class="button">
-                    <n-icon size="4rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
-                  </div>
-                  <div id="btn-pause" class="button">
-                    <n-icon size="4rem" class="icon" v-if="playStore.musicStatus.paused"
-                      @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
-                    <n-icon size="4rem" class="icon" v-if="!playStore.musicStatus.paused"
-                      @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
-                  </div>
-                  <div id="btn-next" class="button">
-                    <n-icon size="4rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
-                  </div>
                 </div>
-                <div id="btn-list" class="button">
-                  <n-icon size="2.5rem" class="icon"
-                    @click="() => { displayList = !displayList; return; }"><i-hugeicons-playlist-03 /></n-icon>
+                <!-- 进度条 -->
+                <div class="music-progress">
+                  <n-slider v-model:value="playStore.musicStatus.currentTime" :max="playStore.musicStatus.duration"
+                    :tooltip="false" :show-tooltip="false" @update:value="(value) => playStore.seek(value)" />
+                </div>
+                <!-- 播放控制按钮 -->
+                <div class="btn-control">
+                  <div class="btn-play-control">
+                    <div class="btn-prev button">
+                      <n-icon size="4rem" class="icon" @click="playStore.prev"><i-hugeicons-arrow-left-01 /></n-icon>
+                    </div>
+                    <div class="btn-pause button">
+                      <n-icon size="4rem" class="icon" v-if="playStore.musicStatus.paused"
+                        @click="() => playStore.play()"><i-hugeicons-play /></n-icon>
+                      <n-icon size="4rem" class="icon" v-if="!playStore.musicStatus.paused"
+                        @click="() => playStore.pause()"><i-hugeicons-pause /></n-icon>
+                    </div>
+                    <div class="btn-next button">
+                      <n-icon size="4rem" class="icon" @click="playStore.next"><i-hugeicons-arrow-right-01 /></n-icon>
+                    </div>
+                  </div>
+                  <div class="btn-list button">
+                    <n-icon size="2.5rem" class="icon"
+                      @click="() => { displayList = !displayList; return; }"><i-hugeicons-playlist-03 /></n-icon>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="column" id="column-lyric">
-          <n-scrollbar id="container-lyric" ref="lyricScrollbarRef">
+        <div class="column column-lyric">
+          <n-scrollbar class="container-lyric" ref="lyricScrollbarRef">
             <ul class="lyric-list">
               <div v-for="(item, index) in currentMusic.lyric" :key="index"
                 :class="{ 'lyric-active': currentMusic.currentLyricIndex == index }">
@@ -131,16 +140,16 @@ function getImgMainColor() {
   box-sizing: border-box;
 }
 
-#playerOuter {
-  
+.player-outer {
+
   position: absolute;
   z-index: 10;
 
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%; 
- 
+  height: 100%;
+
 
   display: flex;
 
@@ -151,7 +160,7 @@ function getImgMainColor() {
 
 }
 
-#playerContent {
+.player-content {
   display: flex;
   height: 100%;
   min-width: 400px;
@@ -159,7 +168,7 @@ function getImgMainColor() {
   max-width: calc(100vh/9*16);
 }
 
-#playerBackground {
+.player-background {
   /* 半透明遮罩 */
   position: absolute;
   display: block;
@@ -214,7 +223,7 @@ function getImgMainColor() {
   font-size: 1.5rem;
 }
 
-#column-lyric {
+.column-lyric {
   position: relative;
   display: flex;
   flex: 50%;
@@ -222,7 +231,7 @@ function getImgMainColor() {
   padding: 2em 0 2em 1em;
 }
 
-#container-lyric {
+.container-lyric {
   width: 100%;
   height: 100%;
   /* overflow-y: scroll; */
@@ -234,7 +243,7 @@ function getImgMainColor() {
 }
 
 /********************************播放控件**********************************************************/
-#column-player {
+.column-player {
   display: flex;
   flex: 50%;
   height: 100%;
@@ -244,7 +253,7 @@ function getImgMainColor() {
   position: relative;
 }
 
-#music-name {
+.music-name {
   font-size: 2rem;
 }
 
@@ -252,31 +261,31 @@ function getImgMainColor() {
   cursor: pointer;
 }
 
-#btn-control {
+.btn-control {
   width: 100%;
   display: flex;
   justify-content: space-around;
   align-items: center;
 }
 
-#btn-play-control {
+.btn-play-control {
   /* 上一曲 暂停 下一曲 按钮 */
   display: flex;
 }
 
-#container-player {
+.container-player {
   margin-left: 10%;
   margin-right: 10%;
   width: 80%;
 }
 
-#player-centerblock {
+.player-centerblock {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-#music-img-container {
+.music-img-container {
   margin-top: 1rem;
   margin-bottom: 1rem;
   position: relative;
@@ -291,14 +300,18 @@ function getImgMainColor() {
   /* 隐藏溢出部分 */
 }
 
-#music-img {
+.music-img {
   position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-#music-progress {
+.music-progress {
+  width: 100%;
+}
+
+.player-ctrl {
   width: 90%;
 }
 
@@ -334,12 +347,25 @@ ul {
 @media (max-width: 500px) {
 
   /* 0-500px 竖屏设备 */
-  #column-lyric {
+  .column-lyric {
     display: none;
   }
 
-  #column-player {
+  .column-player {
     flex: 100%;
+  }
+
+  .container-player {
+    height: calc(100% - 3rem);
+    transform: translateY(3rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .player-centerblock {
+    flex: 1;
+    justify-content: space-around;
   }
 }
 </style>
