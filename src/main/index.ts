@@ -1,5 +1,6 @@
 import { app, shell, BrowserWindow, ipcMain, net, session, screen } from 'electron'
 import { join, dirname } from 'path'
+import os from 'os'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import ElectronStore from 'electron-store'
 // const fs = require('fs')
@@ -42,7 +43,7 @@ if (is.dev) {
   console.log('调试模式 运行目录', app.getPath('exe'))
 }
 //////////////////////////////////////////////////////////////////////////////////////////////ready
-app.on('ready', () => {
+app.on('ready', async () => {
   //防多开 主要是多开有问题
   let singleRunKey = { key: 'com.xwzkj.music' }
   if (is.dev) {
@@ -51,7 +52,8 @@ app.on('ready', () => {
   if (!app.requestSingleInstanceLock(singleRunKey)) {
     app.quit()
   }
-
+  
+  
   primaryDisplay = screen.getPrimaryDisplay();
   store = new ElectronStore<conf>()
   // 往亦晕音乐api 本地处理
@@ -61,14 +63,14 @@ app.on('ready', () => {
       let res = await func(data)
       return { data: res.body };
     } catch (e) {
-      console.log('wyyapi',e);
+      console.log('wyyapi', e);
       return e
     }
   })
   // 桌面歌词传递
   ipcMain.on('lyric', (_, data) => {
     console.log('lyric: ', data);
-
+    
     if (lyricWindow) {
       lyricWindow.webContents.send('lyric', data)
     }
@@ -100,18 +102,18 @@ app.on('ready', () => {
     return lyricWindowLocked
   })
   //加载devTool插件
-  session.defaultSession.loadExtension(join(__dirname, '../../resources/devTool/6.6.3_0'))
-
+  // if (os.platform() == 'win32') {
+  //   await session.defaultSession.loadExtension(join(os.homedir(), 'AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.6.3_0'), { allowFileAccess: true })
+  // }
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.xwzkj.music')
   createWindow()
-
   app.on('second-instance', (event, commandLine, workingDirectory, additionalData) => {
     console.log(additionalData, commandLine)
     //试图运行第二个实例，将第一个实例窗口聚焦
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
+        mainWindow.focus()
     }
   })
 })
@@ -131,7 +133,8 @@ function createWindow() {
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
-      webSecurity: false
+      webSecurity: false,
+      // contextIsolation: false
     }
   })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -152,7 +155,8 @@ function createWindow() {
     transparent: true,
     webPreferences: {
       preload: join(__dirname, '../preload/lyric.mjs'),
-      sandbox: false
+      sandbox: false,
+      // contextIsolation: false
     }
   })
   lyricWindow.setAlwaysOnTop(true, 'screen-saver')
