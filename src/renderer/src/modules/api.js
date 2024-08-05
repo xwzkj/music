@@ -14,7 +14,7 @@ export let apiurl = 'https://api.xwzkj.top'
 let musicApi = axios.create({
     baseURL: apiurl,
     timeout: 20000,
-    // withCredentials: true,//跨域时可能因为允许的源是通配符（*）而阻止访问接口 故直接通过参数传递cookie
+    withCredentials: true,
 })
 /**
  * 网络请求函数
@@ -22,34 +22,39 @@ let musicApi = axios.create({
  * @returns 
 */
 let request = async (params, realTimeSync = true) => {
-    // 浏览器环境
-    const userStore = useUserStore(pinia);
-    //加时间戳避免缓存
-    if (realTimeSync) {
-        params.params = { ...params.params, timestamp: Date.now() }
-    }
-    params.params = { ...params.params, realIP: userStore.ip ?? '111.37.150.114' }
-    //判断如果跨域就尝试手动传递cookie
-    if (localStorage.getItem('cookie') != null && apiurl.slice(0, 4) == 'http') {
-        if (params.method == 'post') {
-            params.data = { ...params.data, cookie: userStore.cookie }
-        } else if (params.method == 'get') {
-            params.params = { ...params.params, cookie: userStore.cookie }
+    try {
+        // 浏览器环境
+        const userStore = useUserStore(pinia);
+        //加时间戳避免缓存
+        if (realTimeSync) {
+            params.params = { ...params.params, timestamp: Date.now() }
         }
+        params.params = { ...params.params, realIP: userStore.ip ?? '111.37.150.114' }
+        //判断如果跨域就尝试手动传递cookie
+        if (localStorage.getItem('cookie') != null && apiurl.slice(0, 4) == 'http') {
+            if (params.method == 'post') {
+                params.data = { ...params.data, cookie: userStore.cookie }
+            } else if (params.method == 'get') {
+                params.params = { ...params.params, cookie: userStore.cookie }
+            }
+        }
+        let req = await musicApi.request(params);
+        return req;
+    } catch (e) {
+        error(`${e.name}\n${e.message}\n${e?.response?.data?.message}`, `API网络请求错误！可尝试使用客户端`)
     }
-    let req = await musicApi.request(params);
-    return req;
 }
 
 if (window.isElectron) {
     console.log('当前是electron环境！');
     request = async (param, _) => {
-        console.log(param);
         let { url, method, params, data } = param;
         if (localStorage.getItem('cookie')) {
             data = { ...data, cookie: localStorage.getItem('cookie') }
         }
-        return await window.netease(url, { ...data, ...params });
+        let res = await window.netease(url, { ...data, ...params });
+        console.log('本地api', param, res);
+        return res;
     }
 }
 export function loginStatus() {
@@ -180,15 +185,27 @@ export function verifyCaptcha(phone, captcha) {
         data: { phone, captcha }
     })
 }
+export function playlistTracks(op, pid, tracks) {
+    if (!op || !pid || !tracks) {
+        throw new Error('[api][歌单添加或删除歌曲]参数不能为空');
+    }
+    return request({
+        url: '/playlist/tracks',
+        method: 'post',
+        params: { op, pid, tracks }
+    })
+}
 export function like(id, like = true) {
     if (id == undefined || id == null) {
         throw new Error('[api][like]id不能为空');
     }
-    return request({
-        url: '/like',
-        method: 'post',
-        params: { id, like }
-    })
+    // return request({
+    //     url: '/like',
+    //     method: 'post',
+    //     params: { id, like }
+    // })
+    const userStore = useUserStore(pinia);
+    return playlistTracks(like ? 'add' : 'del', userStore.playlists?.[0]?.id, String(id));
 }
 
 export async function likeAndUpdateLikelist(id, isLike = true) {
@@ -293,25 +310,40 @@ export function windowBack() {
 //     );
 // };
 /**
- * @param {string} message 
+ * @param {string} content
+ * @param {string} title
  */
-export function error(message) {
+export function error(content, title) {
     // let sad = ["(>_<)", "Σ(°ロ°)", '(つ﹏⊂)', '（・□・；）', '(o.O)', '(#｀皿´)', 'ヽ(≧Д≦)ノ', '（＞д＜）']
     // let title = sad[random(0, sad.length - 1)];
-    console.error('[error]', message);
-    window.$NMessageApi.error(message, {
-        // render: (props) => renderMessage({ ...props, title }),
+    console.error('[error]', content, title);
+    // window.$NMessageApi.error(message, {
+    //     // render: (props) => renderMessage({ ...props, title }),
+    //     closable: true,
+    //     duration: 10000
+    // })
+    window.$NNotificationApi.error({
+        content,
+        title,
         closable: true,
-        duration: 60000
+        duration: 10000,
+        keepAliveOnHover: true,
     })
 }
-export function success(message) {
+export function success(content, title) {
     // let happy = ["o(≧▽≦)o", "(* ^ ω ^)", "(´｡• ω •｡`)", "ヽ(・∀・)ﾉ", "＼(≧▽≦)／", "ヽ(o＾▽＾o)ノ", "\(^ヮ^)/", "(´• ω •`)", "(..＞◡＜..)"]
     // let title = happy[random(0, happy.length - 1)];
-    window.$NMessageApi.success(message, {
-        // render: (props) => renderMessage({ ...props, title }),
-        closable: false,
-        duration: 1500
+    // window.$NMessageApi.success(message, {
+    //     // render: (props) => renderMessage({ ...props, title }),
+    //     closable: false,
+    //     duration: 1500
+    // })
+    window.$NNotificationApi.success({
+        content,
+        title,
+        closable: true,
+        duration: 1500,
+        keepAliveOnHover: true,
     })
 }
 export function msToText(ms) {
