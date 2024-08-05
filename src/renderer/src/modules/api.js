@@ -28,7 +28,7 @@ let request = async (params, realTimeSync = true) => {
     if (realTimeSync) {
         params.params = { ...params.params, timestamp: Date.now() }
     }
-    params.params = { ...params.params, realIP: userStore.ip }
+    params.params = { ...params.params, realIP: userStore.ip ?? '111.37.150.114' }
     //判断如果跨域就尝试手动传递cookie
     if (localStorage.getItem('cookie') != null && apiurl.slice(0, 4) == 'http') {
         if (params.method == 'post') {

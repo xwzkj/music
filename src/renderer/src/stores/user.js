@@ -81,7 +81,7 @@ export const useUserStore = defineStore('user', {
             let user = JSON.parse(localStorage.getItem('user'))
             this.updateByObj(user)
             if (this.ip == '') {
-                this.ip = `114.114.${api.random(0, 255)}.${api.random(0, 255)}`
+                this.ip = `111.37.150.${api.random(0, 255)}`
             }
             console.log('pinia updatedByStorage');
         },
