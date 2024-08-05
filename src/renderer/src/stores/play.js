@@ -217,7 +217,7 @@ export const usePlayStore = defineStore('play', () => {
                 playlist.value = parseDetailToList(dataFromApi);
                 setPlayMode()
             } else if (ids == null && 'version' in storageNow && storageNow.version == 3) {//如果没传参数 使用localstorage的数据
-                playlistIndex.value = storageNow.current;
+                playOrderIndex.value = storageNow.current;
                 playlist.value = storageNow.playlist;
                 playOrder.value = storageNow.playOrder;
                 setPlayMode(storageNow.playMode);
@@ -295,7 +295,7 @@ export const usePlayStore = defineStore('play', () => {
             let { url, lyric, ...a } = item;
             return a;
         })
-        let storage = { version: 3, playlist: list, current: playlistIndex.value, playOrder: playOrder.value, playMode: playMode.value };
+        let storage = { version: 3, playlist: list, current: playOrderIndex.value, playOrder: playOrder.value, playMode: playMode.value };
         localStorage.removeItem('playlist');
         localStorage.setItem('playlist', JSON.stringify(storage));
     }
