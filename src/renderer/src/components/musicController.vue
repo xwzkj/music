@@ -114,7 +114,7 @@ function switchShowPlaylist() {
     anime({
         targets: outerEle.value,
         translateY: showPlayingList ? `${a}px` : '0px',
-        duration: 500,
+        duration: 700,
         easing: 'easeInOutCubic',
         begin: () => {
             if (showPlayingList == true) {
@@ -133,7 +133,7 @@ function switchShowPlayer() {
     anime({
         targets: '.ctrl-player',
         translateY: showPlayer ? `-100%` : '0%',
-        duration: 500,
+        duration: 700,
         easing: 'easeInOutCubic',
         begin: () => {
             if (showPlayer == true) {
