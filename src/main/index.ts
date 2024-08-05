@@ -61,6 +61,7 @@ app.on('ready', () => {
       let res = await func(data)
       return { data: res.body };
     } catch (e) {
+      console.log('wyyapi',e);
       return e
     }
   })

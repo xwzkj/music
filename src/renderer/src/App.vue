@@ -3,12 +3,13 @@ import { onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from "@/stores/theme";
-import MessageApi from "@/modules/messageApi.vue";
+import messageApi from "@/modules/messageApi.vue";
+import notificationApi from "@/modules/notificationApi.vue";
 import Container from "./pages/container.vue";
 import emitter from "@/utils/mitt";
 import * as api from "@/modules/api";
 
-if(!window.hasOwnProperty('isElectron')){
+if (!window.hasOwnProperty('isElectron')) {
   window.isElectron = false
 }
 
@@ -50,6 +51,9 @@ emitter.on('changeTheme', (theme) => {
       <n-message-provider>
         <messageApi />
       </n-message-provider>
+      <n-notification-provider>
+        <notificationApi />
+      </n-notification-provider>
     </n-config-provider>
   </div>
 </template>
