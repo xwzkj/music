@@ -37,5 +37,5 @@ jobs:
           server: '${{ secrets.SERVER_IP }}' #引用之前创建好的secret
           ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}' #引用之前创建好的secret
           local_path: './out/renderer/*'  # 对应我们项目build的文件夹路径
-          remote_path: '/www/wwwroot/music.xwzkj.top/vue'
+          remote_path: '/opt/1panel/apps/openresty/openresty/www/sites/music.xwzkj.top/index/vue'
           delete_remote_files: true
