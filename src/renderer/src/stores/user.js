@@ -30,9 +30,9 @@ export const useUserStore = defineStore('user', {
             }
         },
         async updateByCookie(cookie) {
-            let match = localStorage.getItem('cookie') || document.cookie.match(/MUSIC_U=[^;]+/)?.[0]
-            // console.log(localStorage.getItem('cookie'),document.cookie.match(/MUSIC_U=[^;]+/),match);
-            if (!cookie && match) {
+            let match = cookie || localStorage.getItem('cookie') || document.cookie
+            match = match?.match(/MUSIC_U=[^;]+/)?.[0]
+            if (match) {
                 cookie = match
             } else if (!cookie) {
                 this.logout()
