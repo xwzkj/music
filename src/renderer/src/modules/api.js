@@ -14,7 +14,7 @@ export let apiurl = 'https://api.xwzkj.top'
 let musicApi = axios.create({
     baseURL: apiurl,
     timeout: 20000,
-    withCredentials: true,
+    // withCredentials: true,
 })
 /**
  * 网络请求函数
@@ -52,6 +52,7 @@ if (window.isElectron) {
         if (localStorage.getItem('cookie')) {
             data = { ...data, cookie: localStorage.getItem('cookie') }
         }
+        console.log('本地api-请求', param);
         let res = await window.netease(url, { ...data, ...params });
         console.log('本地api', param, res);
         return res;
@@ -406,6 +407,20 @@ export function mergeMusicObjArrs(arr1, arr2) {
 export function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+// 防抖函数
+export function debounce(fn, delay, id) {
+    let timer = {};
+    return function (...params) {
+        if (!timer?.[id]) {
+            timer[id] = setTimeout(() => {
+                timer[id] = null;
+                fn(...params)
+            }, delay);
+        }
+    }
+}
+
 export const areaData = {
     "province": {
         "110000": "北京市",

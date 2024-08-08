@@ -52,8 +52,8 @@ app.on('ready', async () => {
   if (!app.requestSingleInstanceLock(singleRunKey)) {
     app.quit()
   }
-  
-  
+
+
   primaryDisplay = screen.getPrimaryDisplay();
   store = new ElectronStore<conf>()
   // 往亦晕音乐api 本地处理
@@ -70,7 +70,7 @@ app.on('ready', async () => {
   // 桌面歌词传递
   ipcMain.on('lyric', (_, data) => {
     console.log('lyric: ', data);
-    
+
     if (lyricWindow) {
       lyricWindow.webContents.send('lyric', data)
     }
@@ -102,9 +102,9 @@ app.on('ready', async () => {
     return lyricWindowLocked
   })
   //加载devTool插件
-  // if (os.platform() == 'win32') {
-  //   await session.defaultSession.loadExtension(join(os.homedir(), 'AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/6.6.3_0'), { allowFileAccess: true })
-  // }
+  if (os.platform() == 'win32') {
+    await session.defaultSession.loadExtension("F:/code/web/vue-devtools")
+  }
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.xwzkj.music')
   createWindow()
@@ -113,7 +113,7 @@ app.on('ready', async () => {
     //试图运行第二个实例，将第一个实例窗口聚焦
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
-        mainWindow.focus()
+      mainWindow.focus()
     }
   })
 })
@@ -133,8 +133,7 @@ function createWindow() {
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false,
-      webSecurity: false,
-      // contextIsolation: false
+      // webSecurity: false,
     }
   })
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -145,6 +144,16 @@ function createWindow() {
   if (is.dev) {
     mainWindow.webContents.openDevTools()
   }
+  // 使用 session API 设置 CORS 头
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    delete details.responseHeaders!['access-control-allow-origin']
+    details.responseHeaders!['Access-Control-Allow-Origin'] = ['*']
+    // console.log(details.responseHeaders);
+    callback({
+      responseHeaders: details.responseHeaders
+    })
+  })
+
   lyricWindow = new BrowserWindow({
     width: 1000,
     height: 160,
@@ -156,18 +165,23 @@ function createWindow() {
     webPreferences: {
       preload: join(__dirname, '../preload/lyric.mjs'),
       sandbox: false,
-      // contextIsolation: false
     }
   })
   lyricWindow.setAlwaysOnTop(true, 'screen-saver')
   //开始读取配置
   console.log(store.get('lyricWindow'));
-  // 设置位置
-  let temp: any = store.get('lyricWindow.position', [0, primaryDisplay.workAreaSize.height - 160])
-  lyricWindow.setPosition(temp[0], temp[1])
   // 设置窗口大小
-  temp = store.get('lyricWindow.size', [1000, 160])
+  let temp: any = store.get('lyricWindow.size', [1000, 160])
+  if (temp[0] >= primaryDisplay.workAreaSize.width || temp[1] > primaryDisplay.workAreaSize.height - 100) {
+    temp = [1000, 160]
+  }
   lyricWindow.setSize(temp[0], temp[1])
+  // 设置位置
+  temp = store.get('lyricWindow.position', [0, primaryDisplay.workAreaSize.height - 160])
+  if (temp[0] < 0 || temp[0] > primaryDisplay.workAreaSize.width - 50 || temp[1] < 0 || temp[1] > primaryDisplay.workAreaSize.height - 50) {
+    temp = [0, primaryDisplay.workAreaSize.height - 160]
+  }
+  lyricWindow.setPosition(temp[0], temp[1])
   //设置锁定
   temp = store.get('lyricWindow.locked', false)
   lockLyricWindow(temp)
