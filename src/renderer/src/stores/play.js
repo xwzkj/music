@@ -19,7 +19,11 @@ export const usePlayStore = defineStore('play', () => {
     let currentMusic = computed(() => {
         let userStore = useUserStore();
         return {
-            ...playlist.value[playlistIndex.value],
+            id: 0,
+            picurl: '/icon.png',
+            name: '暂无歌曲',
+            artist: '',
+            ...playlist.value[playlistIndex.value],//以上默认内容会被覆盖
             isLiked: userStore.likedSongs.includes(playlist.value[playlistIndex.value]?.id),
             currentLyricIndex: lyricIndexNow.value
         }
@@ -29,14 +33,13 @@ export const usePlayStore = defineStore('play', () => {
     //{id,name,artist,tns,url,picurl,?lyric}
     let playlist = ref([])
     // 播放列表索引
-    let playlistIndex = computed(() => {
-        return playOrder.value?.[playOrderIndex.value] || 0
-    })
-    // 播放顺序
+    let playlistIndex = ref(0)
+    // 随机播放的顺序
     // 存储格式为number数组 代表对应index需要播放的播放列表里的歌曲
     let playOrder = ref([])
-    let playOrderIndex = ref(0)
-
+    let playOrderIndex = computed(() => {
+        return playOrder.value.findIndex(v => v == playlistIndex.value);
+    })
     let playMode = ref(0);//0为顺序播放 1为随机播放
     let nameWithTns = computed(() => {
         let tns = currentMusic.value.tns;
@@ -209,15 +212,15 @@ export const usePlayStore = defineStore('play', () => {
     async function playlistInit(ids = null, dataFromApi = null) {
         stop()
         playlist.value = [];
-        playlistIndex.value = 0;
+        playlistIndex.value = -1;
         playOrder.value = [];
         if (ids == null) {//没传递id列表
             let storageNow = JSON.parse(localStorage.getItem('playlist') || '{}')
             if (dataFromApi) {//传入了api数据
                 playlist.value = parseDetailToList(dataFromApi);
-                setPlayMode()
+                listRandom();
             } else if (ids == null && 'version' in storageNow && storageNow.version == 3) {//如果没传参数 使用localstorage的数据
-                playOrderIndex.value = storageNow.current;
+                playlistIndex.value = storageNow.current;
                 playlist.value = storageNow.playlist;
                 playOrder.value = storageNow.playOrder;
                 setPlayMode(storageNow.playMode);
@@ -226,6 +229,11 @@ export const usePlayStore = defineStore('play', () => {
             }
         } else {//传了id列表
             await addMusic(ids, 0, true);
+        }
+        if (playlistIndex.value == -1 && playMode.value == 1) {
+            playlistIndex.value = playOrder.value[0];
+        } else if (playlistIndex.value == -1) {
+            playlistIndex.value = 0;
         }
         save();//保存到localstorage
         musicChanged();//把当前音乐应用到播放器
@@ -265,29 +273,28 @@ export const usePlayStore = defineStore('play', () => {
         playlist.value.splice(position, 0, ...list)
         //改变index
         if (letIndexIsNew == true) {
-            playOrderIndex.value = playOrder.value.findIndex(item=>item==position);
+            playlistIndex.value = position;
         } else {
-            // if (position < playlistIndex.value) {
-            //     playlistIndex.value += position;
-            // }
-            // /////////////////////////////////目前不知道怎么解决
+            if (position < playlistIndex.value) {
+                playlistIndex.value += position;
+            }
         }
-        if (playMode == 1) {
-            // 随机算法
-            listRandom(position);
-        }
-        setPlayMode();
+
+        // 生成随机播放顺序
+        listRandom();
+        return playlist.value;
     }
     // 进行随机播放列表算法
     function listRandom(startIndex = 0) {
         let listOrder = [];
-        for (let i = 0; i < playlist.value.length - startIndex; i++) {
-            listOrder.push(i + startIndex);
+        // 初始化列表（自然数数列
+        for (let i = 0; i < playlist.value.length; i++) {
+            listOrder.push(i);
         }
+        // 随机排序洗牌
         listOrder.sort(() => Math.random() - 0.5);
-        console.log(listOrder);
-        // 内容为乱序index
-        playOrder.value.splice(startIndex, playlist.value.length - startIndex, ...listOrder);
+        // 加入顺序列表
+        playOrder.value = listOrder
     }
     function save() {
         let list = playlist.value.map(item => {
@@ -295,7 +302,7 @@ export const usePlayStore = defineStore('play', () => {
             let { url, lyric, ...a } = item;
             return a;
         })
-        let storage = { version: 3, playlist: list, current: playOrderIndex.value, playOrder: playOrder.value, playMode: playMode.value };
+        let storage = { version: 3, playlist: list, current: playlistIndex.value, playOrder: playOrder.value, playMode: playMode.value };
         localStorage.removeItem('playlist');
         localStorage.setItem('playlist', JSON.stringify(storage));
     }
@@ -321,27 +328,47 @@ export const usePlayStore = defineStore('play', () => {
         player.value.play();
         updateProgress(true);
     }
-    async function playWithPlaylistIndex(index){
-        playOrderIndex.value = playOrder.value.findIndex(item=>item==index);
+    async function playWithPlaylistIndex(index) {
+        playlistIndex.value = index;
         await play(true);
     }
     function next() {
         pause()
         console.log(`[playStore]next`);
-        if (playOrderIndex.value < playOrder.value.length - 1) {
-            playOrderIndex.value++;
-        } else {
-            playOrderIndex.value = 0;
+        const computIndex = (length, indexNow) => {
+            if (indexNow < length - 1) {
+                return indexNow + 1;
+            } else {
+                return 0;
+            }
+        }
+        switch (playMode.value) {
+            case 0://顺序播放
+                playlistIndex.value = computIndex(playlist.value.length, playlistIndex.value);
+                break;
+            case 1://随机播放
+                playlistIndex.value = playOrder.value[computIndex(playOrder.value.length, playOrderIndex.value)];
+                break;
         }
         play(true);
     }
     function prev() {
         pause()
         console.log(`[playStore]prev`);
-        if (playOrderIndex.value > 0) {
-            playOrderIndex.value--;
-        } else {
-            playOrderIndex.value = playOrder.value.length - 1;
+        const computIndex = (length, indexNow) => {
+            if (indexNow > 0) {
+                return indexNow - 1;
+            } else {
+                return length - 1;
+            }
+        }
+        switch (playMode.value) {
+            case 0://顺序播放
+                playlistIndex.value = computIndex(playlist.value.length, playlistIndex.value);
+                break;
+            case 1://随机播放
+                playlistIndex.value = playOrder.value[computIndex(playOrder.value.length, playOrderIndex.value)];
+                break;
         }
         play(true);
     }
@@ -354,19 +381,6 @@ export const usePlayStore = defineStore('play', () => {
         if (mode == null) {
             mode = playMode.value ?? 0;
             console.log(playMode);
-        }
-        switch (mode) {
-            case 0://顺序播放
-                // playlistIndex.value = playOrder.value[playlistIndex.value];
-                let indexNow = playlistIndex.value;
-                playOrder.value = [];
-                playOrder.value = playlist.value.map((item, index) => index);
-                playOrderIndex.value = indexNow;
-                break;
-            case 1://随机播放
-                listRandom(playlistIndex.value + 1);
-                // playlistIndex.value = playOrder.value.findIndex(item => item == playlistIndex.value);
-                break;
         }
         console.log(`[playStore]setPlayMode ${mode}`);
         playMode.value = mode;
@@ -438,7 +452,6 @@ export const usePlayStore = defineStore('play', () => {
         playlist,
         playOrder,
         playlistIndex,
-        playOrderIndex,
         playMode,
         musicStatus,
         nameWithTns,

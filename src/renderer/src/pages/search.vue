@@ -31,7 +31,7 @@ async function search() {
     result.value = res.data.result.songs;
 }
 async function play(id) {
-    await playStore.addMusic([id], 0, true);
+    await playStore.addMusic([id], 'now', true);
     playStore.play(true);
 }
 </script>
