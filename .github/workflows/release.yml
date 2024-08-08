@@ -21,6 +21,6 @@ jobs:
       - name: 创建发行版
         uses: ncipollo/release-action@v1.14.0
         with:
-            token: ${{ secrets.GITHUB_TOKEN }}
+            token: ${{ secrets.ACCESS_TOKEN }}
             artifacts: 'dist/*.exe'
             body: '由 GitHub Actions 自动发布'
