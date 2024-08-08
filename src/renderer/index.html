@@ -14,19 +14,6 @@
 <body>
   <div id="app"></div>
   <script type="module" src="/src/main.js"></script>
-  <script>
-    // 解决移动端vh包含导航栏问题
-    function setRealVhVw() {
-      let realVh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${realVh}px`);
-      let realVw = window.innerWidth * 0.01;
-      document.documentElement.style.setProperty('--vw', `${realVw}px`);
-    }
-
-    window.addEventListener('resize', setRealVhVw);
-    window.addEventListener('orientationchange', setRealVhVw);
-    document.addEventListener('DOMContentLoaded', setRealVhVw); 
-  </script>
 </body>
 <style>
   /* * {

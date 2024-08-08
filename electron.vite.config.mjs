@@ -50,7 +50,7 @@ export default defineConfig({
         resolvers: [
           IconsResolver({
             prefix: 'i',
-            enabledCollections: ['ep', 'hugeicons', 'ant-design', 'ic']
+            enabledCollections: ['ep', 'hugeicons', 'ant-design', 'ic', 'solar']
           }),
           NaiveUiResolver()
         ]
@@ -73,23 +73,23 @@ export default defineConfig({
       assetsDir: 'assets',
       chunkSizeWarningLimit: 2000, // 解决包大小超过500kb的警告
       rollupOptions: {
-          input: {
-            index: resolve(__dirname, 'src/renderer/index.html'),
-            lyric: resolve(__dirname, 'src/renderer/desktopLyric.html')
-          },
-          output: {
-            manualChunks: {},
-            chunkFileNames: 'assets/[name]-[hash].js',
-            entryFileNames: 'assets/[name]-[hash].js',
-            assetFileNames: 'assets/[name]-[hash].[ext]',
-            // 解决文件名中的非法字符
-            sanitizeFileName: (name) => {
-              const match = DRIVE_LETTER_REGEX.exec(name)
-              const driveLetter = match ? match[0] : ''
-              return driveLetter + name.slice(driveLetter.length).replace(INVALID_CHAR_REGEX, '')
-            }
+        input: {
+          index: resolve(__dirname, 'src/renderer/index.html'),
+          lyric: resolve(__dirname, 'src/renderer/desktopLyric.html')
+        },
+        output: {
+          manualChunks: {},
+          chunkFileNames: 'assets/[name]-[hash].js',
+          entryFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash].[ext]',
+          // 解决文件名中的非法字符
+          sanitizeFileName: (name) => {
+            const match = DRIVE_LETTER_REGEX.exec(name)
+            const driveLetter = match ? match[0] : ''
+            return driveLetter + name.slice(driveLetter.length).replace(INVALID_CHAR_REGEX, '')
           }
         }
       }
     }
+  }
 })

@@ -408,16 +408,33 @@ export function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-// 防抖函数
-export function debounce(fn, delay, id) {
+/**
+ * 防抖函数
+ * @param {function} fn 
+ * @param {number} delay 
+ * @param {0|1} mode 0=每delay毫秒执行一次 1=按照delay执行最后一次
+ * @returns {function}
+ */
+export function debounce(fn, delay, mode = 0) {
     let timer = {};
-    return function (...params) {
-        if (!timer?.[id]) {
-            timer[id] = setTimeout(() => {
-                timer[id] = null;
-                fn(...params)
-            }, delay);
-        }
+    switch (mode) {
+        case 0:
+            return function (...params) {
+                if (!timer) {
+                    timer = setTimeout(() => {
+                        timer = null;
+                        fn(...params)
+                    }, delay);
+                }
+            }
+
+        case 1:
+            return function (...params) {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    fn(...params)
+                }, delay);
+            }
     }
 }
 

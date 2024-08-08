@@ -94,11 +94,11 @@ app.on('ready', async () => {
   // 桌面歌词窗口锁定（鼠标穿透
   lyricWindowLocked = store.get('lyricWindow.locked')
   ipcMain.on('lyricWindowLock', (_, islock) => {
-    console.log('lyricWindowLock:', islock);
+    // console.log('lyricWindowLock:', islock);
     lockLyricWindow(islock)
   })
   ipcMain.handle('isLyricWindowLocked', () => {
-    console.log('isLyricWindowLocked:', lyricWindowLocked);
+    // console.log('isLyricWindowLocked:', lyricWindowLocked);
     return lyricWindowLocked
   })
   //加载devTool插件
@@ -168,6 +168,8 @@ function createWindow() {
     }
   })
   lyricWindow.setAlwaysOnTop(true, 'screen-saver')
+  // 先隐藏 然后通过主窗口控制显示状态
+  lyricWindow.hide();
   //开始读取配置
   console.log(store.get('lyricWindow'));
   // 设置窗口大小

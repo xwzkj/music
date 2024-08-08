@@ -18,3 +18,7 @@ contextBridge.exposeInMainWorld('sendLyric', (lyricNowObj) => {
 contextBridge.exposeInMainWorld('sendThemeColors', (data) => {
   return ipcRenderer.send('themeColors', data);
 })
+
+contextBridge.exposeInMainWorld('setLyricWindowShow',(show)=>{
+  return ipcRenderer.send('lyricWindowShow',show);
+})

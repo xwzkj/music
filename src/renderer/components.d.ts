@@ -28,6 +28,7 @@ declare module 'vue' {
     IHugeiconsSquareLock02: typeof import('~icons/hugeicons/square-lock02')['default']
     IHugeiconsSquareLockPassword: typeof import('~icons/hugeicons/square-lock-password')['default']
     IIcTwotoneCalendarToday: typeof import('~icons/ic/twotone-calendar-today')['default']
+    ISolarSoundwaveSquareOutline: typeof import('~icons/solar/soundwave-square-outline')['default']
     ItemCard: typeof import('./src/components/itemCard.vue')['default']
     MarqueePlus: typeof import('./src/components/marqueePlus.vue')['default']
     MusicController: typeof import('./src/components/musicController.vue')['default']

@@ -21,9 +21,9 @@ const router = createRouter({
             props: (route) => {
                 return route.query
             },
-            meta: {
-                keepAlive: true
-            }
+            // meta: {
+            //     keepAlive: true
+            // }
         },
         {
             name: 'login',
@@ -53,9 +53,9 @@ const router = createRouter({
             props: (route) => {
                 return route.query
             },
-            meta: {
-                keepAlive: true
-            }
+            // meta: {
+            //     keepAlive: true
+            // }
 
         },
         {
@@ -65,9 +65,9 @@ const router = createRouter({
             props: (route) => {
                 return route.query
             },
-            meta: {
-                keepAlive: true
-            }
+            // meta: {
+            //     keepAlive: true
+            // }
         }
     ]
 })

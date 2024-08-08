@@ -3,14 +3,18 @@ import { onMounted } from "vue";
 import { useUserStore } from "@/stores/user";
 import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from "@/stores/theme";
+import { useSettingStore } from "@/stores/setting";
 import messageApi from "@/modules/messageApi.vue";
 import notificationApi from "@/modules/notificationApi.vue";
 import Container from "./pages/container.vue";
 import emitter from "@/utils/mitt";
 import * as api from "@/modules/api";
-
+let settingStore = useSettingStore();
+settingStore.init();
 if (!window.hasOwnProperty('isElectron')) {
   window.isElectron = false
+}else{
+  settingStore.setLyricWindowShow('auto')
 }
 
 let themeOverrides = ref({
@@ -40,6 +44,19 @@ emitter.on('changeTheme', (theme) => {
   api.objDeepMerge(themeOverrides.value, theme)
   // console.log(themeOverrides.value);
 })
+
+// 解决移动端vh包含导航栏问题
+let setRealVhVw = () => {
+  let realVh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${realVh}px`);
+  let realVw = window.innerWidth * 0.01;
+  document.documentElement.style.setProperty('--vw', `${realVw}px`);
+}
+setRealVhVw = api.debounce(setRealVhVw, 100, 1)
+
+window.addEventListener('resize', setRealVhVw);
+window.addEventListener('orientationchange', setRealVhVw);
+document.addEventListener('DOMContentLoaded', setRealVhVw);
 
 
 </script>

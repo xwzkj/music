@@ -60,7 +60,17 @@
                     </div>
                 </div>
                 <div class="ctrl-right">
-                    <div class="btn-list button">
+                    <div class="btn-desktop-lyric button icon" v-if="isElectron"
+                        :class="{ 'btn-desktop-lyric-active': settingStore.showLyricWindow }"
+                        @click="() => settingStore.setLyricWindowShow(!settingStore.showLyricWindow)" title="桌面歌词">
+                        词
+                    </div>
+                    <div class="btn-sound button" title="音效 目前未制作">
+                        <n-icon size="1.5rem" class="icon">
+                            <i-solar-soundwave-square-outline />
+                        </n-icon>
+                    </div>
+                    <div class="btn-list button" title="播放列表" style="padding-top:0.2rem;">
                         <n-icon size="1.5rem" class="icon"
                             @click="switchShowPlaylist"><i-hugeicons-playlist-03 /></n-icon>
                     </div>
@@ -81,6 +91,7 @@
 <script setup>
 import MarqueePlus from '@/components/marqueePlus.vue';
 import { usePlayStore } from '@/stores/play';
+import { useSettingStore } from '@/stores/setting';
 import * as api from '@/modules/api.js'
 // import { useRouter } from 'vue-router';
 import playinglist from './playinglist.vue';
@@ -93,6 +104,8 @@ emitter.on('switchShowPlayer', () => {
     switchShowPlayer()
 });
 // let router = useRouter();
+let settingStore = useSettingStore();
+let isElectron = ref(window.isElectron);
 let playStore = usePlayStore();
 let outerEle = ref(null);
 let ctrlHeight = ref(7)
@@ -253,6 +266,22 @@ right---------------------------------------------------------
     align-items: center;
 }
 
+.btn-desktop-lyric,
+.btn-sound {
+    margin-right: 1rem;
+}
+
+.btn-desktop-lyric {
+    font-weight: 400;
+    font-size: 1.2rem;
+    vertical-align: text-top;
+    padding-bottom: 0.35rem;
+    transition: all 0.2s linear;
+}
+
+.btn-desktop-lyric-active {
+    font-weight: 800 !important;
+}
 
 /*************************************************************
 播放列表-------------------------------------------------------------------===================
