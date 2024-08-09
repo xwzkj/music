@@ -273,7 +273,7 @@ export const usePlayStore = defineStore('play', () => {
         playlist.value.splice(position, 0, ...list)
         //改变index
         if (letIndexIsNew == true) {
-            playlistIndex.value = position;
+            playlistIndex.value = Math.min(position, playlist.value.length - 1);
         } else {
             if (position < playlistIndex.value) {
                 playlistIndex.value += position;
