@@ -102,7 +102,13 @@ app.on('ready', async () => {
     return lyricWindowLocked
   })
   //加载devTool插件
-  if (os.platform() == 'win32') {
+  if (os.platform() == 'win32' && is.dev) {
+    if (fs.existsSync("F:/code/web/vue-devtools")) {
+      console.log('devtools exists');
+    } else {
+      console.log('devtools not exists');
+      return
+    } 
     await session.defaultSession.loadExtension("F:/code/web/vue-devtools")
   }
   // Set app user model id for windows
