@@ -53,7 +53,7 @@ if (window.isElectron) {
             data = { ...data, cookie: localStorage.getItem('cookie') }
         }
         console.log('本地api-请求', param);
-        let res = await window.netease(url, { ...data, ...params });
+        let res = await window.api.netease(url, { ...data, ...params });
         console.log('本地api', param, res);
         return res;
     }

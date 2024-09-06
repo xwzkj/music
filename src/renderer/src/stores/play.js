@@ -124,7 +124,7 @@ export const usePlayStore = defineStore('play', () => {
         parseLyric()
         if (window.isElectron) {
             //如果是electron环境 就发送歌名给桌面歌词
-            window.sendLyric(JSON.stringify({
+            window.api.sendLyric(JSON.stringify({
                 time: 0,
                 lrc: nameWithTns.value,
                 roma: value?.artist,
@@ -405,7 +405,7 @@ export const usePlayStore = defineStore('play', () => {
                             lyricIndexNow.value = i;
                             if (window.isElectron) {
                                 //如果是electron环境 就发送歌词给桌面歌词
-                                window?.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[i]))
+                                window.api.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[i]))
                             }
                         }
                         break;

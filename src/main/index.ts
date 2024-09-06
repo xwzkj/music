@@ -1,4 +1,5 @@
-import { app, shell, BrowserWindow, ipcMain, net, session, screen } from 'electron'
+import { app, BrowserWindow, ipcMain, session, screen } from 'electron'
+import open from 'open'
 import { join, dirname } from 'path'
 import os from 'os'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -101,6 +102,15 @@ app.on('ready', async () => {
     // console.log('isLyricWindowLocked:', lyricWindowLocked);
     return lyricWindowLocked
   })
+
+  ipcMain.handle('getAppVersion', () => {
+    return app.getVersion();
+  })
+  // 浏览器打开url
+  ipcMain.handle('openUrl', async (_, url) => {
+    await open(url)
+    return true;
+  })
   //加载devTool插件
   if (os.platform() == 'win32' && is.dev) {
     if (fs.existsSync("F:/code/web/vue-devtools")) {
@@ -108,7 +118,7 @@ app.on('ready', async () => {
     } else {
       console.log('devtools not exists');
       return
-    } 
+    }
     await session.defaultSession.loadExtension("F:/code/web/vue-devtools")
   }
   // Set app user model id for windows

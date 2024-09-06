@@ -17,7 +17,7 @@ export const useSettingStore = defineStore('setting', {
                 if (show == 'auto') {
                     show = this.showLyricWindow ?? false
                 }
-                window.setLyricWindowShow(show)
+                window.api.setLyricWindowShow(show)
                 this.showLyricWindow = show
                 this.save()
             }

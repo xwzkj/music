@@ -45,7 +45,7 @@ export const useThemeStore = defineStore('theme', {
             })
             localStorage.setItem('theme', stringData);
             if(window.isElectron){
-                window.sendThemeColors(stringData);
+                window.api.sendThemeColors(stringData);
             }
         }
     },
