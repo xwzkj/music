@@ -8,6 +8,7 @@ import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
+import UnoCSS from 'unocss/vite'
 
 export default defineConfig({
   main: {
@@ -58,7 +59,8 @@ export default defineConfig({
       Icons({
         compiler: 'vue3',
         autoInstall: true
-      })
+      }),
+      UnoCSS()
     ],
     server: {
       port: 80,

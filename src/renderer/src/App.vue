@@ -68,7 +68,7 @@ onMounted(async () => {
   }
 })
 
-function openUrl(url){
+function openUrl(url) {
   window.api.openUrl(url)
 }
 
@@ -100,7 +100,9 @@ document.addEventListener('DOMContentLoaded', setRealVhVw);
       <n-modal v-model:show="showUpdate">
         <n-card style="width: 600px" :title="`新版本：${updateData.newVersion}`" :bordered="false" size="huge" role="dialog"
           aria-modal="true">
-          {{ updateData.description }}
+          <div style="white-space: pre-wrap;" class="overflow-y-auto max-h-300px">
+            {{ updateData.description }}
+          </div>
           <template #footer>
             <n-dropdown :options="updateData.userDown" @select="openUrl" trigger="click">
               <n-button type="primary">下载</n-button>
