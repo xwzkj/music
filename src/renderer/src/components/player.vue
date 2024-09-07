@@ -7,6 +7,8 @@ import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
 import playinglist from '@/components/playinglist.vue'
 import MarqueePlus from '@/components/marqueePlus.vue'
+// const instance = getCurrentInstance();
+
 let themeStore = useThemeStore();
 let playStore = usePlayStore();
 let { currentMusic } = storeToRefs(playStore);
@@ -24,10 +26,14 @@ let displayLyricWhenScreenIsNotWide = ref(false);
 //挂载
 onMounted(async () => {
   //监听歌词滚动
-  watch(() => currentMusic.value.currentLyricIndex, (value) => {
+  watch(() => currentMusic.value.currentLyricIndex.lineIndex, (value) => {
     console.log('当前歌词改变');
     lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + value)?.offsetTop - 200, behavior: 'smooth' });
   }, { deep: true })
+  // watch(() => currentMusic.value.currentLyricIndex.wordIndex, (value) => {
+  //   console.log('当前watch的歌词逐字改变' + value);
+  //   instance.proxy.$forceUpdate();
+  // }, { deep: true })
 })
 //卸载前
 onBeforeUnmount(() => {
@@ -127,8 +133,14 @@ function getImgMainColor() {
           <n-scrollbar class="container-lyric" ref="lyricScrollbarRef">
             <ul class="lyric-list">
               <div v-for="(item, index) in currentMusic.lyric" :key="index"
-                :class="{ 'lyric-active': currentMusic.currentLyricIndex == index }">
-                <li class="lyric-lrc" :id="'lrc-' + index">{{ item.lrc }}</li>
+                :class="{ 'lyric-active color9': currentMusic.currentLyricIndex.lineIndex == index }">
+                <li class="lyric-lrc" :id="'lrc-' + index">
+                  <span v-for="(word, wIndex) in item.lrc" :id="'lrc-' + index + '-word-' + wIndex"
+                    :class="{ 'text2': currentMusic.currentLyricIndex.wordIndex >= wIndex && currentMusic.currentLyricIndex.lineIndex == index }"
+                    class="transition-all duration-300">{{
+                      word.text
+                    }}</span>
+                </li>
                 <li class="lyric-roma">{{ item.roma }}</li>
                 <li class="lyric-tran">{{ item.tran }}</li>
               </div>
@@ -217,7 +229,7 @@ function getImgMainColor() {
 
 .lyric-active .lyric-lrc {
   /* 当前歌词原文 */
-  color: black;
+  /* color: black; */
   font-size: 1.6rem;
 }
 

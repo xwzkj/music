@@ -114,10 +114,10 @@ let showPlayingListVIf = ref(false);
 let showPlayer = false;
 let showPlayerVIf = ref(false);
 let lyricNow = computed(() => {
-    if (!Array.isArray(playStore.currentMusic.lyric) || playStore.currentMusic?.lyric.length < playStore.currentMusic.currentLyricIndex) {
+    if (!Array.isArray(playStore.currentMusic.lyric) || playStore.currentMusic?.lyric.length < playStore.currentMusic.currentLyricIndex.lineIndex) {
         return ''
     }
-    return playStore.currentMusic?.lyric[playStore.currentMusic.currentLyricIndex]?.lrc
+    return playStore.currentMusic?.lyric[playStore.currentMusic.currentLyricIndex.lineIndex]?.lrc.map(item => item.text).join('')
 })
 
 function switchShowPlaylist() {

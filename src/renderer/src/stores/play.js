@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import * as api from '@/modules/api'
+import * as lyricTools from '@/modules/lyric'
 import emitter from '@/utils/mitt';
 import { ref, computed } from 'vue'
 import { useUserStore } from "./user";
@@ -15,7 +16,7 @@ export const usePlayStore = defineStore('play', () => {
      * @type {AudioElementWithValue}
      */
     let player = ref(new Audio());
-    let lyricIndexNow = ref(-1);//内部变量 供给下面的计算属性使用
+    let lyricIndexNow = ref({ lineIndex: -1, wordIndex: -1 });//内部变量 供给下面的计算属性使用
     let currentMusic = computed(() => {
         let userStore = useUserStore();
         return {
@@ -119,14 +120,14 @@ export const usePlayStore = defineStore('play', () => {
         if (playlist.value.length == 0) {
             return;
         }
-        lyricIndexNow.value = -1;
+        lyricIndexNow.value.lineIndex = -1;
         let value = currentMusic.value
         parseLyric()
         if (window.isElectron) {
             //如果是electron环境 就发送歌名给桌面歌词
             window.api.sendLyric(JSON.stringify({
                 time: 0,
-                lrc: nameWithTns.value,
+                lrc: [{ time: '0', duration: '0', text: nameWithTns.value }],
                 roma: value?.artist,
                 tran: value?.artist
             }))
@@ -150,41 +151,27 @@ export const usePlayStore = defineStore('play', () => {
             let apiResult = await api.lyricNew(currentMusic.value.id)
             apiResult = apiResult.data;
             let lyric = [];
-            let lrc = apiResult.lrc.lyric.split('\n');
-            for (let i = 0; i < lrc.length; i++) {
-                if (lrcToLyric(lrc[i])) {
-                    lyric.push({
-                        time: lrcToMS(lrc[i]),
-                        lrc: lrcToLyric(lrc[i]),
-                        roma: '',
-                        tran: ''
-                    });
-                }
-            }
-            try {
-                lrc = apiResult.romalrc.lyric.split('\n');
-                for (let i = 0; i < lrc.length; i++) {
-                    for (let j = 0; j < lyric.length; j++) {
-                        if (lyric[j].time == lrcToMS(lrc[i])) {
-                            lyric[j].roma = lrcToLyric(lrc[i]);
-                        }
+            if (apiResult.code == 200) {
+                if (apiResult?.yrc?.lyric) {
+                    lyric = lyricTools.parseYrc(apiResult.yrc.lyric);
+                    if (apiResult?.yromalrc?.lyric) {
+                        lyric = lyricTools.parseSecondaryLrc(apiResult.yromalrc.lyric, lyric, 'roma');
+                    }
+                    if (apiResult?.ytlrc?.lyric) {
+                        lyric = lyricTools.parseSecondaryLrc(apiResult.ytlrc.lyric, lyric, 'tran');
+                    }
+
+                } else if (apiResult?.lrc?.lyric) {
+                    lyric = lyricTools.parseLrc(apiResult.lrc.lyric);
+                    if (apiResult?.romalrc?.lyric) {
+                        lyric = lyricTools.parseSecondaryLrc(apiResult.romalrc.lyric, lyric, 'roma');
+                    }
+                    if (apiResult?.tlyric?.lyric) {
+                        lyric = lyricTools.parseSecondaryLrc(apiResult.tlyric.lyric, lyric, 'tran');
                     }
                 }
-            } catch (e) {
-                console.log('看起来没有罗马音歌词');
             }
-            try {
-                lrc = apiResult.tlyric.lyric.split('\n');
-                for (let i = 0; i < lrc.length; i++) {
-                    for (let j = 0; j < lyric.length; j++) {
-                        if (lyric[j].time == lrcToMS(lrc[i])) {
-                            lyric[j].tran = lrcToLyric(lrc[i]);
-                        }
-                    }
-                }
-            } catch (e) {
-                console.log('看起来没有翻译歌词');
-            }
+            console.log(lyric);
             playlist.value[playlistIndex.value].lyric = lyric;//最终赋值
         }
     }
@@ -386,66 +373,74 @@ export const usePlayStore = defineStore('play', () => {
         playMode.value = mode;
         save();
     }
-    player.value.addEventListener('timeupdate', () => {
-        updateLyric();
-    })
+    setInterval(() => {
+        updateLyric()
+    }, 50)
+    setInterval(() => {
+        updateKtvLyric()
+    }, 25)
     function updateLyric() {
         try {
             if (musicStatus.value.paused == false && 'lyric' in currentMusic.value) {//正在播放 并且有歌词
-                //歌词滚动
-                for (let i = 0; i < currentMusic.value.lyric.length; i++) {//遍历歌词
-                    let next = false;
-                    if (i == currentMusic.value.lyric.length - 1) {//如果是最后一句
-                        next = true;
-                    } else if (currentMusic.value.lyric[i + 1].time > musicStatus.value.currentTime * 1000) {//下一句的时间是否大于现在
-                        next = true;
+                // 当前播放时间（毫秒
+                let currentTime = musicStatus.value.currentTime * 1000 + 80;
+                let lyric = currentMusic.value.lyric;
+                // 找当前行index
+                let lineIndex = lyric.findIndex((_, index) => {
+                    if (index + 1 < lyric.length) {
+                        return lyric[index + 1].time >= currentTime
+                    } else {
+                        return true
                     }
-                    if (currentMusic.value.lyric[i].time <= musicStatus.value.currentTime * 1000 && next == true) {//这一句的时间是否小于现在
-                        if (lyricIndexNow.value != i) {
-                            lyricIndexNow.value = i;
-                            if (window.isElectron) {
-                                //如果是electron环境 就发送歌词给桌面歌词
-                                window.api.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[i]))
-                            }
+                });
+                if (lineIndex != -1) {
+                    // 歌词滚动
+                    if (lyricIndexNow.value.lineIndex != lineIndex) {
+                        lyricIndexNow.value.lineIndex = lineIndex;
+                        if (window.isElectron) {
+                            //如果是electron环境 就发送歌词给桌面歌词
+                            window.api.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[lineIndex]))
                         }
-                        break;
                     }
                 }
             }
-        } catch (e) {
+        }
+        catch (e) {
             api.error(`出错了！\n位置:playStore updateLyric\n错误信息:${e}`)
         }
     }
+    function updateKtvLyric() {
+        // 逐字歌词
+        try {
+            if (lyricIndexNow.value.lineIndex < 0 || musicStatus.value.paused == true || !'lyric' in currentMusic.value) {
+                return;
+            }
+            // 当前播放时间（毫秒
+            let currentTime = musicStatus.value.currentTime * 1000 + 80;
+            let lyric = currentMusic.value.lyric;
 
-    /**
-获取一行lrc的第一个时间标签，并转换为毫秒
-@param {string} lyricLine 一行歌词
-@return {number}
-*/
-    function lrcToMS(lyricLine) {
-        let express = /\[(\d+)[:.](\d+)[:.](\d+)\]/
-        let lineTime = express.exec(lyricLine);
-        if (lineTime == null) {
-            return 0;
+            /**@type {array} */
+            let line = lyric[lyricIndexNow.value.lineIndex]?.lrc ?? [];
+            // 找逐字歌词index
+            let wordIndex = line.findIndex((_, index) => {
+                if (index + 1 < line.length) {
+                    return line[index + 1].time >= currentTime
+                } else {
+                    return true
+                }
+            });
+            if (wordIndex != -1) {
+
+                lyricIndexNow.value.wordIndex = wordIndex;
+                // lyricIndexNow.value.percent = (currentTime - line[wordIndex].time) / line[wordIndex].duration;
+
+                // console.log('逐字歌词改变', lyricIndexNow.value.percent);
+            }
+        } catch (e) {
+            api.error(`出错了！\n位置:playStore updateKtvLyric\n错误信息:${e}`)
         }
-        if (lineTime[3].length == 1) {
-            lineTime[3] = '0' + lineTime[3];
-        }
-        return (parseInt(lineTime[1]) * 60 + parseInt(lineTime[2])) * 1000 + parseInt(lineTime[3].slice(0, 2)) * 10;
     }
-    /**
-     * 获取一行lrc中的歌词文本
-     * @param {string} lyricLine 一行lrc
-     * @return {string} 歌词文本
-     */
-    function lrcToLyric(lyricLine) {
-        let express = /\[\d+[:.]\d+[:.]\d+\](.*)/
-        let lineTime = express.exec(lyricLine);
-        if (lineTime == null) {
-            return '';
-        }
-        return lineTime[1];
-    }
+
     return {
         player,
         currentMusic,

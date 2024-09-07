@@ -42,7 +42,8 @@ window?.getLyric(changeLyric);
 window?.getThemeColors(changeTheme);
 function changeLyric(event: Event, lyric: string) {
     console.log(lyric);
-    let lyricObj = JSON.parse(lyric) as Lyric;
+    let lyricObj = JSON.parse(lyric);
+    lyricObj.lrc = lyricObj.lrc.map((item: any) => item.text).join('');
     lyricText.value = lyricObj
     updateIsLocked();
 }
@@ -87,7 +88,7 @@ onMounted(() => {
 
     outer.addEventListener("mouseleave", async () => {
         console.log('outer mouse leave');
-        
+
         clearTimeout(flag)
         flag = setTimeout(() => {
             displayCtrl.value = false;
