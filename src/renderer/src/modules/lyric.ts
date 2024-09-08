@@ -29,13 +29,8 @@ export function parseYrc(yrc: string) {
                     text: regres[3]
                 });
             }
-        } else {
-            lrcline = {
-                time: '0',
-                lrc: []
-            };
+            lyric.push(lrcline);
         }
-        lyric.push(lrcline);
     })
     return lyric;
 }
@@ -44,8 +39,8 @@ export function parseLrc(lrc: string) {
     let lyric: LyricLine[] = [];
     lrc.split('\n').forEach(line => {
         let linetext = lrcToLyric(line);
-        if (linetext) {
-            let linetime = lrcToMS(line);
+        let linetime = lrcToMS(line);
+        if (linetime !== null) {
             lyric.push({
                 time: linetime,
                 lrc: [
@@ -86,7 +81,7 @@ function lrcToMS(lyricLine: string) {
     let express = /\[(\d+)[:.](\d+)[:.](\d+)\]/
     let lineTime = express.exec(lyricLine);
     if (lineTime == null) {
-        return '0';
+        return null;
     }
     if (lineTime[3].length == 1) {
         lineTime[3] = '0' + lineTime[3];

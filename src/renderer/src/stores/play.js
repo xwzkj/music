@@ -388,9 +388,9 @@ export const usePlayStore = defineStore('play', () => {
                 // 找当前行index
                 let lineIndex = lyric.findIndex((_, index) => {
                     if (index + 1 < lyric.length) {
-                        return lyric[index + 1].time >= currentTime
+                        return lyric[index + 1].time > currentTime && lyric[index].time <= currentTime
                     } else {
-                        return true
+                        return lyric[index].time <= currentTime
                     }
                 });
                 if (lineIndex != -1) {
@@ -402,6 +402,8 @@ export const usePlayStore = defineStore('play', () => {
                             window.api.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[lineIndex]))
                         }
                     }
+                } else {
+                    lyricIndexNow.value.lineIndex = -1;
                 }
             }
         }
@@ -424,9 +426,9 @@ export const usePlayStore = defineStore('play', () => {
             // 找逐字歌词index
             let wordIndex = line.findIndex((_, index) => {
                 if (index + 1 < line.length) {
-                    return line[index + 1].time >= currentTime
+                    return line[index + 1].time > currentTime && line[index].time <= currentTime
                 } else {
-                    return true
+                    return line[index].time <= currentTime
                 }
             });
             if (wordIndex != -1) {

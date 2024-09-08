@@ -7,7 +7,7 @@ import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
 import playinglist from '@/components/playinglist.vue'
 import MarqueePlus from '@/components/marqueePlus.vue'
-// const instance = getCurrentInstance();
+const instance = getCurrentInstance();
 
 let themeStore = useThemeStore();
 let playStore = usePlayStore();
@@ -30,10 +30,10 @@ onMounted(async () => {
     console.log('当前歌词改变');
     lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + value)?.offsetTop - 200, behavior: 'smooth' });
   }, { deep: true })
-  // watch(() => currentMusic.value.currentLyricIndex.wordIndex, (value) => {
-  //   console.log('当前watch的歌词逐字改变' + value);
-  //   instance.proxy.$forceUpdate();
-  // }, { deep: true })
+  watch(() => currentMusic.value.currentLyricIndex.wordIndex, (value) => {
+    console.log('当前watch的歌词逐字改变' + value);
+    instance.proxy.$forceUpdate();
+  }, { deep: true })
 })
 //卸载前
 onBeforeUnmount(() => {
@@ -132,18 +132,20 @@ function getImgMainColor() {
         <div class="column column-lyric" @click="displayLyricWhenScreenIsNotWide = false">
           <n-scrollbar class="container-lyric" ref="lyricScrollbarRef">
             <ul class="lyric-list">
-              <div v-for="(item, index) in currentMusic.lyric" :key="index"
-                :class="{ 'lyric-active color9': currentMusic.currentLyricIndex.lineIndex == index }">
-                <li class="lyric-lrc" :id="'lrc-' + index">
+              <li v-for="(item, index) in currentMusic.lyric" :key="index"
+                :class="{ 'lyric-active color9': currentMusic.currentLyricIndex.lineIndex == index }"
+                class="lyric-item transition-transform duration-700 ease-out transform-origin-left-top"
+                :id="'lrc-' + index">
+                <div class="lyric-lrc">
                   <span v-for="(word, wIndex) in item.lrc" :id="'lrc-' + index + '-word-' + wIndex"
-                    :class="{ 'text2': currentMusic.currentLyricIndex.wordIndex >= wIndex && currentMusic.currentLyricIndex.lineIndex == index }"
-                    class="transition-all duration-300">{{
+                    :class="{ 'text3': currentMusic.currentLyricIndex.wordIndex >= wIndex && currentMusic.currentLyricIndex.lineIndex == index }"
+                    class="transition-color duration-700 ease-out">{{
                       word.text
                     }}</span>
-                </li>
-                <li class="lyric-roma">{{ item.roma }}</li>
-                <li class="lyric-tran">{{ item.tran }}</li>
-              </div>
+                </div>
+                <div class="lyric-roma">{{ item.roma }}</div>
+                <div class="lyric-tran">{{ item.tran }}</div>
+              </li>
             </ul>
           </n-scrollbar>
         </div>
@@ -203,6 +205,11 @@ function getImgMainColor() {
 }
 
 /************************歌词部分**********************************************************************/
+
+.lyric-item {
+  transform: scale(0.95);
+}
+
 .lyric-lrc {
   /* 歌词原文 */
   color: rgba(68, 68, 68, 0.8);
@@ -225,24 +232,19 @@ function getImgMainColor() {
 .lyric-active {
   /* 当前歌词 */
   font-weight: 500;
-}
-
-.lyric-active .lyric-lrc {
-  /* 当前歌词原文 */
-  /* color: black; */
-  font-size: 1.6rem;
+  transform: scale(1);
 }
 
 .lyric-active .lyric-roma {
   /* 当前歌词罗马音 */
   color: rgb(50, 50, 50);
-  font-size: 1.3rem;
+  /* font-size: 1.3rem; */
 }
 
 .lyric-active .lyric-tran {
   /* 当前歌词翻译 */
   color: rgb(45, 45, 45);
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
 }
 
 .column-lyric {
