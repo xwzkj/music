@@ -63,6 +63,7 @@ export const usePlayStore = defineStore('play', () => {
         });
     }
     //添加监听事件 用来更新播放进度状态
+    //注意：下面的歌词更新事件也会触发此函数
     player.value.addEventListener('timeupdate', () => { updateProgress() })
     //添加监听事件 用来更新播放进度状态 和上面的区别是 这些事件需要交到mediaSession
     let eventsNeedUpdate = ['play', 'pause', 'ended', 'playing', 'waiting', 'ratechange', 'durationchange']
@@ -77,15 +78,15 @@ export const usePlayStore = defineStore('play', () => {
      * @param {Object} conf - 仅参数一为true生效 媒体会话的配置对象
     */
     function updateProgress(updateSession = false, conf = { duration: NaN, playbackRate: NaN, position: NaN }) {
-        if ("mediaSession" in navigator) {
-            //conf是媒体会话的配置对象 这里只是配置 下面才会应用
-            conf.duration = conf.duration || player.value.duration
-            if (!conf.duration) {
-                conf.duration = 114.5141919
-            }
-            conf.playbackRate = conf.playbackRate || player.value.playbackRate || 1
-            conf.position = conf.position || player.value.currentTime || 0
-            if (updateSession) {
+        if (updateSession) {
+            if ("mediaSession" in navigator) {
+                //conf是媒体会话的配置对象 这里只是配置 下面才会应用
+                conf.duration = conf.duration || player.value.duration
+                if (!conf.duration) {
+                    conf.duration = 114.5141919
+                }
+                conf.playbackRate = conf.playbackRate || player.value.playbackRate || 1
+                conf.position = conf.position || player.value.currentTime || 0
                 if (conf.duration == 114.5141919) {//这么臭的数 想必正常情况不会出现吧（智将
                     setTimeout(() => {//如果为114.5141919，则说明没有获取到duration，则延迟2秒再获取一次
                         updateProgress(true);
@@ -377,12 +378,13 @@ export const usePlayStore = defineStore('play', () => {
         updateLyric()
     }, 50)
     setInterval(() => {
-        updateKtvLyric()
-    }, 25)
+        updateKtvLyric();
+    }, 15)
     function updateLyric() {
         try {
             if (musicStatus.value.paused == false && 'lyric' in currentMusic.value) {//正在播放 并且有歌词
                 // 当前播放时间（毫秒
+                updateProgress();
                 let currentTime = musicStatus.value.currentTime * 1000 + 80;
                 let lyric = currentMusic.value.lyric;
                 // 找当前行index
@@ -414,29 +416,31 @@ export const usePlayStore = defineStore('play', () => {
     function updateKtvLyric() {
         // 逐字歌词
         try {
-            if (lyricIndexNow.value.lineIndex < 0 || musicStatus.value.paused == true || !'lyric' in currentMusic.value) {
-                return;
-            }
-            // 当前播放时间（毫秒
-            let currentTime = musicStatus.value.currentTime * 1000 + 80;
-            let lyric = currentMusic.value.lyric;
+            if (lyricIndexNow.value.lineIndex >= 0 || !musicStatus.value.paused || 'lyric' in currentMusic.value) {
 
-            /**@type {array} */
-            let line = lyric[lyricIndexNow.value.lineIndex]?.lrc ?? [];
-            // 找逐字歌词index
-            let wordIndex = line.findIndex((_, index) => {
-                if (index + 1 < line.length) {
-                    return line[index + 1].time > currentTime && line[index].time <= currentTime
-                } else {
-                    return line[index].time <= currentTime
+                // 当前播放时间（毫秒
+                updateProgress();
+                let currentTime = musicStatus.value.currentTime * 1000 + 80;
+                // console.log(currentTime);
+                let lyric = currentMusic.value.lyric;
+
+                /**@type {array} */
+                let line = lyric?.[lyricIndexNow.value.lineIndex]?.lrc ?? [];
+                // 找逐字歌词index
+                let wordIndex = line.findIndex((_, index) => {
+                    if (index + 1 < line.length) {
+                        return line[index + 1].time > currentTime && line[index].time <= currentTime
+                    } else {
+                        return line[index].time <= currentTime
+                    }
+                });
+                if (wordIndex != -1) {
+
+                    lyricIndexNow.value.wordIndex = wordIndex;
+                    // lyricIndexNow.value.percent = (currentTime - line[wordIndex].time) / line[wordIndex].duration;
+
+                    // console.log('逐字歌词改变', lyricIndexNow.value.percent);
                 }
-            });
-            if (wordIndex != -1) {
-
-                lyricIndexNow.value.wordIndex = wordIndex;
-                // lyricIndexNow.value.percent = (currentTime - line[wordIndex].time) / line[wordIndex].duration;
-
-                // console.log('逐字歌词改变', lyricIndexNow.value.percent);
             }
         } catch (e) {
             api.error(`出错了！\n位置:playStore updateKtvLyric\n错误信息:${e}`)

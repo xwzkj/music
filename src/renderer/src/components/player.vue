@@ -7,7 +7,7 @@ import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
 import playinglist from '@/components/playinglist.vue'
 import MarqueePlus from '@/components/marqueePlus.vue'
-const instance = getCurrentInstance();
+// const instance = getCurrentInstance();
 
 let themeStore = useThemeStore();
 let playStore = usePlayStore();
@@ -30,10 +30,10 @@ onMounted(async () => {
     console.log('当前歌词改变');
     lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + value)?.offsetTop - 200, behavior: 'smooth' });
   }, { deep: true })
-  watch(() => currentMusic.value.currentLyricIndex.wordIndex, (value) => {
-    console.log('当前watch的歌词逐字改变' + value);
-    instance.proxy.$forceUpdate();
-  }, { deep: true })
+  // watch(() => currentMusic.value.currentLyricIndex.wordIndex, (value) => {
+  //   console.log('当前watch的歌词逐字改变' + value);
+  //   instance.proxy.$forceUpdate();
+  // }, { deep: true })
 })
 //卸载前
 onBeforeUnmount(() => {
