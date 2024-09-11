@@ -2,3 +2,5 @@
 import { useNotification } from "naive-ui";
 window.$NNotificationApi = useNotification();
 </script>
+<template>
+</template>
