@@ -22,7 +22,10 @@ let displayLyricWhenScreenIsNotWide = ref(false);
 
 let lyricWordNowDuration = computed(() => {
   let index = currentMusic.value.currentLyricIndex;
-  return `${parseFloat(currentMusic.value?.lyric?.[index.lineIndex]?.lrc?.[index.wordIndex]?.duration / 1000)}s`;
+  let duration = parseFloat(currentMusic.value?.lyric?.[index.lineIndex]?.lrc?.[index.wordIndex]?.duration / 1000)
+  console.log(playStore.musicStatus.paused);
+  
+  return `${duration}s${playStore.musicStatus.paused ? ' paused' : ''}`;
 })
 
 //挂载
@@ -134,18 +137,21 @@ function getImgMainColor() {
                 :class="{ 'lyric-active color9': currentMusic.currentLyricIndex.lineIndex == index }"
                 class="lyric-item transition-transform duration-700 ease-out transform-origin-left-top"
                 :id="'lrc-' + index">
-                <div class="lyric-lrc">
-                  <span v-for="(word, wIndex) in item.lrc" :id="'lrc-' + index + '-word-' + wIndex" class="relative">
+                <div class="lyric-lrc flex flex-wrap">
+                  <div v-for="(word, wIndex) in item.lrc" :id="'lrc-' + index + '-word-' + wIndex" class="relative"
+                    :class="{
+                      'lyric-word-end-with-space': word.text.slice(-1) == ' '
+                    }">
 
-                    <span>{{ word.text }}</span>
-                    <span class="absolute start-0 z-1 lyric-word-top text3" :class="{
+                    <span class="select-none">{{ word.text }}</span>
+                    <span class="select-none absolute left-0 top-0 bottom-0 z-1 lyric-word-top text3" :class="{
                       'lyric-word-active': currentMusic.currentLyricIndex.wordIndex == wIndex && currentMusic.currentLyricIndex.lineIndex == index,
                       'lyric-word-done': currentMusic.currentLyricIndex.wordIndex > wIndex && currentMusic.currentLyricIndex.lineIndex == index
                     }">
                       {{ word.text }}
                     </span>
 
-                  </span>
+                  </div>
                 </div>
                 <div class="lyric-roma">{{ item.roma }}</div>
                 <div class="lyric-tran">{{ item.tran }}</div>
@@ -292,6 +298,10 @@ function getImgMainColor() {
 
 .lyric-word-done {
   mask-image: linear-gradient(black, black);
+}
+
+.lyric-word-end-with-space {
+  margin-right: 0.25em;
 }
 
 /********************************播放控件**********************************************************/
