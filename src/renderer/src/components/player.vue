@@ -7,14 +7,11 @@ import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
 import playinglist from '@/components/playinglist.vue'
 import MarqueePlus from '@/components/marqueePlus.vue'
-// const instance = getCurrentInstance();
 
 let themeStore = useThemeStore();
 let playStore = usePlayStore();
 let { currentMusic } = storeToRefs(playStore);
 let lyricScrollbarRef = ref();
-// let showPlayingList = ref(false);//是否展示播放列表
-// let lyricActive = ref();//当前的歌词序号 现在用playstore里的currentMusic中的currentLyricIndex
 let background = ref('rgb(255,255,255)');//背景渐变色数据
 let id_clock1 = NaN;//定时器id
 let displayList = ref(false);
@@ -23,6 +20,11 @@ let playingListTran = computed(() => {
 })
 let displayLyricWhenScreenIsNotWide = ref(false);
 
+let lyricWordNowDuration = computed(() => {
+  let index = currentMusic.value.currentLyricIndex;
+  return `${parseFloat(currentMusic.value?.lyric?.[index.lineIndex]?.lrc?.[index.wordIndex]?.duration / 1000)}s`;
+})
+
 //挂载
 onMounted(async () => {
   //监听歌词滚动
@@ -30,10 +32,6 @@ onMounted(async () => {
     console.log('当前歌词改变');
     lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + value)?.offsetTop - 200, behavior: 'smooth' });
   }, { deep: true })
-  // watch(() => currentMusic.value.currentLyricIndex.wordIndex, (value) => {
-  //   console.log('当前watch的歌词逐字改变' + value);
-  //   instance.proxy.$forceUpdate();
-  // }, { deep: true })
 })
 //卸载前
 onBeforeUnmount(() => {
@@ -138,10 +136,16 @@ function getImgMainColor() {
                 :id="'lrc-' + index">
                 <div class="lyric-lrc">
                   <span v-for="(word, wIndex) in item.lrc" :id="'lrc-' + index + '-word-' + wIndex"
-                    :class="{ 'text3': currentMusic.currentLyricIndex.wordIndex >= wIndex && currentMusic.currentLyricIndex.lineIndex == index }"
-                    class="transition-color duration-700 ease-out">{{
-                      word.text
-                    }}</span>
+                    class="relative inline-block">
+                    <span class="inline-block absolute left-0 top-0 z-1 lyric-word-top text3" :class="{
+                      'lyric-word-active': currentMusic.currentLyricIndex.wordIndex == wIndex && currentMusic.currentLyricIndex.lineIndex == index,
+                      'lyric-word-done': currentMusic.currentLyricIndex.wordIndex > wIndex && currentMusic.currentLyricIndex.lineIndex == index
+                    }">
+                      {{ word.text }}</span>
+                    <span class="inline-block">
+                      {{ word.text }}</span>
+
+                  </span>
                 </div>
                 <div class="lyric-roma">{{ item.roma }}</div>
                 <div class="lyric-tran">{{ item.tran }}</div>
@@ -264,6 +268,30 @@ function getImgMainColor() {
 .lyric-list {
   padding-top: 50%;
   padding-bottom: 50%;
+}
+
+.lyric-word-top {
+  mask-image: linear-gradient(transparent, transparent);
+}
+
+.lyric-word-active {
+  animation: lyric v-bind(lyricWordNowDuration) forwards linear;
+  mask-image: linear-gradient(to right, black 40%, 45%, transparent);
+  mask-size: 250%;
+}
+
+@keyframes lyric {
+  from {
+    mask-position: right;
+  }
+
+  to {
+    mask-position: left;
+  }
+}
+
+.lyric-word-done {
+  mask-image: linear-gradient(black, black);
 }
 
 /********************************播放控件**********************************************************/
