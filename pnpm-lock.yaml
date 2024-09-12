@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@ant-design/colors':
-        specifier: ^7.1.0
-        version: 7.1.0
       '@electron-toolkit/preload':
         specifier: ^3.0.1
         version: 3.0.1(electron@31.3.1)
@@ -23,55 +20,28 @@ importers:
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
-      animejs:
-        specifier: ^3.2.2
-        version: 3.2.2
       axios:
         specifier: ^1.7.2
         version: 1.7.2
-      colorthief:
-        specifier: ^2.4.0
-        version: 2.4.0
       conf:
         specifier: ^13.0.1
         version: 13.0.1
-      crypto-js:
-        specifier: ^4.2.0
-        version: 4.2.0
       electron-store:
         specifier: ^10.0.0
         version: 10.0.0
-      mitt:
-        specifier: ^3.0.1
-        version: 3.0.1
-      naive-ui:
-        specifier: ^2.39.0
-        version: 2.39.0(vue@3.4.34(typescript@5.5.4))
       open:
         specifier: ^10.1.0
         version: 10.1.0
       path:
         specifier: ^0.12.7
         version: 0.12.7
-      pinia:
-        specifier: ^2.2.0
-        version: 2.2.0(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4))
-      vue:
-        specifier: ^3.4.34
-        version: 3.4.34(typescript@5.5.4)
-      vue-router:
-        specifier: ^4.4.0
-        version: 4.4.0(vue@3.4.34(typescript@5.5.4))
     devDependencies:
+      '@ant-design/colors':
+        specifier: ^7.1.0
+        version: 7.1.0
       '@electron-toolkit/eslint-config':
         specifier: ^1.0.2
         version: 1.0.2(eslint@8.57.0)
-      '@iconify-json/ep':
-        specifier: ^1.1.15
-        version: 1.1.15
-      '@iconify-json/mdi':
-        specifier: ^1.1.67
-        version: 1.1.67
       '@iconify/json':
         specifier: ^2.2.231
         version: 2.2.231
@@ -84,6 +54,15 @@ importers:
       '@vue/eslint-config-prettier':
         specifier: ^9.0.0
         version: 9.0.0(eslint@8.57.0)(prettier@3.3.3)
+      animejs:
+        specifier: ^3.2.2
+        version: 3.2.2
+      colorthief:
+        specifier: ^2.4.0
+        version: 2.4.0
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
       electron:
         specifier: ^31.3.1
         version: 31.3.1
@@ -99,6 +78,15 @@ importers:
       eslint-plugin-vue:
         specifier: ^9.27.0
         version: 9.27.0(eslint@8.57.0)
+      mitt:
+        specifier: ^3.0.1
+        version: 3.0.1
+      naive-ui:
+        specifier: ^2.39.0
+        version: 2.39.0(vue@3.4.34(typescript@5.5.4))
+      pinia:
+        specifier: ^2.2.0
+        version: 2.2.0(typescript@5.5.4)(vue@3.4.34(typescript@5.5.4))
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -117,6 +105,12 @@ importers:
       vite:
         specifier: ^5.3.5
         version: 5.3.5(@types/node@22.0.0)
+      vue:
+        specifier: ^3.4.34
+        version: 3.4.34(typescript@5.5.4)
+      vue-router:
+        specifier: ^4.4.0
+        version: 4.4.0(vue@3.4.34(typescript@5.5.4))
 
 packages:
 
@@ -690,12 +684,6 @@ packages:
   '@humanwhocodes/object-schema@2.0.3':
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
-
-  '@iconify-json/ep@1.1.15':
-    resolution: {integrity: sha512-96JBJQrJhxYy+j+KE5lqyE+Y6O+06fVUdMaHJ1Rb9+bbOjI1tw6EwYl9H4SB6Hkf7zB80VX6GgG0yH0Z0c8K1Q==}
-
-  '@iconify-json/mdi@1.1.67':
-    resolution: {integrity: sha512-00nllHES8hyACwIfgySlQgAE6MKgpr2wsKfpifMiZWZ9aXC5l4Jb0lR3lJSWwXgOW6kzAOdzC3T+2VOfBBZ13A==}
 
   '@iconify/json@2.2.231':
     resolution: {integrity: sha512-+KlOkI3CuwSuG8H3EIeC7f5LTsm73aggoh1GA9Uh4YCl65zvTgYyFwCxJXnR2vVeCoAlO2UtCtjHjNwOWchf4g==}
@@ -4113,14 +4101,6 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/object-schema@2.0.3': {}
-
-  '@iconify-json/ep@1.1.15':
-    dependencies:
-      '@iconify/types': 2.0.0
-
-  '@iconify-json/mdi@1.1.67':
-    dependencies:
-      '@iconify/types': 2.0.0
 
   '@iconify/json@2.2.231':
     dependencies:
