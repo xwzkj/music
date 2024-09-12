@@ -135,15 +135,15 @@ function getImgMainColor() {
                 class="lyric-item transition-transform duration-700 ease-out transform-origin-left-top"
                 :id="'lrc-' + index">
                 <div class="lyric-lrc">
-                  <span v-for="(word, wIndex) in item.lrc" :id="'lrc-' + index + '-word-' + wIndex"
-                    class="relative inline-block">
-                    <span class="inline-block absolute left-0 top-0 z-1 lyric-word-top text3" :class="{
+                  <span v-for="(word, wIndex) in item.lrc" :id="'lrc-' + index + '-word-' + wIndex" class="relative">
+
+                    <span>{{ word.text }}</span>
+                    <span class="absolute start-0 z-1 lyric-word-top text3" :class="{
                       'lyric-word-active': currentMusic.currentLyricIndex.wordIndex == wIndex && currentMusic.currentLyricIndex.lineIndex == index,
                       'lyric-word-done': currentMusic.currentLyricIndex.wordIndex > wIndex && currentMusic.currentLyricIndex.lineIndex == index
                     }">
-                      {{ word.text }}</span>
-                    <span class="inline-block">
-                      {{ word.text }}</span>
+                      {{ word.text }}
+                    </span>
 
                   </span>
                 </div>
