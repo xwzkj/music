@@ -384,8 +384,8 @@ export const usePlayStore = defineStore('play', () => {
         try {
             if (musicStatus.value.paused == false && 'lyric' in currentMusic.value) {//正在播放 并且有歌词
                 // 当前播放时间（毫秒
-                updateProgress();
-                let currentTime = musicStatus.value.currentTime * 1000 + 80;
+                // updateProgress();
+                let currentTime = player.value.currentTime * 1000 + 80;
                 let lyric = currentMusic.value.lyric;
                 // 找当前行index
                 let lineIndex = lyric.findIndex((_, index) => {
@@ -419,8 +419,8 @@ export const usePlayStore = defineStore('play', () => {
             if (lyricIndexNow.value.lineIndex >= 0 || !musicStatus.value.paused || 'lyric' in currentMusic.value) {
 
                 // 当前播放时间（毫秒
-                updateProgress();
-                let currentTime = musicStatus.value.currentTime * 1000 + 80;
+                // updateProgress();
+                let currentTime = player.value.currentTime * 1000 + 80;
                 // console.log(currentTime);
                 let lyric = currentMusic.value.lyric;
 
