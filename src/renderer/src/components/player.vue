@@ -22,9 +22,9 @@ let displayLyricWhenScreenIsNotWide = ref(false);
 
 let lyricWordNowDuration = computed(() => {
   let index = currentMusic.value.currentLyricIndex;
-  let duration = parseFloat(currentMusic.value?.lyric?.[index.lineIndex]?.lrc?.[index.wordIndex]?.duration / 1000)
-  console.log(playStore.musicStatus.paused);
-  
+  let duration = parseFloat(index.wordDuration / 1000)
+  // console.log(playStore.musicStatus.paused);
+
   return `${duration}s${playStore.musicStatus.paused ? ' paused' : ''}`;
 })
 
@@ -281,8 +281,8 @@ function getImgMainColor() {
 }
 
 .lyric-word-active {
-  animation: lyric v-bind(lyricWordNowDuration) forwards linear;
-  mask-image: linear-gradient(to right, black 40%, 45%, transparent);
+  animation: lyric v-bind('lyricWordNowDuration') forwards linear;
+  mask-image: linear-gradient(to right, black 40%, 45%, transparent 60% 100%);
   mask-size: 250%;
 }
 

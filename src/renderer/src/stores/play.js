@@ -16,7 +16,7 @@ export const usePlayStore = defineStore('play', () => {
      * @type {AudioElementWithValue}
      */
     let player = ref(new Audio());
-    let lyricIndexNow = ref({ lineIndex: -1, wordIndex: -1 });//内部变量 供给下面的计算属性使用
+    let lyricIndexNow = ref({ lineIndex: -1, wordIndex: -1, wordDuration: 0 });//内部变量 供给下面的计算属性使用
     let currentMusic = computed(() => {
         let userStore = useUserStore();
         return {
@@ -399,6 +399,7 @@ export const usePlayStore = defineStore('play', () => {
                     // 歌词滚动
                     if (lyricIndexNow.value.lineIndex != lineIndex) {
                         lyricIndexNow.value.lineIndex = lineIndex;
+                        updateKtvLyric();
                         if (window.isElectron) {
                             //如果是electron环境 就发送歌词给桌面歌词
                             window.api.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[lineIndex]))
@@ -437,6 +438,7 @@ export const usePlayStore = defineStore('play', () => {
                 if (wordIndex != -1) {
 
                     lyricIndexNow.value.wordIndex = wordIndex;
+                    lyricIndexNow.value.wordDuration = line[wordIndex].duration;
                     // lyricIndexNow.value.percent = (currentTime - line[wordIndex].time) / line[wordIndex].duration;
 
                     // console.log('逐字歌词改变', lyricIndexNow.value.percent);
