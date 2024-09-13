@@ -147,18 +147,18 @@ onMounted(() => {
     color: rgb(238, 238, 238);
     /* -webkit-text-stroke: 1px v-bind('mainColors[7]'); */
     text-shadow:
-        v-bind('mainColors[7] + `80`') 0 0 0.3rem,
-        v-bind('mainColors[7] + `80`') 0 0 0.3rem,
-        v-bind('mainColors[7] + `80`') 0 0 0.3rem,
-        v-bind('mainColors[7] + `80`') 0 0 0.3rem;
+        v-bind('mainColors[6] + `a0`') 0 0 0.3rem,
+        v-bind('mainColors[6] + `a0`') 0 0 0.3rem,
+        v-bind('mainColors[6] + `a0`') 0 0 0.3rem,
+        v-bind('mainColors[6] + `a0`') 0 0 0.3rem;
 }
 
 .lyric-word-top {
     text-shadow:
-        v-bind('mainColors[7] + `b0`') 0 0 0.3rem,
-        v-bind('mainColors[7] + `b0`') 0 0 0.3rem,
-        v-bind('mainColors[7] + `b0`') 0 0 0.3rem,
-        v-bind('mainColors[7] + `b0`') 0 0 0.3rem;
+        v-bind('mainColors[6] + `ff`') 0 0 0.3rem,
+        v-bind('mainColors[6] + `ee`') 0 0 0.3rem,
+        v-bind('mainColors[6] + `cc`') 0 0 0.3rem,
+        v-bind('mainColors[6] + `bb`') 0 0 0.3rem;
 }
 
 .lyric-lrc {
