@@ -45,6 +45,7 @@
     "electron-vite": "^2.3.0",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.27.0",
+    "less": "^4.2.0",
     "mitt": "^3.0.1",
     "naive-ui": "^2.39.0",
     "pinia": "^2.2.0",

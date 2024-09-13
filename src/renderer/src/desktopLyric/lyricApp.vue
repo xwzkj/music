@@ -1,6 +1,6 @@
 <template>
     <div class="outer">
-        <div class="lyric">
+        <div>
             <div class="ctrl">
                 <div class="ctrl-box">
                     <n-icon size="2rem" class="drag none-after-lock"><i-hugeicons-drag-drop /></n-icon>
@@ -8,43 +8,36 @@
                     <n-icon size="2rem" class="lock" @click="switchLock"><i-hugeicons-square-lock-02 /></n-icon>
                 </div>
             </div>
-            <div class="lyric-lrc marquee">
-                <marqueePlus :html="lyric.lrc" :speed="160" :lyricMode="true" />
+            <div class="lyric-lrc marquee lyric">
+                <marqueePlus :line-data="lyric?.lrc" :speed="160" :lyricMode="true" />
             </div>
-            <div class="lyric-sec marquee">
-                <marqueePlus :html="lyric.tran" :speed="140" :lyricMode="true" />
+            <div class="lyric-sec marquee lyric">
+                <marqueePlus :line-data="lyric?.tran" :speed="140" :lyricMode="true" />
             </div>
         </div>
     </div>
 </template>
 <script setup lang="ts">
 import MarqueePlus from '@/components/marqueePlus.vue';
-interface Lyric {
-    lrc?: string;
-    tran?: string;
-    time?: number;
-    roma?: string;
-}
+// import type { LyricLine, LyricWord } from '@/modules/types/lyric';
 let isLocked = ref<boolean>(false);
 let needLockWhenMouseLeave = false;//鼠标离开锁定按钮时是否需要锁定
 let displayCtrl = ref<boolean>(false);//是否显示控制按钮 当鼠标进入outer后显示
 let mainColors = ref<Array<string>>(['#fff9db', '#fff3bf', '#ffec99', '#ffe066', '#ffd43b', '#fcc419', '#fab005', '#f59f00', '#f08c00', '#e67700'])
-let lyricText = ref<Lyric>({});
-let lyric = computed<Lyric>(() => {
-    return {
-        lrc: lyricText.value.lrc ?? '',
-        tran: lyricText.value.tran ?? '',
-        time: lyricText.value.time ?? 0,
-        roma: lyricText.value.roma ?? ''
-    }
-});
+let lyric = ref<any>({});
 window?.getLyric(changeLyric);
 window?.getThemeColors(changeTheme);
-function changeLyric(event: Event, lyric: string) {
-    console.log(lyric);
-    let lyricObj = JSON.parse(lyric);
-    lyricObj.lrc = lyricObj.lrc.map((item: any) => item.text).join('');
-    lyricText.value = lyricObj
+function changeLyric(event: Event, lrc: string) {
+    let received = JSON.parse(lrc);
+    //这个if是防止直接整体替换导致地址全部改变，以至于每次逐字进度更新时，marquee都会重新计算是否需要滚动
+    if (lyric.value?.lrc?.currentWordIndex?.lineIndex !== received?.lrc?.currentWordIndex?.lineIndex) {
+        lyric.value = received;
+    } else {
+        if (lyric.value.hasOwnProperty('lrc')) {
+            lyric.value.lrc.currentWordIndex = received?.lrc?.currentWordIndex;
+        }
+    }
+    console.log(lrc, lyric.value);
     updateIsLocked();
 }
 function changeTheme(event: Event, theme: string) {
@@ -96,7 +89,7 @@ onMounted(() => {
     })
 })
 </script>
-<style>
+<style lang="less">
 .outer {
     position: fixed;
     top: 0;
@@ -148,21 +141,37 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     user-select: none;
-    color: v-bind('mainColors[0]');
+}
+
+.lyric :not(.lyric-word-top) {
+    color: rgb(238, 238, 238);
+    /* -webkit-text-stroke: 1px v-bind('mainColors[7]'); */
     text-shadow:
-        v-bind('mainColors[5]') 0 0 0.3rem,
-        v-bind('mainColors[5]') 0 0 0.3rem,
-        v-bind('mainColors[5]') 0 0 0.3rem,
-        v-bind('mainColors[5]') 0 0 0.3rem;
+        v-bind('mainColors[9] + `80`') 0 0 0.3rem,
+        v-bind('mainColors[9] + `80`') 0 0 0.3rem,
+        v-bind('mainColors[9] + `80`') 0 0 0.3rem,
+        v-bind('mainColors[9] + `80`') 0 0 0.3rem;
+}
+
+.lyric-word-top {
+    text-shadow:
+        v-bind('mainColors[9] + `b0`') 0 0 0.3rem,
+        v-bind('mainColors[9] + `b0`') 0 0 0.3rem,
+        v-bind('mainColors[9] + `b0`') 0 0 0.3rem,
+        v-bind('mainColors[9] + `b0`') 0 0 0.3rem;
 }
 
 .lyric-lrc {
     font-size: 3rem;
-    font-weight: bolder;
+    font-weight: 500;
 }
 
 .lyric-sec {
     font-size: 2rem;
-    font-weight: bold;
+    font-weight: 400;
+}
+
+.text3 {
+    color: v-bind('mainColors[2]');
 }
 </style>

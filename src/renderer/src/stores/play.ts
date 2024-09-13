@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
-import * as api from '@/modules/api'
-import * as lyricTools from '@/modules/lyric'
-import emitter from '@/utils/mitt';
+import * as api from '@/modules/api.js'
+import * as lyricTools from '@/modules/lyric.js'
 import { ref, computed } from 'vue'
 import { useUserStore } from "./user.js";
 
@@ -134,9 +133,9 @@ export const usePlayStore = defineStore('play', () => {
             //如果是electron环境 就发送歌名给桌面歌词
             window.api.sendLyric(JSON.stringify({
                 time: 0,
-                lrc: [{ time: '0', duration: '0', text: nameWithTns.value }],
-                roma: value?.artist,
-                tran: value?.artist
+                lrc: api.textToParsedYrcLine(nameWithTns.value),
+                roma: api.textToParsedYrcLine(value?.artist),
+                tran: api.textToParsedYrcLine(value?.artist)
             }))
         }
         if ("mediaSession" in navigator) {//更新session元数据信息
@@ -155,7 +154,7 @@ export const usePlayStore = defineStore('play', () => {
     //获取并解析歌词
     async function parseLyric() {
         if (!('lyric' in currentMusic.value)) {//如果没有保存的数据才去请求
-            let apiResult = await api.lyricNew(currentMusic.value.id)
+            let apiResult: any = await api.lyricNew(currentMusic.value.id)
             apiResult = apiResult.data;
             let lyric = [];
             if (apiResult.code == 200) {
@@ -185,9 +184,9 @@ export const usePlayStore = defineStore('play', () => {
     //获取并应用歌曲url
     async function getAudioUrl(id) {
         let res = await api.songUrlV1(id, 'jymaster', localStorage.getItem('specialApi'), localStorage.getItem('cookie'));
-        res = res.data.data[0].url;
-        player.value.src = res;
-        return res;
+        let d = res.data.data[0].url;
+        player.value.src = d;
+        return d;
     }
     //把api返回的detail内容转换为播放列表的存储形式
     function parseDetailToList(data) {
@@ -407,10 +406,11 @@ export const usePlayStore = defineStore('play', () => {
                     if (lyricIndexNow.value.lineIndex != lineIndex) {
                         lyricIndexNow.value.lineIndex = lineIndex;
                         updateKtvLyric();
-                        if (window.isElectron) {
-                            //如果是electron环境 就发送歌词给桌面歌词
-                            window.api.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[lineIndex]))
-                        }
+                        // if (window.isElectron) {
+                        //     //如果是electron环境 就发送歌词给桌面歌词
+                        //     window.api.sendLyric(JSON.stringify(currentMusic.value?.lyric?.[lineIndex]))
+                        // }
+                        //////////现在是musicController发送了
                     }
                 } else {
                     lyricIndexNow.value.lineIndex = -1;
@@ -442,8 +442,7 @@ export const usePlayStore = defineStore('play', () => {
                         return line[index].time <= currentTime
                     }
                 });
-                if (wordIndex != -1) {
-
+                if (wordIndex != -1 && wordIndex != lyricIndexNow.value.wordIndex) {
                     lyricIndexNow.value.wordIndex = wordIndex;
                     lyricIndexNow.value.wordDuration = line[wordIndex].duration;
                     // lyricIndexNow.value.percent = (currentTime - line[wordIndex].time) / line[wordIndex].duration;

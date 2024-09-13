@@ -1,4 +1,4 @@
-<script setup lang="js" name="player">
+<script setup lang="ts" name="player">
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import emitter from "@/utils/mitt";
@@ -7,6 +7,7 @@ import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
 import playinglist from '@/components/playinglist.vue'
 import MarqueePlus from '@/components/marqueePlus.vue'
+import lyricLine from '@/components/lyricLine.vue';
 
 let themeStore = useThemeStore();
 let playStore = usePlayStore();
@@ -20,13 +21,6 @@ let playingListTran = computed(() => {
 })
 let displayLyricWhenScreenIsNotWide = ref(false);
 
-let lyricWordNowDuration = computed(() => {
-  let index = currentMusic.value.currentLyricIndex;
-  let duration = parseFloat(index.wordDuration / 1000)
-  // console.log(playStore.musicStatus.paused);
-
-  return `${duration}s${playStore.musicStatus.paused ? ' paused' : ''}`;
-})
 
 //挂载
 onMounted(async () => {
@@ -137,22 +131,9 @@ function getImgMainColor() {
                 :class="{ 'lyric-active color9': currentMusic.currentLyricIndex.lineIndex == index }"
                 class="lyric-item transition-transform duration-700 ease-out transform-origin-left-top"
                 :id="'lrc-' + index">
-                <div class="lyric-lrc flex flex-wrap">
-                  <div v-for="(word, wIndex) in item.lrc" :id="'lrc-' + index + '-word-' + wIndex" class="relative"
-                    :class="{
-                      'lyric-word-end-with-space': word.text.slice(-1) == ' '
-                    }">
-
-                    <span class="select-none">{{ word.text }}</span>
-                    <span class="select-none absolute left-0 top-0 bottom-0 z-1 lyric-word-top text3" :class="{
-                      'lyric-word-active': currentMusic.currentLyricIndex.wordIndex == wIndex && currentMusic.currentLyricIndex.lineIndex == index,
-                      'lyric-word-done': currentMusic.currentLyricIndex.wordIndex > wIndex && currentMusic.currentLyricIndex.lineIndex == index
-                    }">
-                      {{ word.text }}
-                    </span>
-
-                  </div>
-                </div>
+                <lyricLine :line="item.lrc"
+                  :current-word-index="currentMusic.currentLyricIndex.lineIndex == index ? currentMusic.currentLyricIndex : { wordIndex: -1, wordDuration: 0 }"
+                  :paused="playStore.musicStatus.paused" class="lyric-lrc" />
                 <div class="lyric-roma">{{ item.roma }}</div>
                 <div class="lyric-tran">{{ item.tran }}</div>
               </li>
@@ -274,34 +255,6 @@ function getImgMainColor() {
 .lyric-list {
   padding-top: 50%;
   padding-bottom: 50%;
-}
-
-.lyric-word-top {
-  mask-image: linear-gradient(transparent, transparent);
-}
-
-.lyric-word-active {
-  animation: lyric v-bind('lyricWordNowDuration') forwards linear;
-  mask-image: linear-gradient(to right, black 40%, 45%, transparent 60% 100%);
-  mask-size: 250%;
-}
-
-@keyframes lyric {
-  from {
-    mask-position: right;
-  }
-
-  to {
-    mask-position: left;
-  }
-}
-
-.lyric-word-done {
-  mask-image: linear-gradient(black, black);
-}
-
-.lyric-word-end-with-space {
-  margin-right: 0.25em;
 }
 
 /********************************播放控件**********************************************************/

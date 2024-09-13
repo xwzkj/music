@@ -289,6 +289,16 @@ export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter 
  *以下是一些工具函数
  *-----------------------------------------------
  */
+export function textToParsedYrcLine(text: string) {
+  return {
+    line: [{ text, duration: 0, time: 0 }],
+    currentWordIndex: {
+      wordDuration: 0,
+      wordIndex: 0
+    },
+    paused: false
+  }
+}
 
 export function windowBack() {
   window.history.back()
@@ -317,7 +327,7 @@ export function windowBack() {
  * @param {string} content
  * @param {string} title
  */
-export function error(content, title) {
+export function error(content, title?) {
   // let sad = ["(>_<)", "Σ(°ロ°)", '(つ﹏⊂)', '（・□・；）', '(o.O)', '(#｀皿´)', 'ヽ(≧Д≦)ノ', '（＞д＜）']
   // let title = sad[random(0, sad.length - 1)];
   console.error('[error]', content, title)
@@ -334,7 +344,7 @@ export function error(content, title) {
     keepAliveOnHover: true
   })
 }
-export function success(content, title) {
+export function success(content, title?) {
   // let happy = ["o(≧▽≦)o", "(* ^ ω ^)", "(´｡• ω •｡`)", "ヽ(・∀・)ﾉ", "＼(≧▽≦)／", "ヽ(o＾▽＾o)ノ", "\(^ヮ^)/", "(´• ω •`)", "(..＞◡＜..)"]
   // let title = happy[random(0, happy.length - 1)];
   // window.$NMessageApi.success(message, {

@@ -13,8 +13,8 @@
                         <div class="ctrl-info-artist text2">
                             <MarqueePlus :html="playStore.currentMusic.artist ?? ''" :speed="40" />
                         </div>
-                        <div class="ctrl-info-lyric text3">
-                            <marqueePlus :html="lyricNow" :speed="60" :lyricMode="true" />
+                        <div class="ctrl-info-lyric color4">
+                            <marqueePlus :line-data="lyricNow" :speed="60" :lyricMode="true" />
                         </div>
                     </div>
                 </div>
@@ -115,11 +115,23 @@ let showPlayer = false;
 let showPlayerVIf = ref(false);
 let lyricNow = computed(() => {
     if (!Array.isArray(playStore.currentMusic.lyric) || playStore.currentMusic?.lyric.length < playStore.currentMusic.currentLyricIndex.lineIndex) {
-        return ''
+        return undefined
     }
-    return playStore.currentMusic?.lyric[playStore.currentMusic.currentLyricIndex.lineIndex]?.lrc.map(item => item.text).join('')
+    let line = playStore.currentMusic?.lyric[playStore.currentMusic.currentLyricIndex.lineIndex]?.lrc
+    let currentWordIndex = playStore.currentMusic?.currentLyricIndex
+    let paused = playStore.musicStatus.paused
+    let res = {
+        line,
+        currentWordIndex,
+        paused
+    }
+    if (window.isElectron) {
+        let tran = playStore.currentMusic?.lyric[playStore.currentMusic.currentLyricIndex.lineIndex]?.tran
+        tran = api.textToParsedYrcLine(tran)
+        window.api.sendLyric(JSON.stringify({ lrc: res, tran }))
+    }
+    return res
 })
-
 function switchShowPlaylist() {
     showPlayingList = !showPlayingList
     // console.log(showPlayingList);

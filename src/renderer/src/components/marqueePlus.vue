@@ -2,19 +2,62 @@
     <div class="marquee-sizer" ref="sizerEle">
         <div class="marquee-outer" v-show="needScroll">
             <div class="marquee-container">
-                <div class="marquee-text1 marquee-content" ref="text1Ele" v-html="props.html"></div>
+                <div class="marquee-text1 marquee-content" ref="text1Ele">
+                    <div v-html="props.html" v-if="!props.lyricMode"></div>
+                    <lyricLine v-else :line="props?.lineData?.line"
+                        :current-word-index="props?.lineData?.currentWordIndex" :paused="props?.lineData?.paused"
+                        :can-wrap="false" />
+                </div>
                 <div v-show="!props.lyricMode" class="marquee-text2 marquee-content" v-html="props.html"></div>
             </div>
         </div>
-        <div v-show="!needScroll" class="marquee-static-text" ref="staticTextEle" v-html="props.html"></div>
+        <div v-show="!needScroll" class="marquee-static-text" ref="staticTextEle">
+            <div v-html="props.html" v-if="!props.lyricMode"></div>
+            <lyricLine v-else :line="props?.lineData?.line" :current-word-index="props?.lineData?.currentWordIndex"
+                :paused="props?.lineData?.paused" :can-wrap="false" />
+        </div>
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { LyricWord } from '@/modules/types/lyric';
+import lyricLine from './lyricLine.vue';
 // 这个组件最好在外部包裹div来设定尺寸位置和字体信息
 // speed 单位px/s
 // lyricMode 是否是歌词模式 歌词模式将会只滚动一次
-let props = defineProps({ html: String, speed: Number, lyricMode: Boolean })
+// 歌词模式需要line参数而不是html参数
+let props = withDefaults(defineProps<{
+    html?: string,
+    lineData?: {
+        line: LyricWord[] | undefined,
+        currentWordIndex?: {
+            wordDuration: number,
+            wordIndex: number
+        },
+        paused?: boolean
+    },
+    speed?: number,
+    lyricMode?: boolean
+}>(), {
+    lyricMode: false,
+    speed: 80,
+    lineData: () => {
+        return {
+            line: [
+                {
+                    text: '',
+                    time: '0',
+                    duration: '0'
+                }
+            ],
+            currentWordIndex: {
+                wordDuration: 0,
+                wordIndex: 0
+            },
+            paused: false
+        }
+    }
+})
 let text1Ele = ref(null)
 let sizerEle = ref(null)
 let staticTextEle = ref(null)
@@ -38,10 +81,13 @@ onMounted(() => {
 })
 
 let limit = true;// 避免重复计算
-watch(props, () => {
+let lineUpdated = () => {
     marqueeAnimation.value.name = '';// 清除动画
     limit = false;
-}, { deep: true })
+    console.log('marquee 更新');
+}
+watch(() => props.html, lineUpdated)
+watch(() => props.lineData.line, lineUpdated)
 
 onUpdated(() => {
     if (!limit) {
@@ -59,7 +105,7 @@ function updateIfNeedScroll() {
         needScroll.value = widthValue > sizerEle.value.offsetWidth
         if (needScroll.value) {
             marqueeAnimation.value.name = props.lyricMode ? 'marquee-lyric' : 'marquee'
-            marqueeAnimation.value.duration = ((props.lyricMode ? widthValue - sizerEle.value.offsetWidth : widthValue) / (props.speed ?? 80)) + 's'
+            marqueeAnimation.value.duration = ((props.lyricMode ? widthValue - sizerEle.value.offsetWidth : widthValue) / props.speed) + 's'
             marqueeAnimation.value.loop = props.lyricMode ? '1' : 'infinite'
             marqueeAnimation.value.lyricDistance = '-' + (widthValue - sizerEle.value.offsetWidth) + 'px'
         }
@@ -67,7 +113,7 @@ function updateIfNeedScroll() {
         // console.log(text1Ele.value, staticTextEle.value, sizerEle.value);
     } else {
         needScroll.value = false
-        console.log('marquee 判断 未挂载', text1Ele.value, sizerEle.value);
+        // console.log('marquee 判断 未挂载', text1Ele.value, sizerEle.value);
     }
 }
 </script>

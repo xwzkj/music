@@ -1,14 +1,4 @@
-interface LyricLine {
-    time: string,
-    lrc: LyricWord[],
-    tran?: string,
-    roma?: string,
-}
-interface LyricWord {
-    time: string,
-    duration: string,
-    text: string,
-}
+import type { LyricLine, LyricWord } from './types/lyric.d.ts';
 export function parseYrc(yrc: string) {
     let lyric: LyricLine[] = [];
     yrc.split('\n').forEach((line) => {
