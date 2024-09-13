@@ -30,6 +30,7 @@ declare module 'vue' {
     IIcTwotoneCalendarToday: typeof import('~icons/ic/twotone-calendar-today')['default']
     ISolarSoundwaveSquareOutline: typeof import('~icons/solar/soundwave-square-outline')['default']
     ItemCard: typeof import('./src/components/itemCard.vue')['default']
+    LyricLine: typeof import('./src/components/lyricLine.vue')['default']
     MarqueePlus: typeof import('./src/components/marqueePlus.vue')['default']
     MusicController: typeof import('./src/components/musicController.vue')['default']
     MusicList: typeof import('./src/components/musicList.vue')['default']

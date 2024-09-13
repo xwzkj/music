@@ -22,7 +22,7 @@
 </template>
 
 <script setup name="itemCard">
-import * as api from "@/modules/api.js"
+import * as api from "@/modules/api"
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { useThemeStore } from "@/stores/theme";

@@ -21,8 +21,8 @@
 import { useRouter } from 'vue-router';
 import anime from 'animejs';
 import { ref } from 'vue';
-import { useUserStore } from '@/stores/user.js'
-import * as api from '@/modules/api.js';
+import { useUserStore } from '@/stores/user'
+import * as api from '@/modules/api';
 import navigation from './navigation.vue';
 const userStore = useUserStore();
 let value = ref('');

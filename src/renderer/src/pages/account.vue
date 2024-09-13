@@ -24,7 +24,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '@/stores/user.js';
+import { useUserStore } from '@/stores/user';
 import { useThemeStore } from '@/stores/theme';
 import itemCard from '@/components/itemCard.vue';
 import * as api from '@/modules/api';

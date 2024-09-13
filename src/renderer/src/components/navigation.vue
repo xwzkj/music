@@ -11,7 +11,7 @@ import { useRouter, RouterLink, useRoute, RouterLinkProps } from 'vue-router';
 import type { Component } from 'vue';
 import type { MenuOption } from 'naive-ui';
 import { NIcon } from 'naive-ui';
-import { useUserStore } from '@/stores/user.js'
+import { useUserStore } from '@/stores/user'
 //图标引入 用于jsx
 import HugeiconsHome06 from '~icons/hugeicons/home-06';
 import HugeiconsUserAccount from '~icons/hugeicons/user-account';

@@ -13,7 +13,7 @@ import autoprefixer from 'autoprefixer'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin()]
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
@@ -26,7 +26,7 @@ export default defineConfig({
         },
         output: {
           entryFileNames: '[name].mjs',
-          chunkFileNames: '[name].mjs',
+          chunkFileNames: '[name].mjs'
         }
       }
     }
@@ -34,14 +34,13 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        '@': resolve('src/renderer/src'),
-      }
+        '@': resolve('src/renderer/src')
+      },
+      extensions: ['.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
     },
     css: {
       postcss: {
-        plugins: [
-          autoprefixer()
-        ]
+        plugins: [autoprefixer()]
       }
     },
     plugins: [

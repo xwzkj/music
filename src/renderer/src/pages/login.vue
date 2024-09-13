@@ -59,10 +59,10 @@
 </template>
 
 <script setup name="login">
-import * as api from '@/modules/api.js';
+import * as api from '@/modules/api';
 import { useRouter } from 'vue-router';
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { useUserStore } from "@/stores/user.js";
+import { useUserStore } from "@/stores/user";
 import { NQrCode } from 'naive-ui';
 import { useThemeStore } from '@/stores/theme';
 let themeStore = useThemeStore();

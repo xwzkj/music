@@ -3,7 +3,7 @@ import * as api from '@/modules/api'
 import * as lyricTools from '@/modules/lyric'
 import emitter from '@/utils/mitt';
 import { ref, computed } from 'vue'
-import { useUserStore } from "./user";
+import { useUserStore } from "./user.js";
 
 export const usePlayStore = defineStore('play', () => {
     console.log('playstore被创建 ');
@@ -73,11 +73,17 @@ export const usePlayStore = defineStore('play', () => {
 
     //播放结束后自动下一曲
     player.value.addEventListener('ended', () => { next() })
+
+    interface updateProgressConf {
+        duration?: number
+        playbackRate?: number
+        position?: number
+    }
     /**  同步播放进度状态 是回调函数
      * @param {boolean} updateSession - 是否更新媒体会话
      * @param {Object} conf - 仅参数一为true生效 媒体会话的配置对象
     */
-    function updateProgress(updateSession = false, conf = { duration: NaN, playbackRate: NaN, position: NaN }) {
+    function updateProgress(updateSession = false, conf: updateProgressConf = { duration: NaN, playbackRate: NaN, position: NaN }) {
         if (updateSession) {
             if ("mediaSession" in navigator) {
                 //conf是媒体会话的配置对象 这里只是配置 下面才会应用
@@ -216,7 +222,7 @@ export const usePlayStore = defineStore('play', () => {
                 console.error('播放列表初始化未提供参数');
             }
         } else {//传了id列表
-            await addMusic(ids, 0, true);
+            await addMusic(ids, '0', true);
         }
         if (playlistIndex.value == -1 && playMode.value == 1) {
             playlistIndex.value = playOrder.value[0];
@@ -232,15 +238,16 @@ export const usePlayStore = defineStore('play', () => {
      * @param {Number} position 
      * @param {Boolean} letIndexIsNew 是否让index指向新添加的音乐的第一个
      */
-    async function addMusic(ids = [], position = 'now', letIndexIsNew = false) {
+    async function addMusic(ids = [], position: string | number = 'now', letIndexIsNew = false) {
         if (position == 'now') {
             position = playlistIndex.value + 1;
         }
+        position = Number(position);
         console.log('添加音乐到播放列表', ids, position, letIndexIsNew);
         if (ids.length == 0) {//如果没传id
             return;
         }
-        let list = {};
+        let list: any = {};
         let res;
         list = ids.map(item => {
             return {
@@ -273,7 +280,7 @@ export const usePlayStore = defineStore('play', () => {
         return playlist.value;
     }
     // 进行随机播放列表算法
-    function listRandom(startIndex = 0) {
+    function listRandom() {
         let listOrder = [];
         // 初始化列表（自然数数列
         for (let i = 0; i < playlist.value.length; i++) {

@@ -92,7 +92,7 @@
 import MarqueePlus from '@/components/marqueePlus.vue';
 import { usePlayStore } from '@/stores/play';
 import { useSettingStore } from '@/stores/setting';
-import * as api from '@/modules/api.js'
+import * as api from '@/modules/api'
 // import { useRouter } from 'vue-router';
 import playinglist from './playinglist.vue';
 import player from './player.vue';

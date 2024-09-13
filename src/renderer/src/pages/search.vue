@@ -6,7 +6,7 @@
 
 </template>
 <script setup name="search">
-import * as api from '@/modules/api.js'
+import * as api from '@/modules/api'
 import { ref, onMounted, watch } from 'vue'
 import musicList from '@/components/musicList.vue'
 import { usePlayStore } from '@/stores/play'

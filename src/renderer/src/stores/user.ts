@@ -16,27 +16,27 @@ export const useUserStore = defineStore('user', {
         ip: '',
         playlists: [],
         likedSongs: [],
-        updateTime: '',
+        updateTime: 0,
     }),
     actions: {
-        async updateLikelist(){
+        async updateLikelist() {
             let res = await api.likelist(this.uid)
             if (res.data.code == 200) {
                 this.likedSongs = res.data.ids
                 this.storeToStorage()
                 return res.data.ids
-            }else{
+            } else {
                 throw new Error('获取喜欢列表失败')
             }
         },
-        async updateByCookie(cookie) {
-            let match = cookie || localStorage.getItem('cookie') || document.cookie
+        async updateByCookie(cookie: string | undefined) {
+            let match: string | undefined = cookie || localStorage.getItem('cookie') || document.cookie
             match = match?.match(/MUSIC_U=[^;]+/)?.[0]
             if (match) {
                 cookie = match
             } else if (!cookie) {
                 this.logout()
-                console.log(cookie,document.cookie,match);
+                console.log(cookie, document.cookie, match);
                 api.error('[未登录]更新用户信息时：没有cookie');
                 return;
             }
@@ -78,22 +78,23 @@ export const useUserStore = defineStore('user', {
             console.log('pinia updatedByCookie');
         },
         async updateByStorage() {
-            let user = JSON.parse(localStorage.getItem('user'))
+            let user = JSON.parse(localStorage.getItem('user') ?? '')
             this.updateByObj(user)
             if (this.ip == '') {
                 this.ip = `111.37.150.${api.random(0, 255)}`
             }
             console.log('pinia updatedByStorage');
         },
-        updateByObj(obj) {
+        updateByObj(obj: any) {
             for (let key in obj) {
-                this[key] = obj[key]
+                let t: any = this
+                t[key] = obj[key]
             }
         },
         storeToStorage() {
             //把this转成纯对象
-            let rawObj = toRaw(this);
-            let pureObj = {};
+            let rawObj: any = toRaw(this);
+            let pureObj: any = {};
             for (let key in rawObj) {
                 if (key.slice(0, 1) != '_' && key.slice(0, 1) != '$' && typeof (rawObj[key]) != 'function') {
                     pureObj[key] = unref(rawObj[key]);
@@ -107,7 +108,7 @@ export const useUserStore = defineStore('user', {
             localStorage.removeItem('cookie')
             console.log('pinia clearStorage');
         },
-        logout(){
+        logout() {
             this.$reset();
             this.clearStorage();
             document.cookie = "MUSIC_U=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
