@@ -1,6 +1,6 @@
 <template>
     <div class="setting-item-outer">
-        <n-card>
+        <n-card class="setting-item-card">
             <div class="setting-item">
                 <div class="title">
                     <div class="t1 text1">
@@ -17,7 +17,8 @@
                             <template #icon>
                                 <n-icon>
                                     <i-hugeicons-link-square-01 @click="props.actionOnClick" v-if="!props.needInput" />
-                                    <i-hugeicons-checkmark-square-01 @click="() => props.actionOnClick(inputValue)" v-else/>
+                                    <i-hugeicons-checkmark-square-01 @click="() => props.actionOnClick(inputValue)"
+                                        v-else />
                                 </n-icon>
                             </template>
                         </n-button>
@@ -38,6 +39,10 @@ let inputValue = ref(props.defaultValue)
 .setting-item-outer {
     width: 80%;
     margin: 0.5rem;
+}
+
+.setting-item-card {
+    background-color: #ffffff80;
 }
 
 .setting-item {

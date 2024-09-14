@@ -24,14 +24,15 @@
                             <div class="item-music-detail">
                                 <div class="item-music-name">
                                     <span class="item-music-text text1">{{ item.name }}</span>
-                                    <span class="item-music-text text2" v-if="api.parseArray(item.tns) != ''">&nbsp;({{api.parseArray(item.tns)}})</span>
+                                    <span class="item-music-text text2"
+                                        v-if="api.parseArray(item.tns) != ''">&nbsp;({{ api.parseArray(item.tns) }})</span>
                                 </div>
 
                                 <div class="item-music-ar">
                                     <n-tag v-if="item.fee == 1" type="warning" size="small"
                                         :bordered="false">VIP</n-tag>
                                     <n-tag v-if="item.fee == 4" type="info" size="small" :bordered="false">数字专辑</n-tag>
-                                    <span class="item-music-text text2" >{{ api.parseArtist(item.ar)
+                                    <span class="item-music-text text2">{{ api.parseArtist(item.ar)
                                         }}</span>
                                 </div>
                             </div>
@@ -113,6 +114,11 @@ let isLiked = computed(() => {
 .item-album {
     flex: 1;
     padding-left: 1rem;
+}
+
+.list-head-card,
+.list-item-card {
+    background-color: #ffffff80;
 }
 
 .list-head-card {

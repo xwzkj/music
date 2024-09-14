@@ -129,63 +129,75 @@ document.addEventListener('DOMContentLoaded', setRealVhVw);
   background-color: v-bind('themeStore.mainColors[0]');
 }
 
+*{
+  --color-0: v-bind('themeStore.mainColors[0]');
+  --color-1: v-bind('themeStore.mainColors[1]');
+  --color-2: v-bind('themeStore.mainColors[2]');
+  --color-3: v-bind('themeStore.mainColors[3]');
+  --color-4: v-bind('themeStore.mainColors[4]');
+  --color-5: v-bind('themeStore.mainColors[5]');
+  --color-6: v-bind('themeStore.mainColors[6]');
+  --color-7: v-bind('themeStore.mainColors[7]');
+  --color-8: v-bind('themeStore.mainColors[8]');
+  --color-9: v-bind('themeStore.mainColors[9]');
+}
 
 .icon,
 .n-icon {
-  color: v-bind('themeStore.mainColors[8]');
+  color: var(--color-8);
 }
 
 .text1 {
-  color: v-bind('themeStore.mainColors[9]');
+  color: var(--color-9);
 }
 
 .text2 {
-  color: v-bind('themeStore.mainColors[7]');
+  color: var(--color-7);
 }
 
 .text3 {
-  color: v-bind('themeStore.mainColors[6]');
+  color: var(--color-6);
 }
 
 
 /* 主题色 */
 .color0 {
-  color: v-bind('themeStore.mainColors[0]');
+  color: var(--color-0);
 }
 
 .color1 {
-  color: v-bind('themeStore.mainColors[1]');
+  color: var(--color-1);
 }
 
 .color2 {
-  color: v-bind('themeStore.mainColors[2]');
+  color: var(--color-2);
 }
 
 .color3 {
-  color: v-bind('themeStore.mainColors[3]');
+  color: var(--color-3);
 }
 
 .color4 {
-  color: v-bind('themeStore.mainColors[4]');
+  color: var(--color-4);
 }
 
 .color5 {
-  color: v-bind('themeStore.mainColors[5]');
+  color: var(--color-5);
 }
 
 .color6 {
-  color: v-bind('themeStore.mainColors[6]');
+  color: var(--color-6);
 }
 
 .color7 {
-  color: v-bind('themeStore.mainColors[7]');
+  color: var(--color-7);
 }
 
 .color8 {
-  color: v-bind('themeStore.mainColors[8]');
+  color: var(--color-8);
 }
 
 .color9 {
-  color: v-bind('themeStore.mainColors[9]');
+  color: var(--color-9);
 }
 </style>

@@ -1,0 +1,73 @@
+@source0: 'https://cdn.jsdelivr.net/gh/xwzkj/fonts@latest';
+@source1: 'https://github.com/xwzkj/fonts/releases/download/1';
+@source2: 'https://cdn-static.xwzkj.top/fonts';
+@source3: 'https://static.xwzkj.top/fonts';
+
+.source(@file-name) {
+    src: url('@{source0}@{file-name}'),
+    url('@{source1}@{file-name}'),
+    url('@{source2}@{file-name}'),
+    url('@{source3}@{file-name}');
+}
+
+@font-face {
+    font-family: "MiSans VF";
+    @file-name: '/MiSans.ttf';
+    .source(@file-name);
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "HarmonyOS-sans";
+    @file-name: '/HarmonyOS_Sans_SC_Thin.ttf';
+    .source(@file-name);
+    font-weight: 100;
+    /* Thin */
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "HarmonyOS-sans";
+    @file-name: '/HarmonyOS_Sans_SC_Light.ttf';
+    .source(@file-name);
+    font-weight: 300;
+    /* Light */
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "HarmonyOS-sans";
+    @file-name: '/HarmonyOS_Sans_SC_Regular.ttf';
+    .source(@file-name);
+    font-weight: 400;
+    /* Regular */
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: "HarmonyOS-sans";
+    @file-name: '/HarmonyOS_Sans_SC_Medium.ttf';
+    .source(@file-name);
+    font-weight: 500;
+    /* Medium */
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "HarmonyOS-sans";
+    @file-name: '/HarmonyOS_Sans_SC_Bold.ttf';
+    .source(@file-name);
+    font-weight: 700;
+    /* Bold */
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "HarmonyOS-sans";
+    @file-name: '/HarmonyOS_Sans_SC_Black.ttf';
+    .source(@file-name);
+    font-weight: 900;
+    /* Black */
+    font-display: swap;
+}

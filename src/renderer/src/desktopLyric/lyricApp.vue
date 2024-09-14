@@ -23,7 +23,7 @@ import MarqueePlus from '@/components/marqueePlus.vue';
 let isLocked = ref<boolean>(false);
 let needLockWhenMouseLeave = false;//鼠标离开锁定按钮时是否需要锁定
 let displayCtrl = ref<boolean>(false);//是否显示控制按钮 当鼠标进入outer后显示
-let mainColors = ref<Array<string>>(['#fff9db', '#fff3bf', '#ffec99', '#ffe066', '#ffd43b', '#fcc419', '#fab005', '#f59f00', '#f08c00', '#e67700'])
+let mainColors = ref<Array<string>>(["#fffdf0", "#fffbe3", "#fff4ba", "#f7e28d", "#ebca60", "#deb237", "#b88c25", "#916816", "#6b480b", "#452c06"])
 let lyric = ref<any>({});
 window?.getLyric(changeLyric);
 window?.getThemeColors(changeTheme);
@@ -35,6 +35,7 @@ function changeLyric(event: Event, lrc: string) {
     } else {
         if (lyric.value.hasOwnProperty('lrc')) {
             lyric.value.lrc.currentWordIndex = received?.lrc?.currentWordIndex;
+            lyric.value.lrc.paused = received?.lrc?.paused;
         }
     }
     console.log(lrc, lyric.value);
@@ -141,24 +142,30 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     user-select: none;
+    /* -webkit-text-stroke: 1px v-bind('mainColors[7]'); */
 }
 
 .lyric :not(.lyric-word-top) {
-    color: rgb(238, 238, 238);
-    /* -webkit-text-stroke: 1px v-bind('mainColors[7]'); */
-    text-shadow:
-        v-bind('mainColors[6] + `a0`') 0 0 0.3rem,
-        v-bind('mainColors[6] + `a0`') 0 0 0.3rem,
-        v-bind('mainColors[6] + `a0`') 0 0 0.3rem,
-        v-bind('mainColors[6] + `a0`') 0 0 0.3rem;
+    color: white;
+    --color: v-bind('mainColors[6] + `dd`');
+    text-shadow: 1px 1px var(--color),
+        -1px -1px var(--color),
+        -1px 1px var(--color),
+        1px -1px var(--color),
+        2px 2px 0.5px v-bind('mainColors[3]');
 }
 
 .lyric-word-top {
-    text-shadow:
-        v-bind('mainColors[6] + `ff`') 0 0 0.3rem,
-        v-bind('mainColors[6] + `ee`') 0 0 0.3rem,
-        v-bind('mainColors[6] + `cc`') 0 0 0.3rem,
-        v-bind('mainColors[6] + `bb`') 0 0 0.3rem;
+    color: v-bind('mainColors[2]');
+    // --color: v-bind('mainColors[2]');
+    // text-shadow: 2px 2px var(--color),
+    //     -2px -2px var(--color),
+    //     -2px 2px var(--color),
+    //     2px -2px var(--color),
+    //     -1px -1px var(--color),
+    //     1px 1px var(--color),
+    //     -1px 1px var(--color),
+    //     1px -1px var(--color);
 }
 
 .lyric-lrc {
@@ -169,9 +176,5 @@ onMounted(() => {
 .lyric-sec {
     font-size: 2rem;
     font-weight: 400;
-}
-
-.text3 {
-    color: v-bind('mainColors[2]');
 }
 </style>

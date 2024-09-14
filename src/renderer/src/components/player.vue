@@ -26,9 +26,9 @@ let displayLyricWhenScreenIsNotWide = ref(false);
 onMounted(async () => {
   //监听歌词滚动
   watch(() => currentMusic.value.currentLyricIndex.lineIndex, (value) => {
-    console.log('当前歌词改变');
+    // console.log('当前歌词改变');
     lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + value)?.offsetTop - 200, behavior: 'smooth' });
-  }, { deep: true })
+  }, { deep: true, immediate: true })
 })
 //卸载前
 onBeforeUnmount(() => {
@@ -129,8 +129,7 @@ function getImgMainColor() {
             <ul class="lyric-list">
               <li v-for="(item, index) in currentMusic.lyric" :key="index"
                 :class="{ 'lyric-active color9': currentMusic.currentLyricIndex.lineIndex == index }"
-                class="lyric-item transition-transform duration-700 ease-out transform-origin-left-top"
-                :id="'lrc-' + index">
+                class="lyric-item transition-all duration-700 ease-out transform-origin-left" :id="'lrc-' + index">
                 <lyricLine :line="item.lrc"
                   :current-word-index="currentMusic.currentLyricIndex.lineIndex == index ? currentMusic.currentLyricIndex : { wordIndex: -1, wordDuration: 0 }"
                   :paused="playStore.musicStatus.paused" class="lyric-lrc" />

@@ -125,7 +125,7 @@ let lyricNow = computed(() => {
         currentWordIndex,
         paused
     }
-    if (window.isElectron) {
+    if (window.isElectron && currentWordIndex.lineIndex >=0) {
         let tran = playStore.currentMusic?.lyric[playStore.currentMusic.currentLyricIndex.lineIndex]?.tran
         tran = api.textToParsedYrcLine(tran)
         window.api.sendLyric(JSON.stringify({ lrc: res, tran }))

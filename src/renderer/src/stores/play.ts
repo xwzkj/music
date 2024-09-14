@@ -133,7 +133,7 @@ export const usePlayStore = defineStore('play', () => {
             //如果是electron环境 就发送歌名给桌面歌词
             window.api.sendLyric(JSON.stringify({
                 time: 0,
-                lrc: api.textToParsedYrcLine(nameWithTns.value),
+                lrc: api.textToParsedYrcLine(value?.name),
                 roma: api.textToParsedYrcLine(value?.artist),
                 tran: api.textToParsedYrcLine(value?.artist)
             }))

@@ -19,7 +19,7 @@
             </settingItem>
             <settingItem>
                 <template #t1>主题色</template>
-                <template #t2>默认是#c49526</template>
+                <template #t2>默认是#DEB237</template>
                 <template #action>
                     <n-color-picker class="color-picker" v-model:value="primaryColor" :show-alpha="false"
                         :modes="['hex']" />
@@ -43,7 +43,7 @@ import * as api from '@/modules/api'
 import settingItem from '@/components/settingItem.vue'
 let userStore = useUserStore()
 let themeStore = useThemeStore()
-let primaryColor = ref(themeStore.mainColor);
+let primaryColor = ref('');
 const isElectron = ref(window.isElectron)
 let defaultSpecialApi = ref(localStorage.getItem('specialApi') ?? '')
 onMounted(() => {
