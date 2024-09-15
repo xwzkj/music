@@ -1,13 +1,15 @@
 @source0: 'https://cdn.jsdelivr.net/gh/xwzkj/fonts@latest';
 @source1: 'https://github.com/xwzkj/fonts/releases/download/1';
-@source2: 'https://cdn-static.xwzkj.top/fonts';
-@source3: 'https://static.xwzkj.top/fonts';
+@source2: 'https://cf-static.xwzkj.top/fonts';
+@source3: 'https://cdn-static.xwzkj.top/fonts';
+@source4: 'https://static.xwzkj.top/fonts';
 
 .source(@file-name) {
     src: url('@{source0}@{file-name}'),
     url('@{source1}@{file-name}'),
     url('@{source2}@{file-name}'),
-    url('@{source3}@{file-name}');
+    url('@{source3}@{file-name}'),
+    url('@{source4}@{file-name}');
 }
 
 @font-face {
