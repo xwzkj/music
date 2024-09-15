@@ -12,6 +12,7 @@ declare global {
         },
         $NMessageApi: MessageApi,
         $NNotificationApi: NotificationApi,
-        $NModalApi: ModalApi
+        $NModalApi: ModalApi,
+        player: HTMLAudioElement
     }
 }

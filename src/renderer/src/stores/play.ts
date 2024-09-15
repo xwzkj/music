@@ -6,15 +6,9 @@ import { useUserStore } from "./user.js";
 
 export const usePlayStore = defineStore('play', () => {
     console.log('playstore被创建 ');
-    /**
-     * @typedef {Object} AudioElementWithValue
-     * @property {HTMLAudioElement} value - 包含的HTMLAudioElement实例
-     */
-
-    /**
-     * @type {AudioElementWithValue}
-     */
     let player = ref(new Audio());
+    // player.value.crossOrigin = 'anonymous';
+    window.player = player.value;
     let lyricIndexNow = ref({ lineIndex: -1, wordIndex: -1, wordDuration: 0 });//内部变量 供给下面的计算属性使用
     let currentMusic = computed(() => {
         let userStore = useUserStore();
