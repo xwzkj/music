@@ -1,12 +1,11 @@
 <template>
     <div>
         <div class="account-user-detail">
-            <img class="account-user-avatar" :src="userStore.avatar" @load="getImgMainColor"
-                crossorigin="anonymous">
+            <img class="account-user-avatar" :src="userStore.avatar" @load="getImgMainColor" crossorigin="anonymous">
             <div class="account-user-data-info">
                 <span class="account-user-name text1">{{ userStore.name }}</span>
                 <img class="account-userVIP" :src="`${userStore.vipIcon}`">
-            <span class="account-user-area text2">地区：{{ Area }}</span>
+                <span class="account-user-area text2">地区：{{ Area }}</span>
             </div>
         </div>
         <div class="account-user-playlists-div">
@@ -54,7 +53,7 @@ async function getArea(province, city) {
     margin: 1rem;
     border-radius: 2rem;
     /* background: v-bind('usrAvaColor'); */
-    background: v-bind('themeStore.mainColors[1] + `80`');
+    background: v-bind('themeStore.mainColors[2] + `80`');
 }
 
 .account-user-avatar {
