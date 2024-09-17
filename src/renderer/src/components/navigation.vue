@@ -90,8 +90,9 @@ let menuData = computed<MenuOption[]>(() => {
 
 .header-title {
     font-size: 1.5rem;
-    cursor: pointer;
+    /* cursor: pointer; */
     font-weight: 500;
     padding: 1rem;
+    -webkit-app-region: drag;
 }
 </style>

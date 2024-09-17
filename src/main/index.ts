@@ -111,6 +111,9 @@ app.on('ready', async () => {
     await open(url)
     return true;
   })
+  ipcMain.on('window-close',()=>{
+    mainWindow.close()
+  })
   //加载devTool插件
   if (os.platform() == 'win32' && is.dev) {
     if (fs.existsSync("F:/code/web/vue-devtools")) {
@@ -145,6 +148,7 @@ function createWindow() {
     height: 800,
     minHeight: 600,
     autoHideMenuBar: true,
+    frame: false,
     icon: join(__dirname, '../../resources/icon.png'),
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),

@@ -9,6 +9,7 @@ declare global {
             netease: (url: string, data: string) => Promise<any>,
             openUrl: (url: string) => Promise<any>,
             appVersion: string,
+            windowClose: () => void
         },
         $NMessageApi: MessageApi,
         $NNotificationApi: NotificationApi,

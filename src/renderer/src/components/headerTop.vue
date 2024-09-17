@@ -7,11 +7,13 @@
                 @click="api.windowBack"><i-hugeicons-arrow-up-01 /></n-icon>
             <n-input v-model:value="value" type="text" placeholder="搜索..." @keyup="search" :clearable="true" />
         </span>
-        <n-avatar class="header-user text2" v-if="!userStore.isLogin" round
-            @click="router.push({ name: 'login' })">登录</n-avatar>
-        <n-avatar class="header-user" v-if="userStore.isLogin" round :src="userStore.avatar"
-            @click="router.push({ name: 'account' })" />
-
+        <div class="header-window-ctrl flex items-center">
+            <n-avatar class="header-user text2" v-if="!userStore.isLogin" round
+                @click="router.push({ name: 'login' })">登录</n-avatar>
+            <n-avatar class="header-user" v-if="userStore.isLogin" round :src="userStore.avatar"
+                @click="router.push({ name: 'account' })" />
+            <n-icon class="cursor-pointer" size="1.5rem" @click="closeWindow"><i-solar-close-circle-outline /></n-icon>
+        </div>
         <div class="header-nav bg" @click="switchNavShow(false)">
             <navigation v-show="showNavVIf" />
         </div>
@@ -29,6 +31,11 @@ let value = ref('');
 let showNav = false;
 let showNavVIf = ref(false);
 const router = useRouter();
+
+function closeWindow() {
+    window.api.windowClose();
+}
+
 function search(event) {
     if (event.keyCode == 13) {
         router.push({ name: 'search', query: { keyword: value.value } })
@@ -60,7 +67,7 @@ function switchNavShow(isShow = 'auto') {
     })
 }
 </script>
-<style>
+<style lang="less">
 span {
     margin: 0;
 }
@@ -71,6 +78,12 @@ span {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    -webkit-app-region: drag;
+    user-select: none;
+
+    * {
+        -webkit-app-region: no-drag;
+    }
 }
 
 .header-search {

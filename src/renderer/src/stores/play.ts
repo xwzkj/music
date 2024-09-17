@@ -22,6 +22,7 @@ export const usePlayStore = defineStore('play', () => {
             currentLyricIndex: lyricIndexNow.value
         }
     })
+
     let musicStatus = ref({ duration: 0, currentTime: 0, paused: true })
     // 播放列表
     //{id,name,artist,tns,url,picurl,?lyric}
@@ -45,7 +46,14 @@ export const usePlayStore = defineStore('play', () => {
         }
     })
 
-    //设置媒体会话的动作
+    // 设置标题
+    watchEffect(() => {
+        if (currentMusic.value.id != 0) {
+            document.title = `${currentMusic.value.name} - ${currentMusic.value.artist} - 奶酪音乐`;
+        }
+    })
+
+    // 设置媒体会话的动作
     if ("mediaSession" in navigator) {
         navigator.mediaSession.setActionHandler("previoustrack", () => prev());
         navigator.mediaSession.setActionHandler("nexttrack", () => next());

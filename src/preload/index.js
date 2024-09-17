@@ -25,4 +25,8 @@ contextBridge.exposeInMainWorld('api', {
   },
   'appVersion': await ipcRenderer.invoke('getAppVersion'),
   // 'appVersion': '1.0.0'
+
+  'windowClose': () => {
+    return ipcRenderer.send('window-close')
+  },
 })
