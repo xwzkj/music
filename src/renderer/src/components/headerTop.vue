@@ -12,7 +12,8 @@
                 @click="router.push({ name: 'login' })">登录</n-avatar>
             <n-avatar class="header-user" v-if="userStore.isLogin" round :src="userStore.avatar"
                 @click="router.push({ name: 'account' })" />
-            <n-icon class="cursor-pointer" size="1.5rem" @click="closeWindow"><i-solar-close-circle-outline /></n-icon>
+            <n-icon v-if="isElectron" class="cursor-pointer" size="1.5rem"
+                @click="closeWindow"><i-solar-close-circle-outline /></n-icon>
         </div>
         <div class="header-nav bg" @click="switchNavShow(false)">
             <navigation v-show="showNavVIf" />
@@ -30,6 +31,7 @@ const userStore = useUserStore();
 let value = ref('');
 let showNav = false;
 let showNavVIf = ref(false);
+let isElectron = ref(window.isElectron);
 const router = useRouter();
 
 function closeWindow() {
