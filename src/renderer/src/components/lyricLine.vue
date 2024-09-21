@@ -52,8 +52,8 @@ let lyricWordNowDuration = computed(() => {
 
 .lyric-word-active {
   animation: lyric v-bind('lyricWordNowDuration') forwards linear;
-  mask-image: linear-gradient(to right, black 40%, transparent 70%);
-  mask-size: 250%;
+  mask-image: linear-gradient(to right, black 47.5%, transparent 52.5%);
+  mask-size: 210%;
 }
 
 @keyframes lyric {
