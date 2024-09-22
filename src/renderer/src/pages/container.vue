@@ -13,10 +13,14 @@
         <!-- router-view -->
         <div class="container-router-view">
           <router-view v-slot="{ Component }">
-            <keep-alive v-if="$route.meta.keepAlive">
-              <component :is="Component" :key="$route.name" v-if="$route.meta.keepAlive" />
-            </keep-alive>
-            <component :is="Component" :key="$route.name" v-if="!$route.meta.keepAlive" />
+            <transition name="route" mode="out-in">
+              <keep-alive>
+                <component :is="Component" :key="$route.name" v-if="$route.meta.keepAlive" />
+              </keep-alive>
+            </transition>
+            <transition name="route" mode="out-in">
+              <component :is="Component" :key="$route.name" v-if="!$route.meta.keepAlive" />
+            </transition>
           </router-view>
         </div>
       </div>
@@ -60,16 +64,33 @@ import MusicController from '@/components/musicController.vue';
   flex: 1;
 }
 
+.route-enter-active,
+.route-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.route-enter-to,
+.route-leave-from {
+  opacity: 1;
+}
+
+.route-enter-from,
+.route-leave-to {
+  opacity: 0;
+}
+
 @media screen and (min-width: 600px) {
-  .container-content{
-  max-width: calc(var(--vw, 1vw) * 100 - 12rem);
+  .container-content {
+    max-width: calc(var(--vw, 1vw) * 100 - 12rem);
   }
 }
+
 @media screen and (max-width: 600px) {
-  .container-content{
-  max-width: calc(var(--vw, 1vw) * 100);
+  .container-content {
+    max-width: calc(var(--vw, 1vw) * 100);
   }
-  .container-nav{
+
+  .container-nav {
     display: none;
   }
 }
