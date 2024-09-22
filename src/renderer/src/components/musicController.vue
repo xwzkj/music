@@ -83,7 +83,7 @@
         </div>
         <!-- 播放器 -->
         <div class="ctrl-player">
-            <player v-show="showPlayerVIf" />
+            <player v-if="showPlayerVIf" />
         </div>
     </div>
 </template>
