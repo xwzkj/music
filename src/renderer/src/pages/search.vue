@@ -1,34 +1,51 @@
 <template>
-    <div v-show="result">
-        <musicList v-if="result" :value="result" :nameOnClick="play" />
+    <div class="h-100%">
+        <div class="text1 font-medium" style="font-size: 1.3rem;">“{{ props.keyword }}” 的搜索结果：</div>
+        <n-tabs animated @update:value="tabChange" v-model:value="currentTab">
+            <n-tab-pane name="song" tab="单曲">
+                <musicList v-if="result?.song" :value="result.song" :nameOnClick="play" />
+                <n-spin v-else class="loading-center" />
+            </n-tab-pane>
+            <n-tab-pane name="playlist" tab="歌单">
+                <ItemCardList v-if="result?.playlist" :data="result.playlist" />
+                <n-spin v-else class="loading-center" />
+            </n-tab-pane>
+        </n-tabs>
     </div>
-    <n-spin v-if="!result" class="loading-center" />
 
 </template>
 <script setup name="search">
 import * as api from '@/modules/api'
 import { ref, onMounted, watch } from 'vue'
 import musicList from '@/components/musicList.vue'
+import ItemCardList from '@/components/itemCardList.vue';
 import { usePlayStore } from '@/stores/play'
 let playStore = usePlayStore();
 let props = defineProps(['keyword']);
-let result = ref('');
+let currentTab = ref('song');
+let result = ref({});
 watch(props, (value) => {
-    // console.log('search.vue props变化');
     search();
 }, { deep: true })
 onMounted(() => {
-    // console.log('search.vue组件被挂载');
     search();
 })
-// console.log('search.vue script执行');
 
+let tabChange = async (value) => {
+    console.log(value);
+    switch (value) {
+        case 'playlist':
+            let res = await api.cloudsearch(props.keyword, 1000);
+            result.value.playlist = res.data.result.playlists;
+            break;
+    }
+}
 
 async function search() {
-    result.value = null;
+    result.value = {};
+    currentTab.value = 'song';
     let res = await api.cloudsearch(props.keyword)
-    // console.log('搜索/cloudsearch', res.data);
-    result.value = res.data.result.songs;
+    result.value.song = res.data.result.songs;
 }
 async function play(id) {
     await playStore.addMusic([id], 'now', true);
@@ -42,43 +59,5 @@ async function play(id) {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.result-li {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-}
-
-.result-name {
-    flex: 35%;
-    flex-wrap: nowrap;
-    cursor: pointer;
-}
-
-.result-ar {
-    flex: 20%;
-    flex-wrap: nowrap;
-    height: 100%;
-}
-
-.result-img {
-    width: 2rem;
-    border-radius: 0.5rem;
-}
-
-.result-al {
-    flex: 20%;
-}
-
-.result-dt {
-    flex: 10%;
-}
-
-.result {
-    padding: 0.2rem;
-    display: flex;
-    font-size: 1rem;
-
 }
 </style>
