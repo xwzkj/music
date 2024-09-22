@@ -384,10 +384,8 @@ export const usePlayStore = defineStore('play', () => {
     }
     setInterval(() => {
         updateLyric()
-    }, 50)
-    setInterval(() => {
         updateKtvLyric();
-    }, 15)
+    }, 50)
     function updateLyric() {
         try {
             if (musicStatus.value.paused == false && 'lyric' in currentMusic.value) {//正在播放 并且有歌词
