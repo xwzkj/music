@@ -26,6 +26,17 @@
                 </template>
             </settingItem>
             <settingItem>
+                <template #t1>设置歌词字体大小</template>
+                <template #t2>默认是1.8rem</template>
+                <template #action>
+                    <div class="w-128px">
+                        <n-slider :value="lyricFontSize" :min="1" :max="4" :step="0.1"
+                            :format-tooltip="(value) => `${value}rem`"
+                            @update:value="(value) => settingStore.setLyricFontSize(value + 'rem')" />
+                    </div>
+                </template>
+            </settingItem>
+            <settingItem>
                 <template #t1>退出登录</template>
                 <template #t2>拜拜~</template>
                 <template #action>
@@ -39,12 +50,18 @@
 <script setup name="setting" lang="js">
 import { useUserStore } from '@/stores/user'
 import { useThemeStore } from '@/stores/theme'
+import { useSettingStore } from '@/stores/setting'
 import * as api from '@/modules/api'
 import settingItem from '@/components/settingItem.vue'
+const isElectron = ref(window.isElectron)
+let settingStore = useSettingStore()
 let userStore = useUserStore()
 let themeStore = useThemeStore()
+
+let lyricFontSize = computed(() => {
+    return parseFloat(settingStore.lyricFontSize)
+})
 let primaryColor = ref('');
-const isElectron = ref(window.isElectron)
 let defaultSpecialApi = ref(localStorage.getItem('specialApi') ?? '')
 onMounted(() => {
     primaryColor.value = themeStore.mainColor;
@@ -53,7 +70,7 @@ onMounted(() => {
     })
 })
 
-function updateSpecialApi(value){
+function updateSpecialApi(value) {
     localStorage.setItem('specialApi', value);
     api.success('已设置~')
 }

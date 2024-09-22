@@ -5,12 +5,14 @@ import emitter from "@/utils/mitt";
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
+import { useSettingStore } from '@/stores/setting';
 import playinglist from '@/components/playinglist.vue'
 import MarqueePlus from '@/components/marqueePlus.vue'
 import lyricLine from '@/components/lyricLine.vue';
 
 let themeStore = useThemeStore();
 let playStore = usePlayStore();
+let settingStore = useSettingStore();
 let { currentMusic } = storeToRefs(playStore);
 let lyricScrollbarRef = ref();
 let background = ref('rgb(255,255,255)');//背景渐变色数据
@@ -211,20 +213,20 @@ function getImgMainColor() {
 .lyric-lrc {
   /* 歌词原文 */
   color: rgba(68, 68, 68, 0.8);
-  font-size: 1.5rem;
+  font-size: v-bind('settingStore.lyricFontSize');
   margin-top: 0.5rem;
 }
 
 .lyric-roma {
   /* 歌词罗马音 */
   color: rgba(87, 87, 87, 0.8);
-  font-size: 1.2rem;
+  font-size: calc(v-bind('settingStore.lyricFontSize') - 0.3rem);
 }
 
 .lyric-tran {
   /* 歌词翻译 */
   color: rgba(87, 87, 87, 0.8);
-  font-size: 1.4rem;
+  font-size: calc(v-bind('settingStore.lyricFontSize') - 0.2rem);
 }
 
 .lyric-active {
