@@ -84,7 +84,7 @@ let limit = true;// 避免重复计算
 let lineUpdated = () => {
     marqueeAnimation.value.name = '';// 清除动画
     limit = false;
-    console.log('marquee 更新');
+    // console.log('marquee 更新');
 }
 watch(() => props.html, lineUpdated)
 watch(() => props.lineData.line, lineUpdated)

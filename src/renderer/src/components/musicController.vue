@@ -83,7 +83,7 @@
         </div>
         <!-- 播放器 -->
         <div class="ctrl-player">
-            <player v-if="showPlayerVIf" />
+            <player v-show="showPlayerVIf" />
         </div>
     </div>
 </template>
@@ -167,6 +167,9 @@ function switchShowPlayer() {
         },
         complete: () => {
             showPlayerVIf.value = showPlayer
+            if (showPlayer == true) {
+                emitter.emit('player-show')
+            }
         }
     })
 }

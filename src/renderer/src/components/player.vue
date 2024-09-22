@@ -23,22 +23,31 @@ let playingListTran = computed(() => {
 })
 let displayLyricWhenScreenIsNotWide = ref(false);
 
-function scrollToCurrentLyric() {
+function scrollToCurrentLyric(noSmooth: boolean = false) {
+  // console.log('滚动到当前歌词');
   let index = currentMusic.value.currentLyricIndex.lineIndex
-  lyricScrollbarRef.value.scrollTo({ top: document.getElementById('lrc-' + index)?.offsetTop - 200, behavior: 'smooth' });
+  lyricScrollbarRef.value?.scrollTo({ top: document.getElementById('lrc-' + index)?.offsetTop - 200, behavior: noSmooth ? 'auto' : 'smooth' });
 }
 //挂载
-onMounted(async () => {
+onMounted(() => {
   //监听歌词滚动
   watch(() => currentMusic.value.currentLyricIndex.lineIndex, (value) => {
     scrollToCurrentLyric();
-  }, { deep: true, immediate: true })
+  }, { deep: true })
 
   watch(displayLyricWhenScreenIsNotWide, (value) => {
-    if (value) {
-      scrollToCurrentLyric();
+    if (value && window.innerWidth <= 500) {
+      nextTick(()=>{
+        scrollToCurrentLyric();
+      })
     }
   })
+
+  emitter.on('player-show', () => {
+    scrollToCurrentLyric();
+  })
+
+  scrollToCurrentLyric();
 })
 //卸载前
 onBeforeUnmount(() => {
