@@ -331,6 +331,7 @@ export const usePlayStore = defineStore('play', () => {
     function next() {
         pause()
         console.log(`[playStore]next`);
+        api.scrobble(currentMusic.value.id, musicStatus.value.currentTime, 0)
         const computIndex = (length, indexNow) => {
             if (indexNow < length - 1) {
                 return indexNow + 1;
@@ -351,6 +352,8 @@ export const usePlayStore = defineStore('play', () => {
     function prev() {
         pause()
         console.log(`[playStore]prev`);
+        api.scrobble(currentMusic.value.id, musicStatus.value.currentTime, 0)
+
         const computIndex = (length, indexNow) => {
             if (indexNow > 0) {
                 return indexNow - 1;

@@ -12,16 +12,18 @@
         <headerTop />
         <!-- router-view -->
         <div class="container-router-view">
-          <router-view v-slot="{ Component }">
-            <transition name="route" mode="out-in">
-              <keep-alive>
-                <component :is="Component" :key="$route.name" v-if="$route.meta.keepAlive" />
-              </keep-alive>
-            </transition>
-            <transition name="route" mode="out-in">
-              <component :is="Component" :key="$route.name" v-if="!$route.meta.keepAlive" />
-            </transition>
-          </router-view>
+          <n-scrollbar class="max-h-full">
+            <router-view v-slot="{ Component }" class="p-0.5rem">
+              <transition name="route" mode="out-in">
+                <keep-alive>
+                  <component :is="Component" :key="$route.name" v-if="$route.meta.keepAlive" />
+                </keep-alive>
+              </transition>
+              <transition name="route" mode="out-in">
+                <component :is="Component" :key="$route.name" v-if="!$route.meta.keepAlive" />
+              </transition>
+            </router-view>
+          </n-scrollbar>
         </div>
       </div>
     </div>
@@ -60,7 +62,7 @@ import MusicController from '@/components/musicController.vue';
 
 .container-router-view {
   max-width: 100%;
-  overflow-y: scroll;
+  overflow-y: hidden;
   flex: 1;
 }
 

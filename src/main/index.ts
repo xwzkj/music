@@ -70,7 +70,7 @@ app.on('ready', async () => {
   })
   // 桌面歌词传递
   ipcMain.on('lyric', (_, data) => {
-    console.log('lyric: ', data);
+    // console.log('lyric: ', data);
 
     if (lyricWindow) {
       lyricWindow.webContents.send('lyric', data)
@@ -78,14 +78,14 @@ app.on('ready', async () => {
   })
   // 主题色传递
   ipcMain.on('themeColors', (_, data) => {
-    console.log('theme: ', data);
+    // console.log('theme: ', data);
     if (lyricWindow) {
       lyricWindow.webContents.send('themeColors', data)
     }
   })
   // 桌面歌词窗口打开关闭
   ipcMain.on('lyricWindowShow', (_, data) => {
-    console.log('lyricWindowShow: ', data);
+    // console.log('lyricWindowShow: ', data);
     if (data) {
       lyricWindow.show()
     } else {

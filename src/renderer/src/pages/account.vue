@@ -10,12 +10,7 @@
         </div>
         <div class="account-user-playlists-div">
             <div class="account-user-playlists-title">我的歌单</div>
-            <ul class="account-user-playlists-ul">
-                <li v-for="item in userStore.playlists" class="user-playlist-li">
-                    <itemCard :imgurl="item.coverImgUrl" :text="item.name"
-                        @click="router.push({ name: 'playlist', query: { id: item.id } })" />
-                </li>
-            </ul>
+            <itemCardList :data="userStore.playlists" />
         </div>
     </div>
 </template>
@@ -25,7 +20,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import { useThemeStore } from '@/stores/theme';
-import itemCard from '@/components/itemCard.vue';
+import itemCardList from '@/components/itemCardList.vue';
 import * as api from '@/modules/api';
 const userStore = useUserStore();
 const themeStore = useThemeStore();
@@ -89,16 +84,4 @@ async function getArea(province, city) {
     padding-left: 1rem;
 }
 
-.account-user-playlists-ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-}
-
-li {
-    list-style: none;
-}
-
-ul {
-    padding: 0;
-}
 </style>

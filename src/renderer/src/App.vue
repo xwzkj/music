@@ -52,7 +52,7 @@ onMounted(async () => {
       let res = await axios.get('https://api.xwzkj.top/api/update?platform=windows');
       if (res.data.code === 200 && res.data.data.apiVersion == '1') {
         res = res.data.data;
-        console.log(`检查更新 当前：${window.api.appVersion} 服务器：${res.version}`);
+        console.log(`%c检查更新 当前：${window.api.appVersion} 服务器：${res.version}`,' background-color: lightcyan; padding: 0.5rem; border-radius: 0.5rem');
         if (res.version > window.api.appVersion) {
           updateData.value = {
             newVersion: res?.version,

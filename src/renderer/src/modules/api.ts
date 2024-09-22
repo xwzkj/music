@@ -48,15 +48,15 @@ let request = async (params, realTimeSync = true) => {
 }
 
 if (window.isElectron) {
-  console.log('当前是electron环境！')
+  // console.log('当前是electron环境！')
   request = async (param, _) => {
     let { url, method, params, data } = param
     if (localStorage.getItem('cookie')) {
       data = { ...data, cookie: localStorage.getItem('cookie') }
     }
-    console.log('本地api-请求', param)
+    console.log('%c本地api-发送请求','color: gray; background-color: lightcyan; padding: 0.5rem; border-radius: 0.5rem', param)
     let res = await window.api.netease(url, { ...data, ...params })
-    console.log('本地api', param, res)
+    console.log('%c本地api-收到响应','color: gray; background-color: aliceblue; padding: 0.5rem; border-radius: 0.5rem', param, res)
     return res
   }
 }
@@ -158,11 +158,20 @@ export function playlistDetail(id) {
     params: { id }
   })
 }
-export function cloudsearch(keywords) {
+export function cloudsearch(keywords: any, type: 1 | 10 | 100 | 1000 | 1002 | 1004 | 1006 | 1009 | 1014 | 1018 | 2000 = 1, offset: number = 0, limit: number = 60) {
   return request({
     url: '/cloudsearch',
     method: 'post',
-    data: { keywords }
+    data: { keywords, type, offset, limit }
+  })
+}
+
+// time的单位为秒
+export function scrobble(id: string | number, time: number, sourceid: number | string = 0) {
+  return request({
+    url: '/scrobble',
+    method: 'post',
+    data: { id, time, sourceid }
   })
 }
 export function loginWithPhone(phone, password = null, captcha) {
