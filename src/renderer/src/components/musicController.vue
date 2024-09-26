@@ -138,6 +138,7 @@ function switchShowPlaylist() {
     let a = -window.innerHeight + ctrlHeight.value * 16
     anime({
         targets: outerEle.value,
+        'will-change': 'transform',
         translateY: showPlayingList ? `${a}px` : '0px',
         duration: 700,
         easing: 'easeInSine',
@@ -157,6 +158,7 @@ function switchShowPlayer() {
     // console.log(showPlayer);
     anime({
         targets: '.ctrl-player',
+        'will-change': 'transform',
         translateY: showPlayer ? `-100%` : '0%',
         duration: 700,
         easing: 'easeInSine',
