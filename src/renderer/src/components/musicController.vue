@@ -140,7 +140,7 @@ function switchShowPlaylist() {
         targets: outerEle.value,
         translateY: showPlayingList ? `${a}px` : '0px',
         duration: 700,
-        easing: 'easeInOutCubic',
+        easing: 'easeInSine',
         begin: () => {
             if (showPlayingList == true) {
                 showPlayingListVIf.value = showPlayingList
@@ -159,7 +159,7 @@ function switchShowPlayer() {
         targets: '.ctrl-player',
         translateY: showPlayer ? `-100%` : '0%',
         duration: 700,
-        easing: 'easeInOutCubic',
+        easing: 'easeInSine',
         begin: () => {
             if (showPlayer == true) {
                 showPlayerVIf.value = showPlayer
