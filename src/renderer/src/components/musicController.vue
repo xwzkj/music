@@ -141,7 +141,7 @@ function switchShowPlaylist() {
         'will-change': 'transform',
         translateY: showPlayingList ? `${a}px` : '0px',
         duration: 700,
-        easing: 'easeInSine',
+        easing: 'easeInOutQuad',
         begin: () => {
             if (showPlayingList == true) {
                 showPlayingListVIf.value = showPlayingList
@@ -161,7 +161,7 @@ function switchShowPlayer() {
         'will-change': 'transform',
         translateY: showPlayer ? `-100%` : '0%',
         duration: 700,
-        easing: 'easeInSine',
+        easing: 'easeInOutQuad',
         begin: () => {
             if (showPlayer == true) {
                 showPlayerVIf.value = showPlayer
