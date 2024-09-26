@@ -365,6 +365,7 @@ ul {
 }
 
 .player-playinglist-box {
+  will-change: transform;
   position: fixed;
   left: 0;
   top: 100%;
@@ -373,7 +374,7 @@ ul {
   width: 100%;
   background: none;
   z-index: 11;
-  transition: all 0.7s ease-in-out;
+  transition: transform 0.7s ease-in-out;
 }
 
 .player-playinglist {
