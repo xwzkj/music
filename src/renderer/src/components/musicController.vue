@@ -77,7 +77,7 @@
                 </div>
             </div>
             <!-- 播放列表 -->
-            <div class="ctrl-playinglist" @click.stop v-show="showPlayingListVIf">
+            <div class="ctrl-playinglist" @click.stop v-if="showPlayingListVIf">
                 <playinglist />
             </div>
         </div>
@@ -96,7 +96,7 @@ import * as api from '@/modules/api'
 // import { useRouter } from 'vue-router';
 import playinglist from './playinglist.vue';
 import player from './player.vue';
-import anime from 'animejs';
+import anime from 'animejs/lib/anime.es.js';
 import emitter from '@/utils/mitt'
 // 接收从player发出的隐藏player事件
 emitter.on('switchShowPlayer', () => {

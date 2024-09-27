@@ -34,6 +34,7 @@
     "@electron-toolkit/eslint-config": "^1.0.2",
     "@iconify/json": "^2.2.231",
     "@rushstack/eslint-patch": "^1.10.4",
+    "@types/animejs": "^3.1.12",
     "@vitejs/plugin-vue": "^5.1.1",
     "@vue/eslint-config-prettier": "^9.0.0",
     "animejs": "^3.2.2",

@@ -58,6 +58,7 @@ declare module 'vue' {
     NTabPane: typeof import('naive-ui')['NTabPane']
     NTabs: typeof import('naive-ui')['NTabs']
     NTag: typeof import('naive-ui')['NTag']
+    NVirtualList: typeof import('naive-ui')['NVirtualList']
     Player: typeof import('./src/components/player.vue')['default']
     Playinglist: typeof import('./src/components/playinglist.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

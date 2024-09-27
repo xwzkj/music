@@ -2,6 +2,7 @@
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import emitter from "@/utils/mitt";
+import anime from 'animejs/lib/anime.es.js';
 import * as api from '@/modules/api'
 import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
@@ -18,15 +19,28 @@ let lyricScrollbarRef = ref();
 let background = ref('rgb(255,255,255)');//背景渐变色数据
 let id_clock1 = NaN;//定时器id
 let displayList = ref(false);
-let playingListTran = computed(() => {
-  return displayList.value ? '-100%' : '0%';
-})
 let displayLyricWhenScreenIsNotWide = ref(false);
 
 function scrollToCurrentLyric(noSmooth: boolean = false) {
   // console.log('滚动到当前歌词');
   let index = currentMusic.value.currentLyricIndex.lineIndex
   lyricScrollbarRef.value?.scrollTo({ top: document.getElementById('lrc-' + index)?.offsetTop - 200, behavior: noSmooth ? 'auto' : 'smooth' });
+}
+function showList(isShow: boolean) {
+  // console.log('showList', isShow);
+
+  if (isShow == true) {
+    displayList.value = isShow;
+  }
+  anime({
+    targets: '.player-playinglist-box',
+    translateY: isShow ? '-100%' : '0%',
+    duration: 700,
+    easing: 'easeInOutQuad',
+    complete: () => {
+      displayList.value = isShow;
+    }
+  })
 }
 //挂载
 onMounted(() => {
@@ -37,7 +51,7 @@ onMounted(() => {
 
   watch(displayLyricWhenScreenIsNotWide, (value) => {
     if (value && window.innerWidth <= 500) {
-      nextTick(()=>{
+      nextTick(() => {
         scrollToCurrentLyric();
       })
     }
@@ -135,7 +149,7 @@ function getImgMainColor() {
                   </div>
                   <div class="btn-list button">
                     <n-icon size="2.5rem" class="icon"
-                      @click="() => { displayList = !displayList; return; }"><i-hugeicons-playlist-03 /></n-icon>
+                      @click="() => { showList(true) }"><i-hugeicons-playlist-03 /></n-icon>
                   </div>
                 </div>
               </div>
@@ -160,7 +174,7 @@ function getImgMainColor() {
         </div>
       </div>
     </div>
-    <div class="player-playinglist-box" @click="() => { displayList = false; }" v-show="displayList">
+    <div class="player-playinglist-box" @click="() => { showList(false) }" v-if="displayList">
       <div class="player-playinglist" @click.stop>
         <playinglist />
       </div>
@@ -365,16 +379,14 @@ ul {
 }
 
 .player-playinglist-box {
-  will-change: transform;
   position: fixed;
+  will-change: transform;
   left: 0;
   top: 100%;
-  transform: translateY(v-bind(playingListTran));
   height: 100%;
-  width: 100%;
   background: none;
+  width: 100%;
   z-index: 11;
-  transition: transform 0.7s ease-in-out;
 }
 
 .player-playinglist {
