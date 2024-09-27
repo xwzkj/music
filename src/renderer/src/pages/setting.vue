@@ -1,21 +1,21 @@
 <template>
     <div>
         <div class="setting">
-            <settingItem :actionOnClick="loginByCookie" v-show="!isElectron">
-                <template #t1>手动输入cookie来登录</template>
-                <template #t2>奇奇怪怪的登录方式 仅网页端可用</template>
+            <settingItem :needInput="true" :actionOnClick="loginByCookie" v-show="!userStore.isLogin">
+                <template #t1>输入cookie来登录</template>
+                <template #t2>奇奇怪怪的登录方式</template>
             </settingItem>
             <settingItem :needInput="true" :actionOnClick="updateSpecialApi" :defaultValue="defaultSpecialApi">
                 <template #t1>设置专用api</template>
                 <template #t2>用于获取歌曲的url</template>
             </settingItem>
-            <settingItem :actionOnClick="update">
+            <settingItem :actionOnClick="update" v-show="userStore.isLogin">
                 <template #t1>马上更新用户信息！</template>
                 <template #t2>每三分钟自动更新</template>
             </settingItem>
-            <settingItem :actionOnClick="showCk">
-                <template #t1>查看当前的cookie</template>
-                <template #t2>言简意赅</template>
+            <settingItem :actionOnClick="copyCk" v-show="userStore.isLogin">
+                <template #t1>复制当前的cookie</template>
+                <template #t2>若失败会显示cookie 可手动复制</template>
             </settingItem>
             <settingItem>
                 <template #t1>主题色</template>
@@ -53,7 +53,7 @@ import { useThemeStore } from '@/stores/theme'
 import { useSettingStore } from '@/stores/setting'
 import * as api from '@/modules/api'
 import settingItem from '@/components/settingItem.vue'
-const isElectron = ref(window.isElectron)
+// const isElectron = ref(window.isElectron)
 let settingStore = useSettingStore()
 let userStore = useUserStore()
 let themeStore = useThemeStore()
@@ -79,18 +79,31 @@ function logout() {
     userStore.logout();
     api.success('退出登录~')
 }
-function loginByCookie() {
+function loginByCookie(v) {
     api.success('开始尝试更新用户信息了喔');
-    document.cookie = prompt('输入cookie的MUSIC_U字段 例如MUSIC_U=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-    userStore.updateByCookie();
+    // document.cookie = prompt('输入cookie的MUSIC_U字段 例如MUSIC_U=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+    userStore.updateByCookie(v);
 }
 function update() {
     api.success('开始更新，成功后会有提示')
     userStore.updateByCookie();
 }
-function showCk() {
+async function copyCk() {
     let ck = userStore.cookie
-    alert(ck)
+    let flag = false;
+    if (navigator.clipboard) {
+        try {
+            await navigator.clipboard.writeText(ck)
+            flag = true
+            api.success('复制成功')
+        } catch {
+            (e) => { }
+        }
+    }
+
+    if (!flag) {
+        api.error(ck, '复制失败 请手动复制');
+    }
 }
 </script>
 
