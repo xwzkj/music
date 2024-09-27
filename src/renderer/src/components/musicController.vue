@@ -77,7 +77,7 @@
                 </div>
             </div>
             <!-- 播放列表 -->
-            <div class="ctrl-playinglist" @click.stop v-if="showPlayingListVIf">
+            <div class="ctrl-playinglist" @click.stop v-show="showPlayingListVIf">
                 <playinglist />
             </div>
         </div>
