@@ -174,7 +174,7 @@ function getImgMainColor() {
         </div>
       </div>
     </div>
-    <div class="player-playinglist-box" @click="() => { showList(false) }" v-if="displayList">
+    <div class="player-playinglist-box" @click="() => { showList(false) }" v-show="displayList">
       <div class="player-playinglist" @click.stop>
         <playinglist />
       </div>
