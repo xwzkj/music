@@ -84,7 +84,7 @@ let setRealVhVw = () => {
   let realVw = window.innerWidth * 0.01;
   document.documentElement.style.setProperty('--vw', `${realVw}px`);
 }
-setRealVhVw = api.debounce(setRealVhVw, 100, 1)
+setRealVhVw = api.debounce(setRealVhVw, 10, 0)
 
 window.addEventListener('resize', setRealVhVw);
 window.addEventListener('orientationchange', setRealVhVw);
