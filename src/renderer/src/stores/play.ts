@@ -331,7 +331,7 @@ export const usePlayStore = defineStore('play', () => {
     function next() {
         pause()
         console.log(`[playStore]next`);
-        api.scrobble(currentMusic.value.id, musicStatus.value.currentTime, 0)
+        beforeMusicChanged();
         const computIndex = (length, indexNow) => {
             if (indexNow < length - 1) {
                 return indexNow + 1;
@@ -352,7 +352,7 @@ export const usePlayStore = defineStore('play', () => {
     function prev() {
         pause()
         console.log(`[playStore]prev`);
-        api.scrobble(currentMusic.value.id, musicStatus.value.currentTime, 0)
+        beforeMusicChanged();
 
         const computIndex = (length, indexNow) => {
             if (indexNow > 0) {
@@ -370,6 +370,22 @@ export const usePlayStore = defineStore('play', () => {
                 break;
         }
         play(true);
+    }
+    function beforeMusicChanged() {
+        let scrobble = () => {
+            let userStore = useUserStore();
+            if (userStore.isLogin) {// 登录了
+                let currentTime = Math.floor(musicStatus.value.currentTime);
+                if (currentTime >= 15) {// 播放位置大于15秒才上报
+                    api.scrobble(currentMusic.value.id, currentTime, 0);
+                }
+            }
+        }
+        //进行防抖处理 每10秒只能上报一次
+        scrobble = api.debounce(scrobble, 10000, 1);
+
+        scrobble();
+
     }
     function seek(time) {
         // console.log(`[playStore]seek ${time}`);
