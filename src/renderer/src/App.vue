@@ -37,9 +37,14 @@ let updateData = ref({
 userStore.updateByStorage();
 onMounted(async () => {
   // 更新用户信息
-  if (userStore.isLogin === true && Date.now() - userStore.updateTime > 1000 * 60 * 3) {//三分钟
-    userStore.updateByCookie();
-  }
+  if (userStore.isLogin === true && Date.now() - userStore.updateTime >= 1000 * 60 * 2) {
+      userStore.updateByCookie();
+    }
+  setInterval(async () => {
+    if (userStore.isLogin === true) {
+      userStore.updateByCookie();
+    }
+  }, 1000 * 60 * 3)
   // 播放列表初始化
   if (localStorage.getItem('playlist') != null) {
     playStore.playlistInit()
@@ -52,7 +57,7 @@ onMounted(async () => {
       let res = await axios.get('https://api.xwzkj.top/api/update?platform=windows');
       if (res.data.code === 200 && res.data.data.apiVersion == '1') {
         res = res.data.data;
-        console.log(`%c检查更新 当前：${window.api.appVersion} 服务器：${res.version}`,' background-color: lightcyan; padding: 0.5rem; border-radius: 0.5rem');
+        console.log(`%c检查更新 当前：${window.api.appVersion} 服务器：${res.version}`, ' background-color: lightcyan; padding: 0.5rem; border-radius: 0.5rem');
         if (res.version > window.api.appVersion) {
           updateData.value = {
             newVersion: res?.version,
@@ -129,7 +134,7 @@ document.addEventListener('DOMContentLoaded', setRealVhVw);
   background-color: v-bind('themeStore.mainColors[0]');
 }
 
-*{
+* {
   --color-0: v-bind('themeStore.mainColors[0]');
   --color-1: v-bind('themeStore.mainColors[1]');
   --color-2: v-bind('themeStore.mainColors[2]');

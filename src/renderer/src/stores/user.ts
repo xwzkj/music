@@ -74,7 +74,7 @@ export const useUserStore = defineStore('user', {
             }
             this.updateTime = Date.now()
             this.storeToStorage()
-            api.success('用户信息更新成功')
+            // api.success('用户信息更新成功')
         },
         async updateByStorage() {
             let user = JSON.parse(localStorage.getItem('user') ?? '')
