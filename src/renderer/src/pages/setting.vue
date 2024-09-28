@@ -43,6 +43,13 @@
                     <n-button class="button" type="error" secondary @click="logout">退出登录</n-button>
                 </template>
             </settingItem>
+            <settingItem>
+                <template #t1>版本信息</template>
+                <template #t2>版本号：{{ buildInfo.version }} &nbsp;&nbsp;&nbsp;构建号：{{ buildInfo.buildNumber }}</template>
+                <template #action>
+                    <div></div>
+                </template>
+            </settingItem>
         </div>
     </div>
 </template>
@@ -53,6 +60,7 @@ import { useThemeStore } from '@/stores/theme'
 import { useSettingStore } from '@/stores/setting'
 import * as api from '@/modules/api'
 import settingItem from '@/components/settingItem.vue'
+import buildInfo from '@/modules/build-info'
 // const isElectron = ref(window.isElectron)
 let settingStore = useSettingStore()
 let userStore = useUserStore()

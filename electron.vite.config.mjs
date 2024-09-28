@@ -10,6 +10,13 @@ import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import UnoCSS from 'unocss/vite'
 import autoprefixer from 'autoprefixer'
+import { version } from './package.json';
+import fs from 'fs';
+import { execSync } from 'child_process';
+
+function getGitCommitHash() {
+  return execSync('git rev-parse --short HEAD').toString().trim();
+}
 
 export default defineConfig({
   main: {
@@ -67,7 +74,20 @@ export default defineConfig({
         compiler: 'vue3',
         autoInstall: true
       }),
-      UnoCSS()
+      UnoCSS(),
+      {
+        name: 'build-info-plugin',
+        buildStart() {
+          const buildNumber = getGitCommitHash(); // 获取 Git 提交哈希
+          const buildInfo = `export default { version: '${version}', buildNumber: '${buildNumber}' }`;
+          console.log('Build Info:', buildInfo);
+          // 将构建信息写入文件
+          fs.writeFileSync(
+            resolve(__dirname, 'src/renderer/src/modules/build-info.js'),
+            buildInfo
+          );
+        },
+      },
     ],
     server: {
       port: 80,
@@ -97,7 +117,7 @@ export default defineConfig({
             const driveLetter = match ? match[0] : ''
             return driveLetter + name.slice(driveLetter.length).replace(INVALID_CHAR_REGEX, '')
           }
-        }
+        },
       }
     }
   }
