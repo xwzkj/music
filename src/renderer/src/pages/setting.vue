@@ -15,14 +15,30 @@
             </settingItem>
             <settingItem :actionOnClick="copyCk" v-show="userStore.isLogin">
                 <template #t1>复制当前的cookie</template>
-                <template #t2>若失败会显示cookie 可手动复制</template>
+                <template #t2>复制失败会显示ck 此时可手动复制</template>
             </settingItem>
             <settingItem>
                 <template #t1>主题色</template>
-                <template #t2>默认是#DEB237</template>
+                <template #t2>默认值为#DEB237</template>
                 <template #action>
                     <n-color-picker class="color-picker" v-model:value="primaryColor" :show-alpha="false"
                         :modes="['hex']" />
+                </template>
+            </settingItem>
+            <settingItem>
+                <template #t1>设置默认音质</template>
+                <template #t2>期望的最高音质 切歌时生效</template>
+                <template #action>
+                    <n-dropdown :options="levelData" @select="settingStore.setMusicLevel" trigger="click">
+                        <n-button type="primary" secondary icon-placement="right">
+                            {{ levelData.find((obj) => obj.key == settingStore.musicLevel).label }}
+                            <template #icon>
+                                <n-icon>
+                                    <i-hugeicons-arrow-down-01 />
+                                </n-icon>
+                            </template>
+                        </n-button>
+                    </n-dropdown>
                 </template>
             </settingItem>
             <settingItem>
@@ -67,10 +83,21 @@ let userStore = useUserStore()
 let themeStore = useThemeStore()
 
 let lyricFontSize = computed(() => {
-    return parseFloat(settingStore.lyricFontSize)
+    return parseFloat(settingStore.lyricFontSize)//去掉单位
 })
 let primaryColor = ref('');
 let defaultSpecialApi = ref(localStorage.getItem('specialApi') ?? '')
+let levelData = [
+    { key: 'standard', label: '标准' },
+    { key: 'higher', label: '较高' },
+    { key: 'exhigh', label: '极高' },
+    { key: 'lossless', label: '无损' },
+    { key: 'hires', label: 'Hi-Res' },
+    { key: 'jyeffect', label: '高清环绕声' },
+    { key: 'sky', label: '沉浸环绕声' },
+    { key: 'jymaster', label: '超清母带' }
+]
+
 onMounted(() => {
     primaryColor.value = themeStore.mainColor;
     watch(primaryColor, (value) => {

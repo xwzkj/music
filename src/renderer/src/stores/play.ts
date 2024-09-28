@@ -3,6 +3,7 @@ import * as api from '@/modules/api.js'
 import * as lyricTools from '@/modules/lyric.js'
 import { ref, computed } from 'vue'
 import { useUserStore } from "./user.js";
+import { useSettingStore } from "./setting.js";
 
 export const usePlayStore = defineStore('play', () => {
     // console.log('playstore被创建 ');
@@ -185,7 +186,8 @@ export const usePlayStore = defineStore('play', () => {
     }
     //获取并应用歌曲url
     async function getAudioUrl(id) {
-        let res = await api.songUrlV1(id, 'jymaster', localStorage.getItem('specialApi'), localStorage.getItem('cookie'));
+        let settingStore = useSettingStore();
+        let res = await api.songUrlV1(id, settingStore.musicLevel, localStorage.getItem('specialApi'), localStorage.getItem('cookie'));
         let d = res.data.data[0].url;
         player.value.src = d;
         return d;
@@ -372,7 +374,7 @@ export const usePlayStore = defineStore('play', () => {
         play(true);
     }
     function beforeMusicChanged() {
-        
+
         let scrobble = (id: string, currentTime: number) => {
             let userStore = useUserStore();
             if (userStore.isLogin) {// 登录了
@@ -384,7 +386,7 @@ export const usePlayStore = defineStore('play', () => {
         }
         //进行防抖处理 每10秒只能上报一次
         scrobble = api.debounce(scrobble, 5000, 1);
-        
+
         // console.log(`[playStore]beforeMusicChanged`);
         scrobble(currentMusic.value.id, Math.floor(musicStatus.value.currentTime));
 
