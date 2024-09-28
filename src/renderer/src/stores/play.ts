@@ -372,19 +372,21 @@ export const usePlayStore = defineStore('play', () => {
         play(true);
     }
     function beforeMusicChanged() {
-        let scrobble = () => {
+        
+        let scrobble = (id: string, currentTime: number) => {
             let userStore = useUserStore();
             if (userStore.isLogin) {// 登录了
-                let currentTime = Math.floor(musicStatus.value.currentTime);
                 if (currentTime >= 15) {// 播放位置大于15秒才上报
-                    api.scrobble(currentMusic.value.id, currentTime, 0);
+                    console.log(`[playStore]scrobble ${id} ${currentTime}`);
+                    api.scrobble(id, currentTime, 0);
                 }
             }
         }
         //进行防抖处理 每10秒只能上报一次
-        scrobble = api.debounce(scrobble, 10000, 1);
-
-        scrobble();
+        scrobble = api.debounce(scrobble, 5000, 1);
+        
+        console.log(`[playStore]beforeMusicChanged`);
+        scrobble(currentMusic.value.id, Math.floor(musicStatus.value.currentTime));
 
     }
     function seek(time) {
