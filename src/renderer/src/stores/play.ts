@@ -5,7 +5,7 @@ import { ref, computed } from 'vue'
 import { useUserStore } from "./user.js";
 
 export const usePlayStore = defineStore('play', () => {
-    console.log('playstore被创建 ');
+    // console.log('playstore被创建 ');
     let player = ref(new Audio());
     // player.value.crossOrigin = 'anonymous';
     window.player = player.value;
@@ -179,7 +179,7 @@ export const usePlayStore = defineStore('play', () => {
                     }
                 }
             }
-            console.log(lyric);
+            // console.log(lyric);
             playlist.value[playlistIndex.value].lyric = lyric;//最终赋值
         }
     }
@@ -244,7 +244,7 @@ export const usePlayStore = defineStore('play', () => {
             position = playlistIndex.value + 1;
         }
         position = Number(position);
-        console.log('添加音乐到播放列表', ids, position, letIndexIsNew);
+        // console.log('添加音乐到播放列表', ids, position, letIndexIsNew);
         if (ids.length == 0) {//如果没传id
             return;
         }
@@ -330,7 +330,7 @@ export const usePlayStore = defineStore('play', () => {
     }
     function next() {
         pause()
-        console.log(`[playStore]next`);
+        console.log(`⏭下一曲`);
         beforeMusicChanged();
         const computIndex = (length, indexNow) => {
             if (indexNow < length - 1) {
@@ -351,7 +351,7 @@ export const usePlayStore = defineStore('play', () => {
     }
     function prev() {
         pause()
-        console.log(`[playStore]prev`);
+        console.log(`⏮上一曲`);
         beforeMusicChanged();
 
         const computIndex = (length, indexNow) => {
@@ -377,7 +377,7 @@ export const usePlayStore = defineStore('play', () => {
             let userStore = useUserStore();
             if (userStore.isLogin) {// 登录了
                 if (currentTime >= 15) {// 播放位置大于15秒才上报
-                    console.log(`[playStore]scrobble ${id} ${currentTime}`);
+                    console.log(`📋️听歌打卡： ${id} ${currentTime}`);
                     api.scrobble(id, currentTime, 0);
                 }
             }
@@ -385,7 +385,7 @@ export const usePlayStore = defineStore('play', () => {
         //进行防抖处理 每10秒只能上报一次
         scrobble = api.debounce(scrobble, 5000, 1);
         
-        console.log(`[playStore]beforeMusicChanged`);
+        // console.log(`[playStore]beforeMusicChanged`);
         scrobble(currentMusic.value.id, Math.floor(musicStatus.value.currentTime));
 
     }
@@ -397,9 +397,9 @@ export const usePlayStore = defineStore('play', () => {
     function setPlayMode(mode = null) {
         if (mode == null) {
             mode = playMode.value ?? 0;
-            console.log(playMode);
+            // console.log(playMode);
         }
-        console.log(`[playStore]setPlayMode ${mode}`);
+        // console.log(`[playStore]setPlayMode ${mode}`);
         playMode.value = mode;
         save();
     }

@@ -42,7 +42,7 @@ function changeLyric(event: Event, lrc: string) {
     updateIsLocked();
 }
 function changeTheme(event: Event, theme: string) {
-    console.log(theme);
+    // console.log(theme);
     mainColors.value = JSON.parse(theme)?.mainColors;
 }
 async function switchLock() {
@@ -59,14 +59,14 @@ onMounted(() => {
     let outer = document.querySelector('.outer') as HTMLElement;
     let lockEle = document.querySelector('.lock') as HTMLElement;
     lockEle.addEventListener("mouseenter", async () => {
-        console.log('lock mouse enter');
+        // console.log('lock mouse enter');
         if (await updateIsLocked()) {
             window.lyricWindowLock(false)
             needLockWhenMouseLeave = true;
         }
     })
     lockEle.addEventListener("mouseleave", async () => {
-        console.log('lock mouse leave');
+        // console.log('lock mouse leave');
         if (needLockWhenMouseLeave) {
             window.lyricWindowLock(true)
             updateIsLocked()
@@ -75,13 +75,13 @@ onMounted(() => {
     let flag: any;
 
     outer.addEventListener("mouseenter", async () => {
-        console.log('outer mouse enter');
+        // console.log('outer mouse enter');
         clearTimeout(flag);
         displayCtrl.value = true;
     })
 
     outer.addEventListener("mouseleave", async () => {
-        console.log('outer mouse leave');
+        // console.log('outer mouse leave');
 
         clearTimeout(flag)
         flag = setTimeout(() => {

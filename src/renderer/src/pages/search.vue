@@ -32,7 +32,7 @@ onMounted(() => {
 })
 
 let tabChange = async (value) => {
-    console.log(value);
+    // console.log(value);
     switch (value) {
         case 'playlist':
             let res = await api.cloudsearch(props.keyword, 1000);

@@ -52,7 +52,6 @@ function switchNavShow(isShow = 'auto') {
     } else {
         throw new Error('nav动画 参数错误');
     }
-    console.log(showNav);
     anime({
         targets: '.header-nav',
         translateX: showNav ? '100%' : '0%',

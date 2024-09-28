@@ -45,12 +45,12 @@ let loading = ref(false);//点击播放后 解析播放列表的loading
 let result = ref([]);
 let props = defineProps(['id', 'isDailySongs', 'autoPlay']);
 watch(props, () => {
-    console.log('playlist组件props被更新');
+    // console.log('playlist组件props被更新');
     result.value = {};
     parsePlayList();
 }, { deep: true })
 onMounted(() => {
-    console.log('playlist组件被挂载');
+    // console.log('playlist组件被挂载');
     parsePlayList();
 })
 async function parsePlayList() {

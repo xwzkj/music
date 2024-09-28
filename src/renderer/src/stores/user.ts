@@ -75,7 +75,6 @@ export const useUserStore = defineStore('user', {
             this.updateTime = Date.now()
             this.storeToStorage()
             api.success('用户信息更新成功')
-            console.log('pinia updatedByCookie');
         },
         async updateByStorage() {
             let user = JSON.parse(localStorage.getItem('user') ?? '')
@@ -83,7 +82,6 @@ export const useUserStore = defineStore('user', {
             if (this.ip == '') {
                 this.ip = `111.37.150.${api.random(0, 255)}`
             }
-            console.log('pinia updatedByStorage');
         },
         updateByObj(obj: any) {
             for (let key in obj) {
@@ -101,12 +99,10 @@ export const useUserStore = defineStore('user', {
                 }
             }
             localStorage.setItem('user', JSON.stringify(pureObj));
-            console.log('pinia storeToStorage');
         },
         clearStorage() {
             localStorage.removeItem('user')
             localStorage.removeItem('cookie')
-            console.log('pinia clearStorage');
         },
         logout() {
             this.$reset();

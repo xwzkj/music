@@ -13,7 +13,7 @@ let userStore = useUserStore();
 let personalizedPlaylist = ref({ result: [] });
 api.getPersonalizedPlaylist().then(res => {
     personalizedPlaylist.value = res.data;
-    console.log(res);
+    // console.log(res);
 });
 </script>
 

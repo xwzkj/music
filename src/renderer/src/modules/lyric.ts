@@ -47,7 +47,7 @@ export function parseLrc(lrc: string) {
 }
 
 export function parseSecondaryLrc(secondaryLrc: string, parsedLyric: LyricLine[], keyName: 'tran' | 'roma') {
-    console.log('secondaryLrc解析', keyName);
+    // console.log('secondaryLrc解析', keyName);
 
     let lyric = parsedLyric.map(item => ({ ...item }));
     secondaryLrc.split('\n').forEach(line => {
