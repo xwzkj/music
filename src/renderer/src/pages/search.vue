@@ -55,7 +55,7 @@ async function play(id) {
 <style scoped>
 .loading-center {
     width: 100%;
-    height: 70vh;
+    height: calc(70 * var(--vh, 1vh));
     display: flex;
     justify-content: center;
     align-items: center;

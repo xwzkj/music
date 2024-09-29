@@ -162,7 +162,8 @@ function getImgMainColor() {
             <ul class="lyric-list">
               <li v-for="(item, index) in currentMusic.lyric" :key="index"
                 :class="{ 'lyric-active color9': currentMusic.currentLyricIndex.lineIndex == index }"
-                class="lyric-item transition-transform duration-700 ease-out transform-origin-left" :id="'lrc-' + index">
+                class="lyric-item transition-transform duration-700 ease-out transform-origin-left"
+                :id="'lrc-' + index">
                 <lyricLine :line="item.lrc"
                   :current-word-index="currentMusic.currentLyricIndex.lineIndex == index ? currentMusic.currentLyricIndex : { wordIndex: -1, wordDuration: 0 }"
                   :paused="playStore.musicStatus.paused" class="lyric-lrc" />
@@ -212,7 +213,7 @@ function getImgMainColor() {
   height: 100%;
   min-width: 400px;
   width: 100%;
-  max-width: calc(100vh/4*6);
+  max-width: calc(100 * var(--vh, 1vh) / 4 * 6);
   /* max-width: calc(100vh/9*16); */
 }
 

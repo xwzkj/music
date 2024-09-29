@@ -92,7 +92,7 @@ async function play(id) {
 <style scoped>
 .playlist-spin {
     width: 100%;
-    height: 70vh;
+    height: calc(70 * var(--vh, 1vh));
     display: flex;
     justify-content: center;
     align-items: center;
@@ -111,7 +111,7 @@ async function play(id) {
 
 .playlistImg {
     margin: 1rem;
-    flex:1;
+    flex: 1;
 }
 
 .playlistImg img {
@@ -161,7 +161,7 @@ async function play(id) {
     /* display: none; */
 }
 
-.playlist-musiclist{
+.playlist-musiclist {
     max-width: 100%;
 }
 
