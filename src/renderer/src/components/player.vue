@@ -212,7 +212,8 @@ function getImgMainColor() {
   height: 100%;
   min-width: 400px;
   width: 100%;
-  max-width: calc(100vh/9*16);
+  max-width: calc(100vh/4*6);
+  /* max-width: calc(100vh/9*16); */
 }
 
 .player-background {
