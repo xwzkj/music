@@ -53,7 +53,10 @@ export const useUserStore = defineStore('user', {
                     this.uid = res.data.data.profile.userId
                     this.province = res.data.data.profile.province
                     this.city = res.data.data.profile.city
-                    this.ip = res.data.data.profile.lastLoginIP
+                    //this.ip = res.data.data.profile.lastLoginIP
+                    if (this.ip == '') {
+                        this.ip = `111.37.150.${api.random(0, 255)}`
+                    }
                 }
             }
             if (!this.isLogin) {
@@ -79,9 +82,6 @@ export const useUserStore = defineStore('user', {
         async updateByStorage() {
             let user = JSON.parse(localStorage.getItem('user') ?? '')
             this.updateByObj(user)
-            if (this.ip == '') {
-                this.ip = `111.37.150.${api.random(0, 255)}`
-            }
         },
         updateByObj(obj: any) {
             for (let key in obj) {
