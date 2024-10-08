@@ -21,7 +21,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
-    "NeteaseCloudMusicApi": "^4.22.0",
+    "NeteaseCloudMusicApi": "^4.23.1",
     "ajv": "^8.17.1",
     "axios": "^1.7.2",
     "conf": "^13.0.1",
