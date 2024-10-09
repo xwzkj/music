@@ -386,9 +386,9 @@ export const usePlayStore = defineStore('play', () => {
         }
         //进行防抖处理 每10秒只能上报一次
         scrobble = api.debounce(scrobble, 5000, 1);
-
+///////////////////先不做这个功能 容易被冈易t号
         // console.log(`[playStore]beforeMusicChanged`);
-        scrobble(currentMusic.value.id, Math.floor(musicStatus.value.currentTime));
+        //scrobble(currentMusic.value.id, Math.floor(musicStatus.value.currentTime));
 
     }
     function seek(time) {
