@@ -1,5 +1,6 @@
 import colorThief from 'colorthief'
 import axios from 'axios'
+import type { AxiosProgressEvent } from 'axios'
 //pinia在request内部初始化 因为userstore和这个模块相互调用
 import pinia from '@/stores/index.js'
 import { useUserStore } from '@/stores/user.js'
@@ -54,9 +55,9 @@ if (window.isElectron) {
     if (localStorage.getItem('cookie')) {
       data = { ...data, cookie: localStorage.getItem('cookie') }
     }
-    console.log('%c本地api-发送请求','color: gray; background-color: lightcyan; padding: 0.5rem; border-radius: 0.5rem', param)
+    console.log('%c本地api-发送请求', 'color: gray; background-color: lightcyan; padding: 0.5rem; border-radius: 0.5rem', param)
     let res = await window.api.netease(url, { ...data, ...params })
-    console.log('%c本地api-收到响应','color: gray; background-color: aliceblue; padding: 0.5rem; border-radius: 0.5rem', param, res)
+    console.log('%c本地api-收到响应', 'color: gray; background-color: aliceblue; padding: 0.5rem; border-radius: 0.5rem', param, res)
     return res
   }
 }
@@ -106,7 +107,7 @@ export function loginQrCheck(key) {
     params: { key }
   })
 }
-export function songDetail(ids) {
+export function songDetail(ids: string) {
   return request({
     url: '/song/detail',
     method: 'post',
@@ -115,28 +116,32 @@ export function songDetail(ids) {
 }
 /**
  * 参数四只有在参数三有值才生效
- * @param {string | number} id
- * @param {string} level
- * @param {string} specialApi
- * @param {string} cookie
- * @returns {Promise}
  */
-export function songUrlV1(id, level, specialApi = null, cookie = null) {
-  if (specialApi) {
-    return axios.get(specialApi, {
-      params: {
-        id,
-        level,
-        cookie
-      }
-    })
-  } else {
-    return request({
-      url: '/song/url/v1',
-      method: 'post',
-      data: { id, level }
-    })
+export async function songUrlV1(id: string, level: string, specialApi: string | null = null, cookie: string | null = null) {
+  function apiRaw() {
+    if (specialApi) {
+      return axios.get(specialApi, {
+        params: {
+          id,
+          level,
+          cookie
+        }
+      })
+    } else {
+      return request({
+        url: '/song/url/v1',
+        method: 'post',
+        data: { id, level }
+      })
+    }
   }
+  //对结果按照参数中id的顺序排序
+  let res = await apiRaw()
+  let idArray = id.split(',')
+  res.data.data.sort((a, b) => {
+    return idArray.indexOf(String(a.id)) - idArray.indexOf(String(b.id))
+  })
+  return res;
 }
 export function lyricNew(id) {
   return request({
@@ -458,6 +463,72 @@ export function debounce(fn, delay, mode = 0) {
         }, delay)
       }
   }
+}
+
+async function downloadFileLegacy(url: string, fileName: string, onProgress?: (progressEvent: AxiosProgressEvent) => void) {
+  const response = await axios.get(url, { responseType: 'blob', onDownloadProgress: onProgress });
+  const objurl = URL.createObjectURL(response.data);
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = objurl;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  return true
+}
+export async function downloadFile(url: string, fileName: string, onProgress?: (progressEvent: AxiosProgressEvent) => void, dirHandle?: FileSystemDirectoryHandle) {
+  try {
+    if (dirHandle) {
+      // const dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' })
+      const fileHandle = await dirHandle.getFileHandle(fileName, { create: true })
+      const writable = await fileHandle.createWritable()
+      const res = await fetch(url);
+      const reader = res.body.getReader();
+      const total = parseInt(res.headers.get('Content-Length'))
+      let loaded = 0
+      while (1) {
+        // 读取数据流的第一块数据，done表示数据流是否完成，value表示当前的数
+        const { done, value } = await reader.read();
+        if (done) break;
+        writable.write(value);
+
+        loaded += value.length
+        let e: AxiosProgressEvent = {
+          loaded,
+          total,
+          bytes: value.length,
+          lengthComputable: true
+        }
+        if (typeof onProgress == 'function') {
+          onProgress(e)
+        }
+      }
+      writable.close();
+    } else {
+      await downloadFileLegacy(url, fileName, onProgress)
+    }
+    return true
+  }
+  catch (e) {
+    error(JSON.stringify(e), '文件下载失败')
+    return false
+  }
+}
+
+//把api返回的detail内容转换为播放列表的存储形式
+export function parseDetailToList(data) {
+  return data.map((item) => {
+    return {
+      id: item.id,
+      name: item.name,
+      artist: item.ar.map(item => item.name).join('、'),
+      picurl: item.al.picUrl,
+      tns: parseArray(item.tns),
+      fee: item.fee,
+    }
+  });
 }
 
 export const areaData = {
