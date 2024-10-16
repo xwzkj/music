@@ -80,7 +80,7 @@ export const useUserStore = defineStore('user', {
             // api.success('用户信息更新成功')
         },
         async updateByStorage() {
-            let user = JSON.parse(localStorage.getItem('user') ?? '')
+            let user = JSON.parse(localStorage.getItem('user') ?? '{}')
             this.updateByObj(user)
         },
         updateByObj(obj: any) {
