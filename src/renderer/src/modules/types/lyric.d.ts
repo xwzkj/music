@@ -1,10 +1,10 @@
 export interface LyricWord {
-    time: string | number,
-    duration: string | number,
+    time: number,
+    duration: number,
     text: string,
 }
 export interface LyricLine {
-    time: string,
+    time: number,
     lrc: LyricWord[],
     tran?: string,
     roma?: string,

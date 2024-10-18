@@ -118,6 +118,7 @@ export function songDetail(ids: string) {
  * 参数四只有在参数三有值才生效
  */
 export async function songUrlV1(id: string, level: string, specialApi: string | null = null, cookie: string | null = null) {
+  id = String(id)
   function apiRaw() {
     if (specialApi) {
       return axios.get(specialApi, {
@@ -137,6 +138,7 @@ export async function songUrlV1(id: string, level: string, specialApi: string | 
   }
   //对结果按照参数中id的顺序排序
   let res = await apiRaw()
+  // console.log(id)
   let idArray = id.split(',')
   res.data.data.sort((a, b) => {
     return idArray.indexOf(String(a.id)) - idArray.indexOf(String(b.id))

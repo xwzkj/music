@@ -3,6 +3,7 @@
     "target": "ESNext",
     "module": "NodeNext",
     "sourceMap": true,
+    "noImplicitThis": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [

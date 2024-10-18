@@ -4,6 +4,7 @@ import * as lyricTools from '@/modules/lyric.js'
 import { ref, computed } from 'vue'
 import { useUserStore } from "./user.js";
 import { useSettingStore } from "./setting.js";
+import { song } from "@/modules/types/song.js";
 
 export const usePlayStore = defineStore('play', () => {
     // console.log('playstore被创建 ');
@@ -14,7 +15,7 @@ export const usePlayStore = defineStore('play', () => {
     let currentMusic = computed(() => {
         let userStore = useUserStore();
         return {
-            id: 0,
+            id: '0',
             picurl: '/icon.png',
             name: '暂无歌曲',
             artist: '',
@@ -27,7 +28,7 @@ export const usePlayStore = defineStore('play', () => {
     let musicStatus = ref({ duration: 0, currentTime: 0, paused: true })
     // 播放列表
     //{id,name,artist,tns,url,picurl,?lyric}
-    let playlist = ref([])
+    let playlist = ref<song[]>([])
     // 播放列表索引
     let playlistIndex = ref(0)
     // 随机播放的顺序
@@ -49,7 +50,7 @@ export const usePlayStore = defineStore('play', () => {
 
     // 设置标题
     watchEffect(() => {
-        if (currentMusic.value.id != 0) {
+        if (currentMusic.value.id != '0') {
             document.title = `${currentMusic.value.name} - ${currentMusic.value.artist} - 奶酪音乐`;
         }
     })
@@ -192,19 +193,7 @@ export const usePlayStore = defineStore('play', () => {
         player.value.src = d;
         return d;
     }
-    //把api返回的detail内容转换为播放列表的存储形式
-    function parseDetailToList(data) {
-        return data.map((item) => {
-            return {
-                id: item.id,
-                name: item.name,
-                artist: item.ar.map(item => item.name).join('、'),
-                picurl: item.al.picUrl,
-                tns: api.parseArray(item.tns),
-                fee: item.fee,
-            }
-        });
-    }
+
     //清除列表 使用新的列表替换 参数一二选择一个传入
     async function playlistInit(ids = null, dataFromApi = null) {
         stop()
@@ -214,7 +203,7 @@ export const usePlayStore = defineStore('play', () => {
         if (ids == null) {//没传递id列表
             let storageNow = JSON.parse(localStorage.getItem('playlist') || '{}')
             if (dataFromApi) {//传入了api数据
-                playlist.value = parseDetailToList(dataFromApi);
+                playlist.value = api.parseDetailToList(dataFromApi);
                 listRandom();
             } else if (ids == null && 'version' in storageNow && storageNow.version == 3) {//如果没传参数 使用localstorage的数据
                 playlistIndex.value = storageNow.current;
@@ -261,7 +250,7 @@ export const usePlayStore = defineStore('play', () => {
         res = await api.songDetail(ids.join(','));
         res = res.data.songs;
         //因为返回的数据也许不按请求的id顺序返回 所以特殊处理
-        res = parseDetailToList(res);
+        res = api.parseDetailToList(res);
         list = api.mergeMusicObjArrs(list, res);//按照唯一标识符id合并
 
 
@@ -386,7 +375,7 @@ export const usePlayStore = defineStore('play', () => {
         }
         //进行防抖处理 每10秒只能上报一次
         scrobble = api.debounce(scrobble, 5000, 1);
-///////////////////先不做这个功能 容易被冈易t号
+        ///////////////////先不做这个功能 容易被冈易t号
         // console.log(`[playStore]beforeMusicChanged`);
         //scrobble(currentMusic.value.id, Math.floor(musicStatus.value.currentTime));
 
