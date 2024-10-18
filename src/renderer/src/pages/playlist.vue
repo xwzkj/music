@@ -18,8 +18,9 @@
                     <div class="playlist-desc playlist-info-item text2">
                         <n-ellipsis style="max-width: 100%;" :line-clamp="3">{{ result.description }}</n-ellipsis>
                     </div>
-                    <div class="playlistControler playlist-info-item">
-                        <n-button @click="playAll">播放全部</n-button>
+                    <div class="playlistControler playlist-info-item flex">
+                        <n-button @click="playAll" type="primary">播放全部</n-button>
+                        <n-button @click="downAll" type="primary" secondary>下载全部</n-button>
                     </div>
                 </div>
             </div>
@@ -39,8 +40,9 @@ import { useRouter } from 'vue-router';
 import * as api from '@/modules/api';
 import musicList from '@/components/musicList.vue';
 import { usePlayStore } from '@/stores/play';
+import { useDownloadStore } from '@/stores/download';
 const playStore = usePlayStore();
-const router = useRouter();
+const downloadStore = useDownloadStore();
 let loading = ref(false);//点击播放后 解析播放列表的loading
 let result = ref([]);
 let props = defineProps(['id', 'isDailySongs', 'autoPlay']);
@@ -80,6 +82,10 @@ async function playAll() {
     await playStore.playlistInit(null, result.value.tracks)
     playStore.play(true);
     loading.value = false;
+}
+
+function downAll() {
+    downloadStore.addDownloadItemByIds(result.value.tracks.map(item => item.id))
 }
 async function play(id) {
     loading.value = true;
