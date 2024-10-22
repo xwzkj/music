@@ -61,9 +61,13 @@ export const usePlayStore = defineStore('play', () => {
         navigator.mediaSession.setActionHandler("nexttrack", () => next());
         navigator.mediaSession.setActionHandler("play", () => play());
         navigator.mediaSession.setActionHandler("pause", () => pause());
-        navigator.mediaSession.setActionHandler("seekto", (conf) => {
-            seek(conf.seekTime)
-        });
+        try {
+            navigator.mediaSession.setActionHandler("seekto", (conf) => {
+                seek(conf.seekTime)
+            });
+        } catch (e) {
+            console.log('媒体会话的seekto动作在当前浏览器有兼容性问题');
+        }
     }
     //添加监听事件 用来更新播放进度状态
     //注意：下面的歌词更新事件也会触发此函数
@@ -102,8 +106,10 @@ export const usePlayStore = defineStore('play', () => {
                     }, 2000);
                 }
                 //把配置对象传给媒体会话
-                if (!(isNaN(conf.duration) || isNaN(conf.position) || isNaN(conf.playbackRate))) {
-                    navigator.mediaSession.setPositionState(conf);
+                if ('setPositionState' in navigator.mediaSession) {
+                    if (!(isNaN(conf.duration) || isNaN(conf.position) || isNaN(conf.playbackRate))) {
+                        navigator.mediaSession.setPositionState(conf);
+                    }
                 }
                 //设置播放状态 是否暂停
                 if (player.value.paused === true || player.value.paused === false) {
