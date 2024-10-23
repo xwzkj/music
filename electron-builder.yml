@@ -32,10 +32,11 @@ dmg:
 linux:
   target:
     - AppImage
-    - snap
+    # - snap
     - deb
   maintainer: electronjs.org
   category: Utility
+  icon: build/777x777.png
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
