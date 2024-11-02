@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import * as api from '@/modules/api'
+import * as api from '@/modules/api.js'
 import { toRaw, unref } from 'vue'
 
 export const useUserStore = defineStore('user', {
@@ -74,6 +74,13 @@ export const useUserStore = defineStore('user', {
             if (res.data.code == 200) {
                 this.vipIcon = res.data.data.associator.iconUrl
                 this.vipexpire = res.data.data.associator.expireTime
+
+                // 如果有svip 就替换掉vip图标
+                let svipIcon = res.data.data.redplus.iconUrl
+                let svipexpire = res.data.data.redplus.expireTime
+                if (svipexpire > Date.now()) {
+                    this.vipIcon = svipIcon
+                }
             }
             this.updateTime = Date.now()
             this.storeToStorage()

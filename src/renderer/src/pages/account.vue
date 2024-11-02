@@ -4,7 +4,7 @@
             <img class="account-user-avatar" :src="userStore.avatar" @load="getImgMainColor" crossorigin="anonymous">
             <div class="account-user-data-info">
                 <span class="account-user-name text1">{{ userStore.name }}</span>
-                <img class="account-userVIP" :src="`${userStore.vipIcon}`">
+                <img class="account-userVIP" :src="`${userStore.vipIcon}`" />
                 <span class="account-user-area text2">地区：{{ Area }}</span>
             </div>
         </div>
@@ -83,5 +83,4 @@ async function getArea(province, city) {
     font-size: 1.2rem;
     padding-left: 1rem;
 }
-
 </style>
