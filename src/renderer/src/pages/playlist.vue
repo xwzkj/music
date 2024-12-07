@@ -69,8 +69,15 @@ async function parsePlayList() {
 
     } else {
         let res = await api.playlistDetail(props.id);
-        // console.log(res.data);
-        result.value = res.data.playlist;
+        let data = res.data.playlist;
+
+        let ids = res.data.playlist.trackIds
+        if (res.data.playlist.tracks.length != ids.length) { // 获取到的列表不完整
+            res = await api.songDetail(ids.map(item => item.id).join(","));
+            data.tracks = res.data.songs;
+        }
+        
+        result.value = data;
     }
     if (props.autoPlay) {
         playAll();
