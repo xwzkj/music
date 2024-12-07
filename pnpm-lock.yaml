@@ -15,8 +15,8 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(electron@31.7.1)
       NeteaseCloudMusicApi:
-        specifier: ^4.24.0
-        version: 4.24.0
+        specifier: ^4.25.0
+        version: 4.25.0
       ajv:
         specifier: ^8.17.1
         version: 8.17.1
@@ -1113,8 +1113,8 @@ packages:
     resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
     engines: {node: '>=10.0.0'}
 
-  NeteaseCloudMusicApi@4.24.0:
-    resolution: {integrity: sha512-1fW3lf4iFlQFYpbAA2AptfnBh8fLPMH2aQnROhu77ub58ezzQdXahOAcN+PRvnnR4KcqmQeAFfYMkmuewBLiiA==}
+  NeteaseCloudMusicApi@4.25.0:
+    resolution: {integrity: sha512-UyX3N+vac3+GCnVf5z2I2EcRt1lnZ4twtY4BMC05rofI5sEFYp+lNTuZV9SMev3ItCWVVmIG/wEfjPRZndFesg==}
     engines: {node: '>=12'}
     hasBin: true
 
@@ -4635,7 +4635,7 @@ snapshots:
 
   '@xmldom/xmldom@0.8.10': {}
 
-  NeteaseCloudMusicApi@4.24.0:
+  NeteaseCloudMusicApi@4.25.0:
     dependencies:
       axios: 1.7.7
       crypto-js: 4.2.0
