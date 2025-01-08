@@ -153,7 +153,13 @@ export const usePlayStore = defineStore('play', () => {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: value.name,
                 artist: value.artist,
-                artwork: [{ src: value.picurl }]
+                artwork: [
+                    { src: value.picurl + '?param=96y96', sizes: '96x96' },
+                    { src: value.picurl + '?param=128y128', sizes: '128x128' },
+                    { src: value.picurl + '?param=192y192', sizes: '192x192' },
+                    { src: value.picurl + '?param=256y256', sizes: '256x256' },
+                    { src: value.picurl + '?param=512y512', sizes: '512x512' }
+                ]
             })
         }
         updateProgress(true, { position: 0, duration: player.value.duration });
