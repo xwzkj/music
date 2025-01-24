@@ -64,6 +64,14 @@ const router = createRouter({
       // meta: {
       //     keepAlive: true
       // }
+    },
+    {
+      name: 'comments',
+      path: '/comments',
+      component: () => import('@/pages/comments.vue'),
+      props: (route) => {
+        return route.query
+      }
     }
   ]
 })

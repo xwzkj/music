@@ -2,7 +2,7 @@
     <div class="ctrl-outer-outer">
         <div class="ctrl-outer" ref="outerEle">
             <div class="ctrl-box">
-                <div class="ctrl-left" @click="switchShowPlayer">
+                <div class="ctrl-left" @click="() => switchShowPlayer()">
                     <div class="ctrl-img-box">
                         <img class="ctrl-img" :src="playStore.currentMusic.picurl ?? '/icon.png'"></img>
                     </div>
@@ -99,10 +99,11 @@ import player from './player.vue';
 import anime from 'animejs/lib/anime.es.js';
 import emitter from '@/utils/mitt'
 // 接收从player发出的隐藏player事件
-emitter.on('switchShowPlayer', () => {
+emitter.on('switchShowPlayer', (e) => {
     // console.log('switchShowPlayer emit消息');
-    switchShowPlayer()
+    switchShowPlayer(e)
 });
+
 // let router = useRouter();
 let settingStore = useSettingStore();
 let isElectron = ref(window.isElectron);
@@ -125,7 +126,7 @@ let lyricNow = computed(() => {
         currentWordIndex,
         paused
     }
-    if (window.isElectron && currentWordIndex.lineIndex >=0) {
+    if (window.isElectron && currentWordIndex.lineIndex >= 0) {
         let tran = playStore.currentMusic?.lyric[playStore.currentMusic.currentLyricIndex.lineIndex]?.tran
         tran = api.textToParsedYrcLine(tran)
         window.api.sendLyric(JSON.stringify({ lrc: res, tran }))
@@ -153,8 +154,14 @@ function switchShowPlaylist() {
     })
 }
 
-function switchShowPlayer() {
-    showPlayer = !showPlayer
+// 切换播放器的显示状态 参数可选 默认是来回切换
+function switchShowPlayer(show) {
+    // console.log('switchShowPlayer', show);
+    if (show !== undefined) {
+        showPlayer = show
+    } else {
+        showPlayer = !showPlayer
+    }
     // console.log(showPlayer);
     anime({
         targets: '.ctrl-player',

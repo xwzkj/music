@@ -152,6 +152,14 @@ export function lyricNew(id) {
     params: { id }
   })
 }
+export function commentNew(id: string | number, type: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 = 0, pageNo: number = 1, pageSize: number = 20, sortType: 1 | 2 | 3 = 1, cursor?: number) {
+  return request({
+    url: '/comment/new',
+    method: 'post',
+    data: { id, type, pageNo, pageSize, sortType, cursor }
+  })
+}
+
 export function recommendSongs() {
   return request({
     url: '/recommend/songs',
