@@ -65,14 +65,13 @@
                         @click="() => settingStore.setLyricWindowShow(!settingStore.showLyricWindow)" title="桌面歌词">
                         词
                     </div>
-                    <div class="btn-sound button" title="音效 目前未制作">
+                    <div class="btn-comments button" title="查看歌曲评论" @click="openComments">
                         <n-icon size="1.5rem" class="icon">
-                            <i-solar-soundwave-square-outline />
+                            <i-hugeicons-message-01 />
                         </n-icon>
                     </div>
-                    <div class="btn-list button" title="播放列表" style="padding-top:0.2rem;">
-                        <n-icon size="1.5rem" class="icon"
-                            @click="switchShowPlaylist"><i-hugeicons-playlist-03 /></n-icon>
+                    <div class="btn-list button" title="播放列表" style="padding-top:0.2rem;" @click="switchShowPlaylist">
+                        <n-icon size="1.5rem" class="icon"><i-hugeicons-playlist-03 /></n-icon>
                     </div>
                 </div>
             </div>
@@ -93,18 +92,18 @@ import MarqueePlus from '@/components/marqueePlus.vue';
 import { usePlayStore } from '@/stores/play';
 import { useSettingStore } from '@/stores/setting';
 import * as api from '@/modules/api'
-// import { useRouter } from 'vue-router';
 import playinglist from './playinglist.vue';
 import player from './player.vue';
 import anime from 'animejs/lib/anime.es.js';
 import emitter from '@/utils/mitt'
+import { useRouter } from 'vue-router';
 // 接收从player发出的隐藏player事件
 emitter.on('switchShowPlayer', (e) => {
     // console.log('switchShowPlayer emit消息');
     switchShowPlayer(e)
 });
 
-// let router = useRouter();
+let router = useRouter();
 let settingStore = useSettingStore();
 let isElectron = ref(window.isElectron);
 let playStore = usePlayStore();
@@ -181,6 +180,10 @@ function switchShowPlayer(show) {
             }
         }
     })
+}
+
+function openComments() {
+    router.push({ name: 'comments', query: { id: playStore.currentMusic.id } })
 }
 </script>
 
@@ -291,7 +294,7 @@ right---------------------------------------------------------
 }
 
 .btn-desktop-lyric,
-.btn-sound {
+.btn-comments {
     margin-right: 1rem;
 }
 

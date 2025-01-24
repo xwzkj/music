@@ -28,7 +28,7 @@
                 <musicList :value="result.tracks" :nameOnClick="play" />
             </div>
         </div>
-        <div class="playlist-spin" key="playlst-spin" v-if="!result.tracks || loading">
+        <div class="playlist-spin loading-center" key="playlst-spin" v-if="!result.tracks || loading">
             <n-spin size="large" />
         </div>
     </div>
@@ -103,13 +103,6 @@ async function play(id) {
 </script>
 
 <style scoped>
-.playlist-spin {
-    width: 100%;
-    height: calc(70 * var(--vh, 1vh));
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .playlistTag {
     margin-left: 0.5rem;

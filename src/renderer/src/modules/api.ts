@@ -160,6 +160,22 @@ export function commentNew(id: string | number, type: 0 | 1 | 2 | 3 | 4 | 5 | 6 
   })
 }
 
+/**
+ * 获取楼层评论
+ * @param parentCommentId 楼层评论id
+ * @param id 资源id
+ * @param type 资源类型 (0: 歌曲, 1: mv, 2: 歌单, 3: 专辑, 4: 电台节目, 5: 视频, 6: 动态, 7: 电台)
+ * @param limit 取出评论数量，默认20
+ * @param time 分页参数，取上一页最后一项的time
+ */
+export function commentFloor(parentCommentId: number | string, id: number | string, type: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, limit: number = 20, time?: number) {
+  return request({
+    url: '/comment/floor',
+    method: 'post',
+    params: { parentCommentId, id, type, limit, time }
+  })
+}
+
 export function recommendSongs() {
   return request({
     url: '/recommend/songs',
@@ -313,6 +329,26 @@ export function mixColor(colorA, colorB, weight = 0.5, needRaw = false, lighter 
  *以下是一些工具函数
  *-----------------------------------------------
  */
+
+// 格式化次数数字，小于10000返回原数字，大于10000小于100000000返回万，大于100000000返回亿
+export function formatCount(count: number | string) {
+  if (typeof count !== 'number') {
+    return '0';
+  }
+
+  if (count < 10000) {
+    return count.toString();
+  } else if (count < 100000000) {
+    if (count < 100000) {
+      return (count / 10000).toFixed(1).replace('.0', '') + '万';
+    } else {
+      return (count / 10000).toFixed(0).replace('.0', '') + '万';
+    }
+  } else {
+    return (count / 100000000).toFixed(1).replace('.0', '') + '亿';
+  }
+}
+
 export function textToParsedYrcLine(text: string) {
   return {
     line: [{ text, duration: 0, time: 0 }],
@@ -351,7 +387,7 @@ export function windowBack() {
  * @param {string} content
  * @param {string} title
  */
-export function error(content, title?) {
+export function error(content: string, title?: string) {
   // let sad = ["(>_<)", "Σ(°ロ°)", '(つ﹏⊂)', '（・□・；）', '(o.O)', '(#｀皿´)', 'ヽ(≧Д≦)ノ', '（＞д＜）']
   // let title = sad[random(0, sad.length - 1)];
   console.error('[error]', content, title)
@@ -368,7 +404,7 @@ export function error(content, title?) {
     keepAliveOnHover: true
   })
 }
-export function success(content, title?) {
+export function success(content: string, title?: string) {
   // let happy = ["o(≧▽≦)o", "(* ^ ω ^)", "(´｡• ω •｡`)", "ヽ(・∀・)ﾉ", "＼(≧▽≦)／", "ヽ(o＾▽＾o)ノ", "\(^ヮ^)/", "(´• ω •`)", "(..＞◡＜..)"]
   // let title = happy[random(0, happy.length - 1)];
   // window.$NMessageApi.success(message, {

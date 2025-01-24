@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import emitter from "@/utils/mitt";
 import anime from 'animejs/lib/anime.es.js';
 import * as api from '@/modules/api'
+import { useRouter } from 'vue-router'
 import { usePlayStore } from '@/stores/play'
 import { useThemeStore } from '@/stores/theme'
 import { useSettingStore } from '@/stores/setting';
@@ -14,6 +15,7 @@ import lyricLine from '@/components/lyricLine.vue';
 let themeStore = useThemeStore();
 let playStore = usePlayStore();
 let settingStore = useSettingStore();
+let router = useRouter()
 let { currentMusic } = storeToRefs(playStore);
 let lyricScrollbarRef = ref();
 let background = ref('rgb(255,255,255)');//背景渐变色数据
@@ -72,6 +74,10 @@ function switchShowPlayer() {
   emitter.emit('switchShowPlayer');
 }
 
+function openComments() {
+  emitter.emit('switchShowPlayer', false)
+  router.push({ name: 'comments', query: { id: playStore.currentMusic.id } })
+}
 //获取图片主色
 function getImgMainColor() {
   let color = api.getColorsFromImg(document.querySelector('.music-img'), 2);
@@ -108,7 +114,7 @@ function getImgMainColor() {
               <!-- 图片之下的内容 控制部分 -->
               <div class="player-ctrl">
                 <div class="player-ctrl-top">
-                  <div class="btn-like button">
+                  <div class="btn-like button" title="收藏">
                     <n-icon size="2.5rem" class="icon">
                       <i-ant-design-heart-outlined v-if="!currentMusic?.isLiked"
                         @click="api.likeAndUpdateLikelist(currentMusic.id, true)" />
@@ -116,7 +122,7 @@ function getImgMainColor() {
                         @click="api.likeAndUpdateLikelist(currentMusic.id, false)" />
                     </n-icon>
                   </div>
-                  <div class="btn-comment button">
+                  <div class="btn-comments button" @click="openComments" title="查看歌曲评论">
                     <n-icon size="2.5rem" class="icon"><i-hugeicons-message-01 /></n-icon>
                   </div>
                 </div>
@@ -317,7 +323,7 @@ function getImgMainColor() {
 }
 
 .btn-like,
-.btn-comment {
+.btn-comments {
   margin-left: 0.5rem;
 }
 

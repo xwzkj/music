@@ -205,4 +205,12 @@ document.addEventListener('DOMContentLoaded', setRealVhVw);
 .color9 {
   color: var(--color-9);
 }
+
+.loading-center {
+    width: 100%;
+    height: calc(70 * var(--vh, 1vh));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>

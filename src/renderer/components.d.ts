@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    CommentItem: typeof import('./src/components/commentItem.vue')['default']
     HeaderTop: typeof import('./src/components/headerTop.vue')['default']
     IAntDesignHeartFilled: typeof import('~icons/ant-design/heart-filled')['default']
     IAntDesignHeartOutlined: typeof import('~icons/ant-design/heart-outlined')['default']
@@ -28,6 +29,7 @@ declare module 'vue' {
     IHugeiconsSmartPhone01: typeof import('~icons/hugeicons/smart-phone01')['default']
     IHugeiconsSquareLock02: typeof import('~icons/hugeicons/square-lock02')['default']
     IHugeiconsSquareLockPassword: typeof import('~icons/hugeicons/square-lock-password')['default']
+    IIconamoonLikeDuotone: typeof import('~icons/iconamoon/like-duotone')['default']
     IIcTwotoneCalendarToday: typeof import('~icons/ic/twotone-calendar-today')['default']
     ISolarCloseCircleOutline: typeof import('~icons/solar/close-circle-outline')['default']
     ISolarSoundwaveSquareOutline: typeof import('~icons/solar/soundwave-square-outline')['default']
@@ -39,6 +41,7 @@ declare module 'vue' {
     MusicList: typeof import('./src/components/musicList.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     Navigation: typeof import('./src/components/navigation.vue')['default']
+    NBadge: typeof import('naive-ui')['NBadge']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']
     NColorPicker: typeof import('naive-ui')['NColorPicker']

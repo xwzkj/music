@@ -42,10 +42,18 @@ let tabChange = async (value) => {
 }
 
 async function search() {
-    result.value = {};
-    currentTab.value = 'song';
-    let res = await api.cloudsearch(props.keyword)
-    result.value.song = res.data.result.songs;
+    try {
+        result.value = {};
+        currentTab.value = 'song';
+        let res = await api.cloudsearch(props.keyword)
+        result.value.song = res.data?.result?.songs;
+        if (!result.value.song) {
+            throw new Error('暂无搜索结果')
+        }
+    } catch (error) {
+        api.error(error.message, '搜索遇到问题')
+        result.value.song = result.value.playlist = '这是试图防止一直转圈的字符串'
+    }
 }
 async function play(id) {
     await playStore.addMusic([id], 'now', true);
@@ -53,11 +61,5 @@ async function play(id) {
 }
 </script>
 <style scoped>
-.loading-center {
-    width: 100%;
-    height: calc(70 * var(--vh, 1vh));
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 </style>
