@@ -61,7 +61,7 @@
             </settingItem>
             <settingItem>
                 <template #t1>版本信息</template>
-                <template #t2>版本号：{{ buildInfo.version }} &nbsp;&nbsp;&nbsp;构建号：{{ buildInfo.buildNumber }}</template>
+                <template #t2>版本号：{{ buildInfo.version }} &nbsp;&nbsp;&nbsp;构建号：{{ buildInfo.buildNumber }} &nbsp;&nbsp;&nbsp;构建时间：{{ buildInfo.buildTime }}</template>
                 <template #action>
                     <div></div>
                 </template>

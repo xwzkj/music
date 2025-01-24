@@ -13,6 +13,7 @@ import autoprefixer from 'autoprefixer'
 import { version } from './package.json';
 import fs from 'fs';
 import { execSync } from 'child_process';
+import dayjs from 'dayjs'
 
 function getGitCommitHash() {
   return execSync('git rev-parse --short HEAD').toString().trim();
@@ -78,8 +79,9 @@ export default defineConfig({
       {
         name: 'build-info-plugin',
         buildStart() {
+          const date = dayjs().format('YYYY-MM-DD HH:mm:ss');
           const buildNumber = getGitCommitHash(); // 获取 Git 提交哈希
-          const buildInfo = `export default { version: '${version}', buildNumber: '${buildNumber}' }`;
+          const buildInfo = `export default { version: '${version}', buildNumber: '${buildNumber}', buildTime: '${date}' }`;
           console.log('Build Info:', buildInfo);
           // 将构建信息写入文件
           fs.writeFileSync(
