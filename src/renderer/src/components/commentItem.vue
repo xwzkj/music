@@ -1,5 +1,6 @@
 <template name="commentItem">
-    <div class="comment-item rounded-0.5rem border-1px border-#e0e0e0 border-solid p-0.5rem mb-0.5rem">
+    <div class="comment-item rounded-0.5rem border-1px border-#e0e0e0 border-solid p-0.5rem mb-0.5rem bg-#ffffff80
+">
         <div class="top mb-0.5rem flex items-center justify-between">
             <div class="user flex items-center">
                 <img class="avatar size-2.2rem mr-0.5rem rounded-25% border-1px border-#e0e0e0 border-solid"
