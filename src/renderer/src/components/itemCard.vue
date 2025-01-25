@@ -58,6 +58,8 @@ const router = useRouter();
     margin: 0;
     display: block;
     width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
 }
 
 .item-card-name {
