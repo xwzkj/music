@@ -28,7 +28,7 @@
                 </div>
             </div>
         </div>
-        <div class="comment-item-content text1">
+        <div class="comment-item-content text1 mb-0.5rem">
             <span class="reply-to text2" v-if="isFloor && replyTo">回复 @{{ item.beReplied?.[0].user.nickname }}</span>
             {{ item.content }}
         </div>
