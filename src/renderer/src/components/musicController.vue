@@ -134,6 +134,7 @@ let lyricNow = computed(() => {
 })
 function switchShowPlaylist() {
     showPlayingList = !showPlayingList
+    
     // console.log(showPlayingList);
     let a = -window.innerHeight + ctrlHeight.value * 16
     anime({
@@ -143,8 +144,10 @@ function switchShowPlaylist() {
         duration: 700,
         easing: 'easeInOutQuad',
         begin: () => {
+            //如果显示播放列表，则发消息给列表滚动到当前
             if (showPlayingList == true) {
                 showPlayingListVIf.value = showPlayingList
+                emitter.emit('playinglist-scroll')
             }
         },
         complete: () => {

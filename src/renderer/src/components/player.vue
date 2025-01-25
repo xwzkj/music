@@ -39,6 +39,12 @@ function showList(isShow: boolean) {
     translateY: isShow ? '-100%' : '0%',
     duration: 700,
     easing: 'easeInOutQuad',
+    begin: () => {
+      //如果显示播放列表，则发消息给列表滚动到当前
+      if (isShow) {
+        emitter.emit('playinglist-scroll')
+      }
+    },
     complete: () => {
       displayList.value = isShow;
     }
