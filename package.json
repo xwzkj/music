@@ -50,7 +50,7 @@
     "eslint-plugin-vue": "^9.27.0",
     "less": "^4.2.0",
     "mitt": "^3.0.1",
-    "naive-ui": "^2.39.0",
+    "naive-ui": "^2.41.0",
     "pinia": "^2.3.1",
     "prettier": "^3.3.3",
     "unocss": "^0.62.3",
