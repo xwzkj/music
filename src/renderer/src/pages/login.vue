@@ -123,7 +123,7 @@ async function login() {
     let res;
     if (currentMethod.value == 'sms') {
         res = await api.verifyCaptcha(name.value, key.value);
-        if (res.data.code != 200) {
+        if (res.data?.code != 200) {
             api.error(JSON.stringify(res.data))
             return;
         }
@@ -132,7 +132,7 @@ async function login() {
     if (currentMethod.value == 'passwd') {
         res = await api.loginWithPhone(name.value, key.value);
     }
-    if (res.data.code == 200) {
+    if (res.data?.code == 200) {
         afterLogin(res.data.cookie);
     } else {
         api.error(JSON.stringify(res.data))
