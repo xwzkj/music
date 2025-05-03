@@ -42,7 +42,7 @@ let request = async (params, realTimeSync = true) => {
     return req
   } catch (e) {
     error(
-      `${e.name}\n${e.message}\n${e?.response?.data?.message}`,
+      `${e.name}\n${e.message}\n${e?.response?.data?.message ?? e?.response}`,
       `API网络请求错误！可尝试使用客户端`
     )
   }
@@ -100,11 +100,11 @@ export function loginQrCreate(key) {
     data: { key }
   })
 }
-export function loginQrCheck(key) {
+export function loginQrCheck(key, noCookie: boolean = true) {
   return request({
     url: '/login/qr/check',
     method: 'post',
-    params: { key }
+    params: { key, noCookie }
   })
 }
 export function songDetail(ids: string) {

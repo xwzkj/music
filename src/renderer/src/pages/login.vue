@@ -3,7 +3,8 @@
         <div class="login">
             <div class="login-row-qr">
                 <div class="login-qr">
-                    <n-qr-code :value="qrcode" :size="200" background-color="rgba(255,255,255,0)" :color="themeStore.mainColors[9]" v-if="qrcode != ''" />
+                    <n-qr-code :value="qrcode" :size="200" background-color="rgba(255,255,255,0)"
+                        :color="themeStore.mainColors[9]" v-if="qrcode != ''" />
                     <span v-if="qrcode == ''" style="text-align: center;" class="text3">等待生成二维码<br />若长时间未生成
                         大概是炸了</span>
                     <span v-if="qrcode != ''" class="text2">{{ qrStatus }}</span>
@@ -29,8 +30,7 @@
                         <!-- 密码或者验证码 -->
                         <n-input v-model:value="key" class="login-input"
                             :type="currentMethod == 'passwd' ? 'password' : 'text'"
-                            :placeholder="currentMethod == 'passwd' ? '请输入密码' : '请输入验证码'"
-                            >
+                            :placeholder="currentMethod == 'passwd' ? '请输入密码' : '请输入验证码'">
                             <template #prefix>
                                 <n-icon size="1.2rem">
                                     <i-hugeicons-square-lock-password v-show="currentMethod == 'passwd'" />
@@ -123,8 +123,9 @@ async function login() {
     let res;
     if (currentMethod.value == 'sms') {
         res = await api.verifyCaptcha(name.value, key.value);
-        if (res.data?.code != 200) {
-            api.error(JSON.stringify(res.data))
+        if (res?.data?.code != 200) {
+            console.log(res);
+            api.error(JSON.stringify(res?.data ?? res))
             return;
         }
         res = await api.loginWithPhone(name.value, null, key.value);
@@ -153,7 +154,7 @@ async function sendCaptcha() {
     }
 }
 
-async function afterLogin(cookie){
+async function afterLogin(cookie) {
     api.success('登陆成功~')
     userStore.updateByCookie(cookie);
     router.push({ 'name': 'account' });
@@ -207,9 +208,10 @@ async function afterLogin(cookie){
     cursor: pointer;
 }
 
-.login-divider{
+.login-divider {
     margin: 0.5rem 0;
 }
+
 .login-row-qr {
     flex: 45%;
 }
@@ -229,7 +231,7 @@ async function afterLogin(cookie){
     flex-wrap: nowrap;
     align-items: center;
     width: 100%;
-    height:2.3rem;
+    height: 2.3rem;
 }
 
 @media (max-width:640px) {

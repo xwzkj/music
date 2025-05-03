@@ -96,7 +96,7 @@ export default defineConfig({
       host: '0.0.0.0'
     },
     build: {
-      target: 'es2015',
+      target: 'es6',
       reportCompressedSize: false,
       sourcemap: false,
       commonjsOptions: {

@@ -65,7 +65,7 @@ app.on('ready', async () => {
       return { data: res.body };
     } catch (e) {
       console.log('wyyapi', e);
-      return e
+      return { data: e }
     }
   })
   // 桌面歌词传递
@@ -111,7 +111,7 @@ app.on('ready', async () => {
     await open(url)
     return true;
   })
-  ipcMain.on('window-close',()=>{
+  ipcMain.on('window-close', () => {
     mainWindow.close()
   })
   //加载devTool插件
