@@ -1,10 +1,10 @@
 name: deploy website
 
-# 触发条件：在 push 到 master 分支后
 on:
+  workflow_dispatch: {}
   push:
     branches:
-      - main
+     - main
 
 # 任务
 jobs:
@@ -14,9 +14,9 @@ jobs:
     steps:
       # 拉取代码
       - name: pull
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          fetch-depth: 0
       # 1、生成静态文件
       - name: Build
         run: npm install && npm run build
@@ -29,13 +29,33 @@ jobs:
           REPOSITORY_NAME: xwzkj/xwzkj.github.io
           BRANCH: main
           FOLDER: out/renderer
-          #注意这里的 public 是仓库根目录下的 public，也就是 npm run build 生成静态资源的路径，比如有的人是 `docs/.vuepress/dist`
-      - name: Deploy to server
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:  
-          username: 'root'   #ssh user name
-          server: '${{ secrets.SERVER_IP }}' #引用之前创建好的secret
-          ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}' #引用之前创建好的secret
-          local_path: './out/renderer/*'  # 对应我们项目build的文件夹路径
-          remote_path: '/opt/1panel/apps/openresty/openresty/www/sites/music.xwzkj.top/index/vue'
-          delete_remote_files: true
+
+      # - name: Deploy to server
+      #   uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      #   with:  
+      #     username: 'root'   #ssh user name
+      #     server: '${{ secrets.SERVER_IP }}' #引用之前创建好的secret
+      #     ssh_private_key: '${{ secrets.SSH_PRIVATE_KEY }}' #引用之前创建好的secret
+      #     local_path: './out/renderer/*'  # 对应我们项目build的文件夹路径
+      #     remote_path: '/opt/1panel/apps/openresty/openresty/www/sites/music.xwzkj.top/index/vue'
+      #     delete_remote_files: true
+
+      - name: 打包文件为tar.gz
+        run: cd ./out/renderer && tar -czvf ../../music-site.tar.gz *
+
+      - name: 发布到服务器
+        uses: marcodallasanta/ssh-scp-deploy@v1.2.0
+        with:
+          local: 'music-site.tar.gz'                                                  # Local file path - REQUIRED false - DEFAULT ./
+          remote: '/opt/xwzkj/temp/' # Remote file path - REQUIRED false - DEFAULT ~/
+          host: ${{secrets.SERVER_IP}}                                 # Remote server address - REQUIRED true
+          port: '22'                                                   # Remote server port - REQUIRED false - DEFAULT 22
+          user: 'root'                                                 # Remote server user - REQUIRED true
+          key: ${{secrets.SSH_PRIVATE_KEY}}                                        # Remote server private key - REQUIRED at least one of "password" or "key" 
+          pre_upload: rm -f /opt/xwzkj/temp/music-site.tar.gz
+          # 删掉之前的打包
+          # Command to run via ssh before scp upload - REQUIRED false
+          post_upload: cd /opt/1panel/apps/openresty/openresty/www/sites/music.xwzkj.top/index/vue && rm -rf * && tar -xzvf /opt/xwzkj/temp/music-site.tar.gz && rm -f /opt/xwzkj/temp/music-site.tar.gz
+          # Command to run via ssh after scp upload - REQUIRED false
+          ssh_options: -o StrictHostKeyChecking=no                     # A set of ssh_option separated by -o - REQUIRED false - DEFAULT -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+          scp_options: -v
