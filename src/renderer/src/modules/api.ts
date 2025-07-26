@@ -10,7 +10,7 @@ import { MD5 } from 'crypto-js'
  *以下是NeteaseCloudMusicApi接口的调用方法
  *-----------------------------------------------
  */
-export let apiurl = 'https://api.xwzkj.top'
+export let apiurl = 'https://api.wanzii.cn'
 let musicApi = axios.create({
   baseURL: apiurl,
   timeout: 20000

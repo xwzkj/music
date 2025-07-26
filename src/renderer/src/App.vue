@@ -54,7 +54,7 @@ onMounted(async () => {
   // 检查更新相关
   if (window.isElectron) {
     try {
-      let res = await axios.get('https://api.xwzkj.top/api/update?platform=windows');
+      let res = await axios.get('https://api.wanzii.cn/api/update?platform=windows');
       if (res.data.code === 200 && res.data.data.apiVersion == '1') {
         res = res.data.data;
         console.log(`%c检查更新 当前：${window.api.appVersion} 服务器：${res.version}`, ' background-color: lightcyan; padding: 0.5rem; border-radius: 0.5rem');
