@@ -14,6 +14,13 @@ import { version } from './package.json';
 import fs from 'fs';
 import { execSync } from 'child_process';
 import dayjs from 'dayjs'
+// const utc = require('dayjs/plugin/utc')
+// const timezone = require('dayjs/plugin/timezone') // 依赖 utc 插件
+import utc from 'dayjs/plugin/utc.js'
+import timezone from 'dayjs/plugin/timezone.js'
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 function getGitCommitHash() {
   return execSync('git rev-parse --short HEAD').toString().trim();
@@ -79,7 +86,7 @@ export default defineConfig({
       {
         name: 'build-info-plugin',
         buildStart() {
-          const date = dayjs().format('YYYY-MM-DD HH:mm:ss');
+          const date = dayjs().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss');
           const buildNumber = getGitCommitHash(); // 获取 Git 提交哈希
           const buildInfo = `export default { version: '${version}', buildNumber: '${buildNumber}', buildTime: '${date}' }`;
           console.log('Build Info:', buildInfo);
