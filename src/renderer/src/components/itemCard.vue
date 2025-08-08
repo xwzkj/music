@@ -12,7 +12,7 @@
     :style="{ backgroundColor: themeStore.mainColors?.[1] }"
     >
         <div class="item-card-date-box text2">
-            <n-icon size="11rem" class="item-card-icon"><i-ic-twotone-calendar-today />
+            <n-icon size="9rem" class="item-card-icon"><i-ic-twotone-calendar-today />
                 <div class="item-card-date">{{ date }}</div>
             </n-icon>
 
@@ -45,7 +45,6 @@ const router = useRouter();
 }
 
 .item-card-outer {
-    margin: 0 1rem 2rem 1rem;
     padding: 0;
     cursor: pointer;
     box-shadow: 0 0 0.2rem lightgray;
@@ -83,7 +82,7 @@ const router = useRouter();
     font-weight: 700;
     position: absolute;
     left: 50%;
-    top: 7.2rem;
+    top: 5.8rem;
     transform: translateX(-50%) translateY(-50%);
     font-style: normal;
 }

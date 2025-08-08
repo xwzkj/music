@@ -416,9 +416,9 @@ ul {
   overflow: hidden;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
 
-  /* 0-500px 竖屏设备 */
+  /* 0-600px 竖屏设备 */
   .column-lyric {
     display: v-bind('displayLyricWhenScreenIsNotWide ? `flex` : `none`');
     transition: all 0.7s ease-in-out;

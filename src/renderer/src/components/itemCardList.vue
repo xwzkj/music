@@ -31,9 +31,21 @@ const props = withDefaults(defineProps<{
 
 li {
     list-style: none;
+    margin: 0 1rem 2rem 1rem;
 }
 
 ul {
     padding: 0;
+}
+
+@media screen and (max-width: 600px) {
+    .item-card-ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    }
+
+    li{
+        margin: 0 0.5rem 1rem 0.5rem;
+    }
 }
 </style>
