@@ -1,7 +1,10 @@
 <template>
     <div>
         <div class="account-user-detail">
-            <img class="account-user-avatar" :src="userStore.avatar" @load="getImgMainColor" crossorigin="anonymous">
+            <div class="account-user-avatar-box">
+                <img class="account-user-avatar" :src="userStore.avatar" @load="getImgMainColor"
+                    crossorigin="anonymous">
+            </div>
             <div class="account-user-data-info">
                 <span class="account-user-name text1">{{ userStore.name }}</span>
                 <img class="account-userVIP" :src="`${userStore.vipIcon}`" />
@@ -51,10 +54,15 @@ async function getArea(province, city) {
     background: v-bind('themeStore.mainColors[2] + `80`');
 }
 
-.account-user-avatar {
+.account-user-avatar-box {
     width: 10rem;
-    border-radius: 0.8rem;
     margin: 1rem;
+    position: relative;
+}
+
+.account-user-avatar {
+    width: 100%;
+    border-radius: 0.8rem;
     box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
 }
 
@@ -82,5 +90,20 @@ async function getArea(province, city) {
 .account-user-playlists-title {
     font-size: 1.2rem;
     padding-left: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+    .account-user-detail {
+        padding: 1.2rem;
+    }
+
+    .account-user-avatar-box {
+        width: 3rem;
+        margin: 0.5rem;
+    }
+
+    .account-user-name {
+        padding-top: 0.2rem;
+    }
 }
 </style>
