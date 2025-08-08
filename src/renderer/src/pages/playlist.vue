@@ -71,13 +71,18 @@ async function parsePlayList() {
         let res = await api.playlistDetail(props.id);
         let data = res.data.playlist;
 
+        result.value = data;
+        
         let ids = res.data.playlist.trackIds
         if (res.data.playlist.tracks.length != ids.length) { // 获取到的列表不完整
-            res = await api.songDetail(ids.map(item => item.id).join(","));
-            data.tracks = res.data.songs;
+            result.value.tracks = []
+            for (let i = 0; i < ids.length; i += 500) {
+                let r = await api.songDetail(ids.slice(i, i + 500).map(item => item.id).join(","))
+                result.value.tracks.push(...(r.data.songs))
+                
+            }
         }
-        
-        result.value = data;
+
     }
     if (props.autoPlay) {
         playAll();
@@ -103,7 +108,6 @@ async function play(id) {
 </script>
 
 <style scoped>
-
 .playlistTag {
     margin-left: 0.5rem;
     margin-top: 0.5rem;
