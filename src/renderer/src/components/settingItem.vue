@@ -37,7 +37,7 @@ let inputValue = ref(props.defaultValue)
 
 <style scoped>
 .setting-item-outer {
-    width: 80%;
+    width: 100%;
     margin: 0.5rem;
 }
 
