@@ -1,6 +1,25 @@
 <template>
     <div class="login-container">
-        <div class="login">
+        <!-- 内置登录无法使用提示 -->
+        <n-card class="card" :title="`内置登录因云控无法正常使用`" :bordered="false" size="huge" role="dialog" aria-modal="true">
+            <div v-if="isApp" style="white-space: pre-wrap;" class="overflow-y-auto max-h-300px">
+                在客户端中，可通过前往官方页面登录以实现自动抓取cookie登录
+            </div>
+            <div v-else style="white-space: pre-wrap;" class="overflow-y-auto max-h-300px">
+                您当前为网页版，需自行在官方页面抓取cookie后，在设置页面输入以登录
+                <br />
+                <br />
+                或者下载客户端自动抓取并登录 <a class="text3" href="https://github.com/xwzkj/cheesemusic" target="_blank">前往GitHub下载</a>
+            </div>
+            <template #footer>
+                <n-space>
+                    <n-button type="primary" @click="openOfficialLogin">前往官方登录</n-button>
+                    <n-button secondary v-if="isApp" @click="getCookieAndLogin">直接登录(若已在官方登陆)</n-button>
+                </n-space>
+            </template>
+        </n-card>
+
+        <div class="login card">
             <div class="login-row-qr">
                 <div class="login-qr">
                     <n-qr-code :value="qrcode" :size="200" background-color="rgba(255,255,255,0)"
@@ -74,6 +93,10 @@ let check;//二维码状态检查定时器的id
 let name = ref('');
 let key = ref('');
 let currentMethod = ref('sms');
+let isApp = ref(false);
+if (window?.isElectron) {
+    isApp.value = true
+}
 onMounted(() => {
     // console.log('登录组件加载');
     createQRcode();
@@ -82,6 +105,22 @@ onMounted(() => {
 onBeforeUnmount(() => {
     clearInterval(check);
 })
+
+function openOfficialLogin() {
+    window.open('https://music.163.com/');
+}
+
+async function getCookieAndLogin() {
+    if (window?.isElectron) {
+        let ck = await window.api.getCookie()
+        if (ck) {
+            api.success('cookie获取成功，已登录')
+            userStore.updateByCookie(ck)
+        } else {
+            api.error('cookie获取失败：官方页未登录')
+        }
+    }
+}
 async function createQRcode() {
     let key = await api.loginQrKey();
     // console.log('生成qrkey /login/qr/key', key.data);
@@ -173,8 +212,6 @@ async function afterLogin(cookie) {
 .login {
     display: flex;
     flex: 100%;
-    max-width: 45rem;
-    min-width: 20rem;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: center;
@@ -183,6 +220,13 @@ async function afterLogin(cookie) {
     margin: 2rem 5%;
     height: 25rem;
     border-radius: 2rem;
+}
+
+.card {
+    box-sizing: border-box;
+    width: 85%;
+    max-width: 35rem;
+    min-width: 20rem;
     box-shadow: 0 0 0.5rem gray;
 }
 

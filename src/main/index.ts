@@ -57,6 +57,24 @@ app.on('ready', async () => {
 
   primaryDisplay = screen.getPrimaryDisplay();
   store = new ElectronStore<conf>()
+  // 监听 cookie 变化，用于登录
+  session.defaultSession.cookies.on("changed", (event, cookie, cause, removed) => {
+    if (cookie.domain == '.music.163.com' && cookie.name == 'MUSIC_U' && !removed) {
+      mainWindow.webContents.send('cookie', cookie.name + '=' + cookie.value)
+      console.log('cookie变化：', event, cookie, cause, removed);
+    }
+  });
+  // 前端直接找咱要cookie
+  ipcMain.handle('getCookie', async () => {
+    let ck = await session.defaultSession.cookies.get({ domain: '.music.163.com', name: 'MUSIC_U' })
+    let res = ''
+    for (let i = 0; i < ck.length; i++) {
+      res += ck[i].name + '=' + ck[i].value + ';'
+    }
+    console.log('getCookie:', res);
+    return res
+  })
+
   // 往亦晕音乐api 本地处理
   ipcMain.handle('netease', async (_, path, data) => {
     try {
@@ -116,13 +134,13 @@ app.on('ready', async () => {
   })
   //加载devTool插件
   if (os.platform() == 'win32' && is.dev) {
-    if (fs.existsSync("F:/code/web/vue-devtools")) {
+    if (fs.existsSync("E:/code/web/vue-devtools")) {
       console.log('devtools exists');
     } else {
       console.log('devtools not exists');
       return
     }
-    await session.defaultSession.loadExtension("F:/code/web/vue-devtools")
+    await session.defaultSession.loadExtension("E:/code/web/vue-devtools")
   }
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.xwzkj.music')

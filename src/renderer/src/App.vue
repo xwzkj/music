@@ -12,12 +12,24 @@ import emitter from "@/utils/mitt";
 import * as api from "@/modules/api";
 import axios from "axios";
 let settingStore = useSettingStore();
+let userStore = useUserStore();
+let playStore = usePlayStore();
+let themeStore = useThemeStore();
 settingStore.init();
 if (!window.hasOwnProperty('isElectron')) {
   window.isElectron = false
 } else {
+  console.log('isElectron!')
   settingStore.setLyricWindowShow('auto')
+
+  // 接收cookie实现在官方页面登录
+  window.api.receiveCookie((event, ck) => {
+    console.log('接收到cookie！')
+    api.success('cookie获取成功，已登录')
+    userStore.updateByCookie(ck)
+  })
 }
+
 
 let themeOverrides = ref({
   common: {
@@ -25,9 +37,6 @@ let themeOverrides = ref({
     borderRadiusSmall: "7px"
   }
 });
-let userStore = useUserStore();
-let playStore = usePlayStore();
-let themeStore = useThemeStore();
 let showUpdate = ref(false);// 显示更新信息 如果是客户端的话
 let updateData = ref({
   newVersion: '',
@@ -38,8 +47,8 @@ userStore.updateByStorage();
 onMounted(async () => {
   // 更新用户信息
   if (userStore.isLogin === true && Date.now() - userStore.updateTime >= 1000 * 60 * 2) {
-      userStore.updateByCookie();
-    }
+    userStore.updateByCookie();
+  }
   setInterval(async () => {
     if (userStore.isLogin === true) {
       userStore.updateByCookie();
@@ -207,10 +216,10 @@ document.addEventListener('DOMContentLoaded', setRealVhVw);
 }
 
 .loading-center {
-    width: 100%;
-    height: calc(70 * var(--vh, 1vh));
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  height: calc(70 * var(--vh, 1vh));
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

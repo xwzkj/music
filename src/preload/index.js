@@ -29,4 +29,12 @@ contextBridge.exposeInMainWorld('api', {
   'windowClose': () => {
     return ipcRenderer.send('window-close')
   },
+
+  'receiveCookie': (callback) => {
+    ipcRenderer.on('cookie', callback)
+  },
+
+  'getCookie': () => {
+    return ipcRenderer.invoke('getCookie')
+  },
 })
