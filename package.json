@@ -32,7 +32,7 @@
   "devDependencies": {
     "@ant-design/colors": "^7.1.0",
     "@electron-toolkit/eslint-config": "^1.0.2",
-    "@iconify/json": "^2.2.231",
+    "@iconify/json": "2.2.376",
     "@rushstack/eslint-patch": "^1.10.4",
     "@types/animejs": "^3.1.12",
     "@types/wicg-file-system-access": "^2023.10.5",

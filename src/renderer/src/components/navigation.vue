@@ -15,7 +15,7 @@ import { useUserStore } from '@/stores/user'
 //图标引入 用于jsx
 import HugeiconsHome06 from '~icons/hugeicons/home-06';
 import HugeiconsUserAccount from '~icons/hugeicons/user-account';
-import HugeiconsLogin01 from '~icons/hugeicons/login-01';
+import HugeiconsLoginCircle02 from '~icons/hugeicons/login-circle-02';
 import HugeiconsHeartCheck from '~icons/hugeicons/heart-check';
 import HugeiconsSettings05 from '~icons/hugeicons/settings-05';
 const router = useRouter();
@@ -59,7 +59,7 @@ let menuData = computed<MenuOption[]>(() => {
             show: !userStore.isLogin,
             label: renderLink('login', '登录'),
             key: 'login',
-            icon: renderIcon(HugeiconsLogin01)
+            icon: renderIcon(HugeiconsLoginCircle02)
         },
         {
             show: userStore.isLogin,
