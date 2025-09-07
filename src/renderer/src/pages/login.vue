@@ -1,7 +1,7 @@
 <template>
     <div class="login-container">
         <!-- 内置登录无法使用提示 -->
-        <n-card class="card" :title="`内置登录因云控无法正常使用`" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <n-card class="card" :title="`若内置登录不能正常使用：备用方案`" :bordered="false" size="huge" role="dialog" aria-modal="true">
             <div v-if="isApp" style="white-space: pre-wrap;" class="overflow-y-auto max-h-300px">
                 在客户端中，可通过前往官方页面登录以实现自动抓取cookie登录
             </div>
